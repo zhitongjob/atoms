@@ -1,0 +1,48 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+
+# other dir #
+classes/
+.temp/
+logs/
+log/
+.svn/
+svn/
+lib/
+
+# maven #
+target/
+
+# intellj file type #
+.idea/
+.svn/
+bin/
+*.iml
+
+# eclipse file type #
+.settings/
+.classpath
+.project
+
+# ---- Mac OS X
+.DS_Store
+Icon?
+
+# ---- Windows
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini
+
+# ---- Javadoc
+docs.tar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

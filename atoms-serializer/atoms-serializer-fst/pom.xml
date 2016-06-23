@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.lovver.atoms</groupId>
+    <artifactId>atoms-serializer</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>atoms-serializer-fst</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.lovver.atoms</groupId>
+  		<artifactId>atoms-serializer-api</artifactId>
+  		<version>1.0.0-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>de.ruedigermoeller</groupId>
+  		<artifactId>fst</artifactId>
+  		<version>2.45</version>
+  	</dependency>
+  </dependencies>
+</project>
