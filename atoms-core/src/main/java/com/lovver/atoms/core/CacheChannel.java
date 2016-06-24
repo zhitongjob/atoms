@@ -7,6 +7,7 @@ import java.util.Map;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.cache.CacheProvider;
 import com.lovver.atoms.common.exception.CacheException;
+import com.lovver.atoms.common.utils.StringUtils;
 import com.lovver.atoms.config.AtomsCacheBean;
 import com.lovver.atoms.config.AtomsConfig;
 import com.lovver.atoms.context.AtomsContext;
@@ -16,6 +17,21 @@ public class CacheChannel {
 	private static CacheChannel instance=new CacheChannel();
 	public static CacheChannel getInstance(){
 		return instance;
+	}
+	
+	
+	private Object getNextLevelCache(String region,Object key){
+		Object value=null;
+		Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+		for(int i=2;i<=mCacheProvider.size();i++){
+			
+			Cache cache=AtomsContext.getCache(region, i);
+			value=cache.get(key);
+			if(value!=null){
+				break;
+			}
+		}
+		return value;
 	}
 
 	/**
@@ -34,18 +50,24 @@ public class CacheChannel {
 			Object value=tCache.get(key);
 			if(value==null){
 				String expiredOp=level1CacheBean.getExpiredOperator();
-				if("update".equals(expiredOp.toLowerCase())){
-					Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-					for(int i=2;i<=mCacheProvider.size();i++){
-						
-						Cache cache=AtomsContext.getCache(region, i);
-						value=cache.get(key);
-						if(value!=null){
-							break;
-						}
+				if("delete".equals(expiredOp.toLowerCase())){
+					value=getNextLevelCache(region,key);
+					if(value!=null){
+						Cache cache=CacheManager.getCache(1,region,true);
+						cache.put(key, value);
 					}
-					Cache cache=CacheManager.getCache(1,region,true);
-					cache.put(key, value); 
+					return value;
+				}else{
+					try {
+						String waitTime=level1CacheBean.getWaitTime();
+						if(StringUtils.isEmpty(waitTime)){
+							waitTime="1000";
+						}
+						Thread.sleep(Integer.parseInt(waitTime)); 
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					value=getNextLevelCache(region,key);
 				}
 			}
 			return value;

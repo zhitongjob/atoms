@@ -11,6 +11,8 @@ public class AtomsCacheBean {
 	private String type;
 	@XStreamAsAttribute
 	private String expiredOperator;
+	@XStreamAsAttribute
+	private String waitTime;
 	
 	private AtomsCacheConfigBean cacheConfig;
 
@@ -44,5 +46,13 @@ public class AtomsCacheBean {
 
 	public void setExpiredOperator(String expiredOperator) {
 		this.expiredOperator = expiredOperator;
+	}
+
+	public String getWaitTime() {
+		return waitTime;
+	}
+
+	public void setWaitTime(String waitTime) {
+		this.waitTime = waitTime;
 	}
 }

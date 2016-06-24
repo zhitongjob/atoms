@@ -4,7 +4,7 @@
 		<broadcastConfig host="192.168.1.53" port="6379"/>
 	</broadcast>
 	<serializer type="fst"/>
-	<cache level="1" type="ehcache" expiredOperator="update"><!-- expiredOperator:update,delete -->
+	<cache level="1" type="ehcache" expiredOperator="update" waitTime="100"><!-- expiredOperator: update,delete  当为update时waitTime有效-->
 		<cacheConfig configFile="ehcache.xml"/>
 	</cache>
 	<cache level="2" type="redis">
