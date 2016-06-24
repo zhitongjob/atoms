@@ -13,6 +13,10 @@ import com.lovver.atoms.context.AtomsContext;
 
 public class CacheChannel {
 	private static AtomsCacheBean level1CacheBean=AtomsContext.getAtomsCacheBean(1) ;
+	private static CacheChannel instance=new CacheChannel();
+	public static CacheChannel getInstance(){
+		return instance;
+	}
 
 	/**
 	 * 获取缓存中的数据
