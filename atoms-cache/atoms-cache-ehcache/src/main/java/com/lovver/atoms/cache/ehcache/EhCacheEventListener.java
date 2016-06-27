@@ -34,6 +34,22 @@ public class EhCacheEventListener implements CacheEventListener {
 			return Command.EXPIRE_DELETE;
 		}
 	}
+	
+	
+	private static boolean getDeleteAtom(){
+		String delete_atom;
+		AtomsCacheBean cacheBean=AtomsContext.getAtomsCacheBean(1);
+		delete_atom=cacheBean.getDelete_atom();
+		if(!StringUtils.isEmpty(delete_atom)){
+			delete_atom=delete_atom.toLowerCase();
+		}
+		if("true".equals(delete_atom)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
 	@Override
 	public void notifyElementExpired(String region, Object key) {
 		System.out.println("notifyElementExpired");
@@ -92,7 +108,8 @@ public class EhCacheEventListener implements CacheEventListener {
 	public void notifyElementRemoved(String region, Object key)
 			throws CacheException {
 		System.out.println("notifyElementRemoved");
-		if(null!=broadCast){
+		boolean delete_atom=getDeleteAtom();
+		if(null!=broadCast&&delete_atom==false){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
 			broadCast.broadcast(JSON.toJSONString(cmd));
 		}
@@ -129,7 +146,8 @@ public class EhCacheEventListener implements CacheEventListener {
 	@Override
 	public void notifyElementEvicted(String region, Object key, Object value) {
 		System.out.println("notifyElementEvicted");
-		if(null!=broadCast){
+		boolean delete_atom=getDeleteAtom();
+		if(null!=broadCast&&delete_atom==false){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
 			broadCast.broadcast(JSON.toJSONString(cmd));
 		}
@@ -138,7 +156,8 @@ public class EhCacheEventListener implements CacheEventListener {
 	@Override
 	public void notifyRemoveAll(String region) {
 		System.out.println("notifyRemoveAll");
-		if(null!=broadCast){
+		boolean delete_atom=getDeleteAtom();
+		if(null!=broadCast&&delete_atom==false){
 			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
 			broadCast.broadcast(JSON.toJSONString(cmd));
 		}

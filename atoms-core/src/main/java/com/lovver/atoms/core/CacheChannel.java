@@ -33,6 +33,7 @@ public class CacheChannel {
 		}
 		return value;
 	}
+	
 
 	/**
 	 * 获取缓存中的数据
@@ -50,6 +51,15 @@ public class CacheChannel {
 			Object value=tCache.get(key);
 			if(value==null){
 				String expiredOp=level1CacheBean.getExpiredOperator();
+				String delete_atom=level1CacheBean.getDelete_atom();
+				if("true".equals(delete_atom.toLowerCase())){//原子事务删除
+					value=getNextLevelCache(region,key);
+					if(value!=null){
+						Cache cache=CacheManager.getCache(1,region,true);
+						cache.put(key, value);
+					}
+					return value;
+				}
 				if("delete".equals(expiredOp.toLowerCase())){
 					value=getNextLevelCache(region,key);
 					if(value!=null){
@@ -105,8 +115,18 @@ public class CacheChannel {
 	 *            : Cache key
 	 */
 	public void evict(String region, Object key) {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.evict(key); 
+		String delete_atom=level1CacheBean.getDelete_atom();
+		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
+			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+			for(int i=2;i<=mCacheProvider.size();i++){
+				Cache cache=AtomsContext.getCache(region, i);
+				cache.evict(key); 
+			}
+		}else{
+			Cache cache=CacheManager.getCache(1,region,true);
+			cache.evict(key); 
+		}
+		
 	}
 
 	/**
@@ -119,8 +139,17 @@ public class CacheChannel {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void batchEvict(String region, List keys) {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.evict(keys); 
+		String delete_atom=level1CacheBean.getDelete_atom();
+		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
+			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+			for(int i=2;i<=mCacheProvider.size();i++){
+				Cache cache=AtomsContext.getCache(region, i);
+				cache.evict(keys); 
+			}
+		}else{
+			Cache cache=CacheManager.getCache(1,region,true);
+			cache.evict(keys);
+		}
 	}
 
 	/**
@@ -130,8 +159,17 @@ public class CacheChannel {
 	 *            : Cache region name
 	 */
 	public void clear(String region) throws CacheException {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.clear(); 
+		String delete_atom=level1CacheBean.getDelete_atom();
+		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
+			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+			for(int i=2;i<=mCacheProvider.size();i++){
+				Cache cache=AtomsContext.getCache(region, i);
+				cache.clear(); 
+			}
+		}else{
+			Cache cache=CacheManager.getCache(1,region,true);
+			cache.clear(); 
+		}
 	}
 
 	/**
@@ -143,8 +181,24 @@ public class CacheChannel {
 	 */
 	@SuppressWarnings("rawtypes")
 	public List keys(String region) throws CacheException {
-		Cache cache=CacheManager.getCache(1,region,true);
-		return cache.keys();
+		List lstRet=null;
+		String delete_atom=level1CacheBean.getDelete_atom();
+		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
+			if(lstRet==null||lstRet.size()==0){
+				Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+				for(int i=2;i<=mCacheProvider.size();i++){
+					Cache nextCache=AtomsContext.getCache(region, i);
+					lstRet=nextCache.keys();
+					if(lstRet!=null&&lstRet.size()!=0){
+						break;
+					}
+				}
+			}
+		}else{
+			Cache cache=CacheManager.getCache(1,region,true);
+			lstRet= cache.keys();
+		}
+		return lstRet;
 	}
 
 	
