@@ -118,7 +118,7 @@ public class CacheChannel {
 		String delete_atom=level1CacheBean.getDelete_atom();
 		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
 			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-			for(int i=2;i<=mCacheProvider.size();i++){
+			for(int i=1;i<=mCacheProvider.size();i++){
 				Cache cache=AtomsContext.getCache(region, i);
 				cache.evict(key); 
 			}
@@ -142,7 +142,7 @@ public class CacheChannel {
 		String delete_atom=level1CacheBean.getDelete_atom();
 		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
 			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-			for(int i=2;i<=mCacheProvider.size();i++){
+			for(int i=1;i<=mCacheProvider.size();i++){
 				Cache cache=AtomsContext.getCache(region, i);
 				cache.evict(keys); 
 			}
@@ -162,7 +162,7 @@ public class CacheChannel {
 		String delete_atom=level1CacheBean.getDelete_atom();
 		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
 			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-			for(int i=2;i<=mCacheProvider.size();i++){
+			for(int i=1;i<=mCacheProvider.size();i++){
 				Cache cache=AtomsContext.getCache(region, i);
 				cache.clear(); 
 			}
@@ -186,7 +186,7 @@ public class CacheChannel {
 		if("true".equals(delete_atom.toLowerCase())){//原子事务删除
 			if(lstRet==null||lstRet.size()==0){
 				Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-				for(int i=2;i<=mCacheProvider.size();i++){
+				for(int i=1;i<=mCacheProvider.size();i++){
 					Cache nextCache=AtomsContext.getCache(region, i);
 					lstRet=nextCache.keys();
 					if(lstRet!=null&&lstRet.size()!=0){
