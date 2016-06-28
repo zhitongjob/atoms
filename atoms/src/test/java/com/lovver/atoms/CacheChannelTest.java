@@ -1,8 +1,5 @@
 package com.lovver.atoms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.lovver.atoms.core.CacheChannel;
 
 public class CacheChannelTest {

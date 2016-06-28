@@ -4,7 +4,7 @@
 		<broadcastConfig host="192.168.1.53" port="6379"/>
 	</broadcast>
 	<serializer type="fst"/>
-	<cache level="1" type="encache">
+	<cache level="1" type="ehcache">
 		<cacheConfig configFile="ddd/ddd.properties"/>
 	</cache>
 	<cache level="2" type="redis">
