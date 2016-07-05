@@ -18,6 +18,16 @@ public class AtomsCacheBean {
 	private String delete_atom="true";
 	
 	private AtomsCacheConfigBean cacheConfig;
+	
+	private AtomsCacheTTLBean cacheTTL;
+
+	public AtomsCacheTTLBean getCacheTTL() {
+		return cacheTTL;
+	}
+
+	public void setCacheTTL(AtomsCacheTTLBean cacheTTL) {
+		this.cacheTTL = cacheTTL;
+	}
 
 	public String getLevel() {
 		return level;

@@ -1,6 +1,7 @@
 package com.lovver.atoms.cache.redis;
 
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +17,7 @@ import com.lovver.atoms.common.annotation.SPI;
 import com.lovver.atoms.common.exception.CacheException;
 import com.lovver.atoms.config.AtomsCacheBean;
 import com.lovver.atoms.config.AtomsCacheConfigBean;
+import com.lovver.atoms.context.AtomsContext;
 
 /**
  * Redis 缓存实现
@@ -28,6 +30,7 @@ public class RedisCacheProvider implements CacheProvider {
 	private JedisPool pool;
 	private AtomsCacheConfigBean cacheConfig;
 	private String host;
+	private int level;
 	
 	protected ConcurrentHashMap<String, RedisCache> caches = new ConcurrentHashMap<>();
 	
@@ -46,8 +49,12 @@ public class RedisCacheProvider implements CacheProvider {
 		// 但返回的实例一次性使用,所以加锁了并没有增加收益
 		RedisCache cache = caches.get(regionName);
 		if (cache == null) {
-			cache = new RedisCache(regionName, pool,cacheConfig.getNamespace(),listener,host);
-			caches.put(regionName, cache);
+			synchronized (caches) {
+				Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
+				String ttlSeconds=mapTTL.get(regionName);
+				cache = new RedisCache(regionName, pool,cacheConfig.getNamespace(),listener,host,ttlSeconds);
+				caches.put(regionName, cache);
+			}
 		}
 		return cache;
     }
@@ -119,6 +126,8 @@ public class RedisCacheProvider implements CacheProvider {
 		String lifo=null2default(cacheConfig.getLifo(), "false");
 		config.setLifo(Boolean.parseBoolean(lifo));
 		pool = new JedisPool(config, host, port, timeout, password, database);
+		
+		level=Integer.parseInt(cacheBean.getLevel());
 	}
 
 	@Override

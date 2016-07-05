@@ -14,6 +14,7 @@ import redis.clients.jedis.JedisPool;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.cache.CacheEventListener;
 import com.lovver.atoms.common.exception.CacheException;
+import com.lovver.atoms.common.utils.StringUtils;
 import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
 
@@ -34,8 +35,9 @@ public class RedisCache implements Cache {
 	private String namespace;
 	private CacheEventListener listener;
 	private String host;
+	private Integer ttlSeconds;
 
-	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host) {
+	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host,String ttlSeconds) {
 		if (region == null || region.isEmpty())
 			region = "_"; // 缺省region
 		this.srcRegion=region;
@@ -46,6 +48,11 @@ public class RedisCache implements Cache {
 		this.region = region;
 		this.region2 = region.getBytes();
 		this.host=host;
+		if(StringUtils.isEmpty(ttlSeconds)){
+			this.ttlSeconds=null;
+		}else{
+			this.ttlSeconds=Integer.parseInt(ttlSeconds);
+		}
 	}
 
 	/**
@@ -95,6 +102,9 @@ public class RedisCache implements Cache {
 		}else {
 			try (Jedis cache = pool.getResource()) {
 				cache.hset(region2, getKeyName(key), serializer.serialize(value));
+				if(ttlSeconds!=null){
+					cache.expire(region2, ttlSeconds);
+				}
 				if(listener!=null){
 					listener.notifyElementPut(this.srcRegion, key, value);
 				}

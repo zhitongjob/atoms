@@ -1,6 +1,7 @@
 package com.lovver.atoms.cache.ehcache;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.ehcache.CacheManager;
@@ -15,6 +16,7 @@ import com.lovver.atoms.common.annotation.SPI;
 import com.lovver.atoms.common.exception.CacheException;
 import com.lovver.atoms.common.utils.ClassUtils;
 import com.lovver.atoms.config.AtomsCacheBean;
+import com.lovver.atoms.context.AtomsContext;
 
 /**
  * EhCache Provider plugin
@@ -28,6 +30,7 @@ public class EhCacheProvider implements CacheProvider {
 
 	private CacheManager manager;
 	private ConcurrentHashMap<String, EhCache> _CacheManager = new ConcurrentHashMap<String, EhCache> () ;
+	private int level;
 
 	@Override
 	public String name() {
@@ -46,6 +49,9 @@ public class EhCacheProvider implements CacheProvider {
 			                log.warn("Could not find configuration [" + regionName + "]; using defaults.");
 			                manager.addCache(regionName);
 			                cache = manager.getCache(regionName);
+			                Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
+			                String ttlSeconds=mapTTL.get(regionName);
+			                cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
 			                log.debug("started EHCache region: " + regionName);                
 			            }
 			            ehcache = new EhCache(cache, listener);
@@ -82,7 +88,7 @@ public class EhCacheProvider implements CacheProvider {
 		}else{
 			manager = CacheManager.getInstance();
 		}
-		
+		this.level=Integer.parseInt(cacheBean.getLevel());
         _CacheManager = new ConcurrentHashMap<String, EhCache>();
 	}
 

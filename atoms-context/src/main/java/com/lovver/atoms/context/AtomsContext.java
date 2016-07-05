@@ -14,6 +14,8 @@ import com.lovver.atoms.cache.CacheProviderFactory;
 import com.lovver.atoms.common.utils.StringUtils;
 import com.lovver.atoms.config.AtomsBean;
 import com.lovver.atoms.config.AtomsCacheBean;
+import com.lovver.atoms.config.AtomsCacheTTLBean;
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import com.lovver.atoms.config.AtomsConfig;
 import com.lovver.atoms.serializer.Serializer;
 import com.lovver.atoms.serializer.SerializerFactory;
@@ -26,12 +28,17 @@ public class AtomsContext {
 	private static ConcurrentHashMap<String,CacheProvider> cacheProvider=new ConcurrentHashMap<String,CacheProvider>();
 	private static ConcurrentHashMap<String,AtomsCacheBean> cacheConfig=new ConcurrentHashMap<String,AtomsCacheBean>();
 	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
+	private static ConcurrentHashMap<String,ConcurrentHashMap<String,String>> cahcelevelTTLConfig=new ConcurrentHashMap<String,ConcurrentHashMap<String,String>>();
 
 	static {
 		try {
 			serializer=SerializerFactory.getSerializer(atomBean.getSerializer());
 			List<AtomsCacheBean> lstCache= atomBean.getCache();
+			
+			ConcurrentHashMap<String,String> levelTTLConfig=null;
 			for(AtomsCacheBean cacheBean:lstCache){
+				levelTTLConfig=new ConcurrentHashMap<String,String>();
+				
 				if(StringUtils.isEmpty(cacheBean.getLevel())){
 					throw new RuntimeException("cache level must give!");
 				}
@@ -42,7 +49,19 @@ public class AtomsContext {
 					broadCasts.put(cacheBean.getLevel(), broadCast);
 				}
 				cacheConfig.put(cacheBean.getLevel(), cacheBean);
+				
+				AtomsCacheTTLBean cacheTTLBean=cacheBean.getCacheTTL();
+				if(null!=cacheTTLBean){
+					List<AtomsCacheTTLConfigBean> lstTTLConfigBean=cacheTTLBean.getLstTTL();
+					if(null!=lstTTLConfigBean&&lstTTLConfigBean.size()>0){						
+						for(AtomsCacheTTLConfigBean ttl:lstTTLConfigBean){
+							levelTTLConfig.put(ttl.getName(), ttl.getValue());
+						}
+					}
+				}
+				cahcelevelTTLConfig.put(cacheBean.getLevel(), levelTTLConfig);
 			}
+			
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -71,6 +90,10 @@ public class AtomsContext {
 		CacheEventListener listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(), level+"");
 		Cache cache=cacheProvider.buildCache(region, true, listener);
 		return cache;
+	}
+	
+	public static Map<String,String> getTTLConfig(int level){
+		return cahcelevelTTLConfig.get(level+"");
 	}
 	/**
 	 * 
