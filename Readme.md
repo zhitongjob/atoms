@@ -1,6 +1,6 @@
 基于j2cache的理念，重新设计开发的一套分布式缓存。支持2级并不限于2级的多级缓存系统。
 
-github地址：[atoms](http://https://github.com/zhitongjob/atoms)
+github地址：[atoms](https://github.com/zhitongjob/atoms)
 
 配置文件
 ```
