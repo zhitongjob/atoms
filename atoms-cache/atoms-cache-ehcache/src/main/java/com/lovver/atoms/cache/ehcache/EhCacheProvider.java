@@ -46,11 +46,18 @@ public class EhCacheProvider implements CacheProvider {
 	            	if(ehcache == null){
 			            net.sf.ehcache.Cache cache = manager.getCache(regionName);
 			            if (cache == null) {
-			                log.warn("Could not find configuration [" + regionName + "]; using defaults.");
-			                manager.addCache(regionName);
-			                cache = manager.getCache(regionName);
-			                Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
-			                String ttlSeconds=mapTTL.get(regionName);
+			            	log.warn("Could not find configuration [" + regionName + "]; using defaults.");
+			            	 
+			            	Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
+			            	String ttlSeconds=mapTTL.get(regionName);
+			            	if(StringUtils.isNotEmpty(ttlSeconds)){
+			            		cache=new net.sf.ehcache.Cache(regionName,1000,false,false,Long.parseLong(ttlSeconds),Long.parseLong(ttlSeconds));
+			            		manager.addCache(cache);
+			            	}else{
+				                manager.addCache(regionName);
+				                cache = manager.getCache(regionName);
+			            	}
+			               
 			                cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
 			                log.debug("started EHCache region: " + regionName);                
 			            }

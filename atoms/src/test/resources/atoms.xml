@@ -7,7 +7,7 @@
 	<cache level="1" type="ehcache" delete_atom="true" ><!-- expiredOperator="update" waitTime="100" --><!-- expiredOperator: update,delete  当为update时waitTime有效-->
 		<cacheConfig configFile="ehcache.xml"/>
 		<cacheTTL>
-			<ttl name="hello" value="1000"/><!-- name:regionName value:失效时间 单位（秒） -->
+			<ttl name="hello" value="10"/><!-- name:regionName value:失效时间 单位（秒） -->
 		</cacheTTL>
 	</cache>
 	<cache level="2" type="redis">
@@ -16,7 +16,7 @@
 		 softMinEvictableIdleTimeMillis="10" testOnBorrow="true" testOnReturn="false" testWhileIdle="false" timeBetweenEvictionRunsMillis="300000"
 		 blockWhenExhausted="true" password=""/>
 		<cacheTTL>
-			<ttl name="hello" value="3000"/><!-- name:regionName value:失效时间 单位（秒） -->
+			<ttl name="hello" value="20"/><!-- name:regionName value:失效时间 单位（秒） -->
 		</cacheTTL>
 	</cache>
 	<cache level="3" type="redis">
@@ -25,7 +25,7 @@
 		 softMinEvictableIdleTimeMillis="10" testOnBorrow="true" testOnReturn="false" testWhileIdle="false" timeBetweenEvictionRunsMillis="300000"
 		 blockWhenExhausted="true" password=""/>
 		 <cacheTTL>
-			<ttl name="hello" value="5000"/><!-- name:regionName value:失效时间 单位（秒） -->
+			<ttl name="hello" value="30"/><!-- name:regionName value:失效时间 单位（秒） -->
 		</cacheTTL>
 	</cache>
 </atoms>

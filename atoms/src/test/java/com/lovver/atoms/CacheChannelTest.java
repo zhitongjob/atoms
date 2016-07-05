@@ -6,15 +6,9 @@ public class CacheChannelTest {
 
 	public static void main(String[] args) {
 		CacheChannel cc=CacheChannel.getInstance();
-		cc.set("jiangbiao", "hello", "nihaoya");
-//		cc.set("jiangbiao", "hello1", "nihaoya1");
-//		List keys=new ArrayList<String>();
-//		keys.add("hello");
-//		keys.add("hello1");
-//		cc.batchEvict("jiangbiao", keys);
-		cc.evict("jiangbiao", "hello");
+		cc.set("hello", "dddd", "nihaoya");
 		while(true){
-			Object value=cc.get("jiangbiao", "hello");
+			Object value=cc.get("hello", "dddd");
 			if(value==null){
 				System.out.println("==============="+value);
 			}else{

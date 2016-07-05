@@ -1,4 +1,4 @@
-<ehcache updateCheck="false" dynamicConfig="false">
+<ehcache updateCheck="false" dynamicConfig="true">
 
     <diskStore path="java.io.tmpdir"/>
 	
