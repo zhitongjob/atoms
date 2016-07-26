@@ -15,9 +15,9 @@ public class CacheChannelTest {
 //				System.out.println("==============="+value);
 //			}
 //		}
-//		for(int i=0;i<100000;i++){
-//			System.out.println("==============="+cc.get("jiangbiao", "hello"));
-//		}
+		for(int i=0;i<100000;i++){
+			System.out.println("==============="+cc.get("hello", "dddd"));
+		}
 		
 //		cc.set("jiangbiao", "hello", "ddddddd");
 //		for(int i=0;i<100000;i++){

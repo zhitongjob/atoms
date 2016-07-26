@@ -45,8 +45,8 @@ public class RedisCache implements Cache {
 		this.region = getRegionName(region);
 		this.listener=listener;
 		this.pool = pool;
-		this.region = region;
-		this.region2 = region.getBytes();
+//		this.region = region;
+		this.region2 = this.region.getBytes();
 		this.host=host;
 		if(StringUtils.isEmpty(ttlSeconds)){
 			this.ttlSeconds=null;
