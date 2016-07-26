@@ -81,6 +81,10 @@
 								</transformer>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/extension/com.lovver.atoms.cache.CacheEventListener</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/extension/com.lovver.atoms.broadcast.BroadCast</resource>
 								</transformer>
 							</transformers>
