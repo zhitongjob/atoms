@@ -30,6 +30,10 @@ public class RedisPubSub extends JedisPubSub{
 		}
 		int iPort=Integer.parseInt(port);
 		jedis = new Jedis(host,iPort);
+		String password=broadcastConfig.getPassword();
+		if(!StringUtils.isEmpty(password)){
+			jedis.auth(password);
+		}
 		System.out.println("RedisPubSub "+ level+"===="+this);
 	}
 	
