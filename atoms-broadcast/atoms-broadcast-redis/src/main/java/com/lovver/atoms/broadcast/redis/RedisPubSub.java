@@ -106,7 +106,7 @@ public class RedisPubSub extends JedisPubSub{
 			case Command.OPT_DELETE_KEY:
 				if(true==delete_atom){
 					Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-					for(int i=targetCache;i<=mCacheProvider.size();i++){
+					for(int i=0;i<=mCacheProvider.size();i++){
 						
 						Cache cache=AtomsContext.getCache(cmd.getRegion(), i);
 						System.out.println("delete cache====="+AtomsContext.getCacheProvider().get(""+i).name());
@@ -125,7 +125,7 @@ public class RedisPubSub extends JedisPubSub{
 				     
 				if(true==delete_atom){
 					Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-					for(int i=targetCache;i<=mCacheProvider.size();i++){
+					for(int i=0;i<=mCacheProvider.size();i++){
 						
 						Cache cache=AtomsContext.getCache(cmd.getRegion(), i);
 						cache.clear();
