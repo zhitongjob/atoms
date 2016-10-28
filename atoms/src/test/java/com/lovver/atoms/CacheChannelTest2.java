@@ -2,9 +2,9 @@ package com.lovver.atoms;
 
 import com.lovver.atoms.core.CacheChannel;
 
-public class CacheChannelTest {
+public class CacheChannelTest2 {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		CacheChannel cc=CacheChannel.getInstance();
 		cc.set("hello", "dddd", "nihaoya");
 //		while(true){
@@ -15,13 +15,15 @@ public class CacheChannelTest {
 //				System.out.println("==============="+value);
 //			}
 //		}
-//		cc.evict("hello", "dddd");
-//		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		cc.get("hello", "dddd");
+		while(true){
+			Object dd=cc.get("hello", "dddd");
+			if(dd==null){
+				System.out.println("=============== CacheChannelTest2");
+			}
+			Thread.sleep(3000);
+		}
 		
-//		while(true){
-//			System.out.println("==============="+cc.get("hello", "dddd"));
-//		}
-//		
 //		cc.set("jiangbiao", "hello", "ddddddd");
 //		for(int i=0;i<100000;i++){
 //			System.out.println("==============="+cc.get("jiangbiao", "hello"));

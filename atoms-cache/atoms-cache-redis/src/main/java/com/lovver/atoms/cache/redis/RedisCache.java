@@ -105,9 +105,9 @@ public class RedisCache implements Cache {
 				if(ttlSeconds!=null){
 					cache.expire(region2, ttlSeconds);
 				}
-				if(listener!=null){
-					listener.notifyElementPut(this.srcRegion, key, value);
-				}
+//				if(listener!=null){
+//					listener.notifyElementPut(this.srcRegion, key, value);
+//				}
 			} catch (Exception e) {
 				throw new CacheException(e);
 			}
@@ -123,9 +123,9 @@ public class RedisCache implements Cache {
 			return;
 		try (Jedis cache = pool.getResource()) {
 			cache.hdel(region2, getKeyName(key));
-			if(listener!=null){
-				listener.notifyElementRemoved(this.srcRegion, key); 
-			}
+//			if(listener!=null){
+//				listener.notifyElementRemoved(this.srcRegion, key); 
+//			}
 		} catch (Exception e) {
 			throw new CacheException(e);
 		}
@@ -142,11 +142,11 @@ public class RedisCache implements Cache {
 				okeys[i] = getKeyName(keys.get(i));
 			}
 			cache.hdel(region2, okeys);
-			if(listener!=null){
-				for(Object key:keys){
-					listener.notifyElementRemoved(this.srcRegion, key);
-				}
-			}
+//			if(listener!=null){
+//				for(Object key:keys){
+//					listener.notifyElementRemoved(this.srcRegion, key);
+//				}
+//			}
 		} catch (Exception e) {
 			throw new CacheException(e);
 		}
@@ -163,9 +163,9 @@ public class RedisCache implements Cache {
 	public void clear() throws CacheException {
 		try (Jedis cache = pool.getResource()) {
 			cache.del(region2);
-			if(listener!=null){
-				listener.notifyRemoveAll(this.srcRegion);
-			} 
+//			if(listener!=null){
+//				listener.notifyRemoveAll(this.srcRegion);
+//			} 
 		} catch (Exception e) {
 			throw new CacheException(e);
 		}
@@ -173,8 +173,8 @@ public class RedisCache implements Cache {
 
 	public void destroy() throws CacheException {
 		this.clear();
-		if(listener!=null){
-			listener.notifyRemoveAll(this.srcRegion);
-		} 
+//		if(listener!=null){
+//			listener.notifyRemoveAll(this.srcRegion);
+//		} 
 	}
 }

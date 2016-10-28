@@ -87,61 +87,61 @@ public class RedisCacheEventListener implements CacheEventListener {
 		}
 	}
 
-	@Override
-	public void notifyElementRemoved(String region, Object key)
-			throws CacheException {
-		System.out.println("notifyElementRemoved");
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			broadCast.broadcast(JSON.toJSONString(cmd));
-		}
-	}
-
-	@Override
-	public void notifyElementPut(String region, Object key, Object value)
-			throws CacheException {
-		try{
-			System.out.println("notifyElementPut");
-			if(null!=broadCast){
-				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				broadCast.broadcast(JSON.toJSONString(cmd));
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void notifyElementUpdated(String region, Object key, Object value)
-			throws CacheException {
-		try{
-			System.out.println("notifyElementUpdated");
-			if(null!=broadCast){
-				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				broadCast.broadcast(JSON.toJSONString(cmd));
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void notifyElementEvicted(String region, Object key, Object value) {
-		System.out.println("notifyElementEvicted");
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			broadCast.broadcast(JSON.toJSONString(cmd));
-		}
-	}
-
-	@Override
-	public void notifyRemoveAll(String region) {
-		System.out.println("notifyRemoveAll");
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
-			broadCast.broadcast(JSON.toJSONString(cmd));
-		}
-	}
+//	@Override
+//	public void notifyElementRemoved(String region, Object key)
+//			throws CacheException {
+//		System.out.println("notifyElementRemoved");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
+//			broadCast.broadcast(JSON.toJSONString(cmd));
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementPut(String region, Object key, Object value)
+//			throws CacheException {
+//		try{
+//			System.out.println("notifyElementPut");
+//			if(null!=broadCast){
+//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
+//				broadCast.broadcast(JSON.toJSONString(cmd));
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementUpdated(String region, Object key, Object value)
+//			throws CacheException {
+//		try{
+//			System.out.println("notifyElementUpdated");
+//			if(null!=broadCast){
+//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
+//				broadCast.broadcast(JSON.toJSONString(cmd));
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementEvicted(String region, Object key, Object value) {
+//		System.out.println("notifyElementEvicted");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
+//			broadCast.broadcast(JSON.toJSONString(cmd));
+//		}
+//	}
+//
+//	@Override
+//	public void notifyRemoveAll(String region) {
+//		System.out.println("notifyRemoveAll");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
+//			broadCast.broadcast(JSON.toJSONString(cmd));
+//		}
+//	}
 
 	@Override
 	public void init(String level) {

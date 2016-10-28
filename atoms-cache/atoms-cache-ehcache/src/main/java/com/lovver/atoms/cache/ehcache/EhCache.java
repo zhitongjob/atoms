@@ -168,9 +168,9 @@ public class EhCache implements Cache, CacheEventListener {
 
 	@Override
 	public void notifyElementEvicted(Ehcache cache, Element elem) {
-		if(listener != null){
-			listener.notifyElementEvicted(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
-		}
+//		if(listener != null){
+//			listener.notifyElementEvicted(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
+//		}
 	}
 
 	@Override
@@ -182,30 +182,30 @@ public class EhCache implements Cache, CacheEventListener {
 
 	@Override
 	public void notifyElementPut(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-		if(listener != null){
-			listener.notifyElementPut(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
-		}
+//		if(listener != null){
+//			listener.notifyElementPut(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
+//		}
 	}
 
 	@Override
 	public void notifyElementRemoved(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-		if(listener != null){
-			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
-		}
+//		if(listener != null){
+//			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
+//		}
 	}
 
 	@Override
 	public void notifyElementUpdated(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-		if(listener != null){
-			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
-		}
+//		if(listener != null){
+//			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
+//		}
 	}
 
 	@Override
 	public void notifyRemoveAll(Ehcache cache) {
-		if(listener != null){
-			listener.notifyRemoveAll(cache.getName());
-		}
+//		if(listener != null){
+//			listener.notifyRemoveAll(cache.getName());
+//		}
 	}
 
 }

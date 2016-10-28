@@ -1,5 +1,6 @@
 package com.lovver.atoms.broadcast.redis;
 
+import java.util.List;
 import java.util.Map;
 
 import redis.clients.jedis.Jedis;
@@ -68,7 +69,8 @@ public class RedisPubSub extends JedisPubSub{
 		}
 	}
 	
-	 public void onMessage(String channel, String message){
+	 @SuppressWarnings("rawtypes")
+	public void onMessage(String channel, String message){
 		 System.out.println("onMessage "+ level+"===="+this);
 		if (message != null && message.length() <= 0) {
 //			log.warn("Message is empty.");
@@ -96,7 +98,12 @@ public class RedisPubSub extends JedisPubSub{
 						
 						Cache cache=AtomsContext.getCache(cmd.getRegion(), i);
 						System.out.println("delete cache====="+AtomsContext.getCacheProvider().get(""+i).name());
-						cache.evict(cmd.getKey()); 
+						Object key=cmd.getKey();
+						if(key instanceof List){
+							cache.evict((List)key);
+						}else{
+							cache.evict(cmd.getKey()); 
+						}
 					}
 				}else{
 //					cache.evict(cmd.getKey()); 

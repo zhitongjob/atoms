@@ -1,9 +1,13 @@
 package com.lovver.atoms.core;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.lovver.atoms.broadcast.BroadCast;
+import com.lovver.atoms.broadcast.Command;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.cache.CacheProvider;
 import com.lovver.atoms.common.exception.CacheException;
@@ -11,10 +15,14 @@ import com.lovver.atoms.common.utils.StringUtils;
 import com.lovver.atoms.config.AtomsCacheBean;
 import com.lovver.atoms.config.AtomsConfig;
 import com.lovver.atoms.context.AtomsContext;
+import com.lovver.atoms.serializer.Serializer;
 
 public class CacheChannel {
 	private static AtomsCacheBean level1CacheBean=AtomsContext.getAtomsCacheBean(1) ;
 	private static CacheChannel instance=new CacheChannel();
+	private static BroadCast broadCast=AtomsContext.getBroadCast().get(1+"");
+	private static Serializer serializer=AtomsContext.getSerializer();
+	
 	public static CacheChannel getInstance(){
 		return instance;
 	}
@@ -104,6 +112,14 @@ public class CacheChannel {
 				cache.put(key, value); 
 			}
 		}
+		
+		Command cmd;
+		try {
+			cmd = new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
+			broadCast.broadcast(JSON.toJSONString(cmd));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -126,6 +142,9 @@ public class CacheChannel {
 			Cache cache=CacheManager.getCache(1,region,true);
 			cache.evict(key); 
 		}
+		
+		Command cmd= new Command(Command.OPT_DELETE_KEY,region,key);
+		broadCast.broadcast(JSON.toJSONString(cmd));
 		
 	}
 
@@ -150,6 +169,9 @@ public class CacheChannel {
 			Cache cache=CacheManager.getCache(1,region,true);
 			cache.evict(keys);
 		}
+		
+		Command cmd= new Command(Command.OPT_DELETE_KEY,region,keys);
+		broadCast.broadcast(JSON.toJSONString(cmd));
 	}
 
 	/**
@@ -170,6 +192,10 @@ public class CacheChannel {
 			Cache cache=CacheManager.getCache(1,region,true);
 			cache.clear(); 
 		}
+		Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
+//		if(cmd.isSender()){
+			broadCast.broadcast(JSON.toJSONString(cmd));
+//		}
 	}
 
 	/**

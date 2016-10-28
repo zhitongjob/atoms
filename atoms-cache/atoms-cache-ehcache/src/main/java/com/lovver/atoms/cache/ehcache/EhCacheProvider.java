@@ -58,7 +58,9 @@ public class EhCacheProvider implements CacheProvider {
 				                cache = manager.getCache(regionName);
 			            	}
 			               
-			                cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
+			            	if(StringUtils.isNotEmpty(ttlSeconds)){
+			            		cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
+			            	}
 			                log.debug("started EHCache region: " + regionName);                
 			            }
 			            ehcache = new EhCache(cache, listener);

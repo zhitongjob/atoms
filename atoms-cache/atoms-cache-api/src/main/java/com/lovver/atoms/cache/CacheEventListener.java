@@ -19,14 +19,14 @@ public interface CacheEventListener {
 	 */
 	public void notifyElementExpired(String region, Object key) ;
 	
-	public void notifyElementRemoved(String region, Object key) throws CacheException;
-	
-	public void notifyElementPut(String region, Object key,Object value) throws CacheException;
-	 
-	public void notifyElementUpdated(String region, Object key,Object value) throws CacheException;
-	 
-	public void notifyElementEvicted(String region, Object key,Object value);
-	 
-	public void notifyRemoveAll(String region);
+//	public void notifyElementRemoved(String region, Object key) throws CacheException;
+//	
+//	public void notifyElementPut(String region, Object key,Object value) throws CacheException;
+//	 
+//	public void notifyElementUpdated(String region, Object key,Object value) throws CacheException;
+//	 
+//	public void notifyElementEvicted(String region, Object key,Object value);
+//	 
+//	public void notifyRemoveAll(String region);
 
 }

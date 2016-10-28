@@ -35,21 +35,6 @@ public class EhCacheEventListener implements CacheEventListener {
 		}
 	}
 	
-	
-	private static boolean getDeleteAtom(){
-		String delete_atom;
-		AtomsCacheBean cacheBean=AtomsContext.getAtomsCacheBean(1);
-		delete_atom=cacheBean.getDelete_atom();
-		if(!StringUtils.isEmpty(delete_atom)){
-			delete_atom=delete_atom.toLowerCase();
-		}
-		if("true".equals(delete_atom)){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
 	@Override
 	public void notifyElementExpired(String region, Object key) {
 		System.out.println("notifyElementExpired");
@@ -81,8 +66,6 @@ public class EhCacheEventListener implements CacheEventListener {
 		}else{
 			int targetCache=level+1;
 			if(Command.EXPIRE_DELETE==expiredOperator){
-//				Object[] listenerCache=AtomsContext.getCacheAndListener(region, targetCache);
-//				CacheEventListener listener=(CacheEventListener) listenerCache[1];
 				Cache cache=AtomsContext.getCache(region, targetCache);
 				cache.evict(key); 
 				if(null!=broadCast){
@@ -108,74 +91,71 @@ public class EhCacheEventListener implements CacheEventListener {
 		}
 	}
 
-	@Override
-	public void notifyElementRemoved(String region, Object key)
-			throws CacheException {
-		System.out.println("notifyElementRemoved");
-//		boolean delete_atom=getDeleteAtom();
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			if(cmd.isSender()){
-				broadCast.broadcast(JSON.toJSONString(cmd));
-			}
-		}
-	}
-
-	@Override
-	public void notifyElementPut(String region, Object key, Object value)
-			throws CacheException {
-		try{
-			System.out.println("notifyElementPut");
-			if(null!=broadCast){
-				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				if(cmd.isSender()){
-					broadCast.broadcast(JSON.toJSONString(cmd));
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void notifyElementUpdated(String region, Object key, Object value)
-			throws CacheException {
-		try{
-			System.out.println("notifyElementUpdated");
-			if(null!=broadCast){
-				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				if(cmd.isSender()){
-					broadCast.broadcast(JSON.toJSONString(cmd));
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void notifyElementEvicted(String region, Object key, Object value) {
-		System.out.println("notifyElementEvicted");
-//		boolean delete_atom=getDeleteAtom();
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			if(cmd.isSender()){
-				broadCast.broadcast(JSON.toJSONString(cmd));
-			}
-		}
-	}
-
-	@Override
-	public void notifyRemoveAll(String region) {
-		System.out.println("notifyRemoveAll");
-//		boolean delete_atom=getDeleteAtom();
-		if(null!=broadCast){
-			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
-			if(cmd.isSender()){
-				broadCast.broadcast(JSON.toJSONString(cmd));
-			}
-		}
-	}
+//	@Override
+//	public void notifyElementRemoved(String region, Object key)
+//			throws CacheException {
+//		System.out.println("notifyElementRemoved");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
+//			if(cmd.isSender()){
+//				broadCast.broadcast(JSON.toJSONString(cmd));
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementPut(String region, Object key, Object value)
+//			throws CacheException {
+//		try{
+//			System.out.println("notifyElementPut");
+//			if(null!=broadCast){
+//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
+//				if(cmd.isSender()){
+//					broadCast.broadcast(JSON.toJSONString(cmd));
+//				}
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementUpdated(String region, Object key, Object value)
+//			throws CacheException {
+//		try{
+//			System.out.println("notifyElementUpdated");
+//			if(null!=broadCast){
+//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
+//				if(cmd.isSender()){
+//					broadCast.broadcast(JSON.toJSONString(cmd));
+//				}
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
+//
+//	@Override
+//	public void notifyElementEvicted(String region, Object key, Object value) {
+//		System.out.println("notifyElementEvicted");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
+//			if(cmd.isSender()){
+//				broadCast.broadcast(JSON.toJSONString(cmd));
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void notifyRemoveAll(String region) {
+//		System.out.println("notifyRemoveAll");
+//		if(null!=broadCast){
+//			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
+//			if(cmd.isSender()){
+//				broadCast.broadcast(JSON.toJSONString(cmd));
+//			}
+//		}
+//	}
 
 	@Override
 	public void init(String level) {
