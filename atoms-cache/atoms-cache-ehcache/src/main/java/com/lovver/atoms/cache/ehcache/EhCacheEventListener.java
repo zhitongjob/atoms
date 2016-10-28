@@ -59,7 +59,9 @@ public class EhCacheEventListener implements CacheEventListener {
 			if(expiredOperator==Command.EXPIRE_DELETE){
 				operator=Command.OPT_DELETE_KEY;
 				Command cmd=new Command(operator,expiredOperator,region,key);
-				broadCast.broadcast(JSON.toJSONString(cmd));
+				if(cmd.isSender()){
+					broadCast.broadcast(JSON.toJSONString(cmd));
+				}
 			}else{
 				operator=Command.OPT_PUT_KEY;
 				Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
@@ -85,7 +87,9 @@ public class EhCacheEventListener implements CacheEventListener {
 				cache.evict(key); 
 				if(null!=broadCast){
 					Command cmd=new Command(Command.OPT_DELETE_KEY,expiredOperator,region,key);
-					broadCast.broadcast(JSON.toJSONString(cmd));
+					if(cmd.isSender()){
+						broadCast.broadcast(JSON.toJSONString(cmd));
+					}
 				}
 			}else{
 				Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
@@ -111,7 +115,9 @@ public class EhCacheEventListener implements CacheEventListener {
 //		boolean delete_atom=getDeleteAtom();
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			broadCast.broadcast(JSON.toJSONString(cmd));
+			if(cmd.isSender()){
+				broadCast.broadcast(JSON.toJSONString(cmd));
+			}
 		}
 	}
 
@@ -122,7 +128,9 @@ public class EhCacheEventListener implements CacheEventListener {
 			System.out.println("notifyElementPut");
 			if(null!=broadCast){
 				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				broadCast.broadcast(JSON.toJSONString(cmd));
+				if(cmd.isSender()){
+					broadCast.broadcast(JSON.toJSONString(cmd));
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -136,7 +144,9 @@ public class EhCacheEventListener implements CacheEventListener {
 			System.out.println("notifyElementUpdated");
 			if(null!=broadCast){
 				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value));
-				broadCast.broadcast(JSON.toJSONString(cmd));
+				if(cmd.isSender()){
+					broadCast.broadcast(JSON.toJSONString(cmd));
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -149,7 +159,9 @@ public class EhCacheEventListener implements CacheEventListener {
 //		boolean delete_atom=getDeleteAtom();
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key);
-			broadCast.broadcast(JSON.toJSONString(cmd));
+			if(cmd.isSender()){
+				broadCast.broadcast(JSON.toJSONString(cmd));
+			}
 		}
 	}
 
@@ -159,7 +171,9 @@ public class EhCacheEventListener implements CacheEventListener {
 //		boolean delete_atom=getDeleteAtom();
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_CLEAR_KEY,region);
-			broadCast.broadcast(JSON.toJSONString(cmd));
+			if(cmd.isSender()){
+				broadCast.broadcast(JSON.toJSONString(cmd));
+			}
 		}
 	}
 

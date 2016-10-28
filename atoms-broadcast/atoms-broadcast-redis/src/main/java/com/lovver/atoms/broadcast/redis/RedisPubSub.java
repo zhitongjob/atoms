@@ -54,20 +54,6 @@ public class RedisPubSub extends JedisPubSub{
 		jedis.close();
 	}
 	
-	private static byte getExpiredOperator(){
-		String expiredOperator;
-		AtomsCacheBean cacheBean=AtomsContext.getAtomsCacheBean(1);
-		expiredOperator=cacheBean.getExpiredOperator();
-		if(!StringUtils.isEmpty(expiredOperator)){
-			expiredOperator=expiredOperator.toLowerCase();
-		}
-		if("update".equals(expiredOperator)){
-			return Command.EXPIRE_UPDATE;
-		}else{
-			return Command.EXPIRE_DELETE;
-		}
-	}
-	
 	private static boolean getDeleteAtom(){
 		String delete_atom;
 		AtomsCacheBean cacheBean=AtomsContext.getAtomsCacheBean(1);

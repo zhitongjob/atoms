@@ -1,5 +1,7 @@
 package com.lovver.atoms.broadcast;
 
+import java.util.Random;
+
 
 /**
  * 命令消息
@@ -12,11 +14,14 @@ public class Command {
 	public final static byte OPT_CLEAR_KEY = 0x02; 		//清除缓存
 	public final static byte OPT_PUT_KEY = 0x03; 		//添加或更新缓存
 	
+	private final static int SRCID = genRandomSrc();
+	
 	private byte operator;
 	private byte expire_operator;
 	private String region;
 	private Object key;
 	private byte[] value;
+	private int srcid;
 	
 	public final static byte EXPIRE_UPDATE=0x10;//失效后更新，即从多级缓存中拿出数据从新设置
 	public final static byte EXPIRE_DELETE=0x11;//失效后删除，删除后面多级缓存中的数据
@@ -25,17 +30,25 @@ public class Command {
 	public Command(){
 	}
 	
+	private static int genRandomSrc() {
+		long ct = System.currentTimeMillis();
+		Random rnd_seed = new Random(ct);
+		return (int)(rnd_seed.nextInt(10000) * 1000 + ct % 1000);
+	}
+	
 	public Command(byte o, String r, Object k){
 		this.operator = o;
 		this.region = r;
 		this.key = k;
 		this.expire_operator = EXPIRE_DELETE;
+		this.srcid=SRCID;
 	}
 	
 	public Command(byte o, String r){
 		this.operator = o;
 		this.region = r;
 		this.expire_operator = EXPIRE_DELETE;
+		this.srcid=SRCID;
 	}
 	
 	public Command(byte o, byte eo,String r, Object k){
@@ -43,6 +56,11 @@ public class Command {
 		this.region = r;
 		this.key = k;
 		this.expire_operator = eo;
+		this.srcid=SRCID;
+	}
+	
+	public boolean isSender() {
+		return this.srcid == SRCID;
 	}
 	
 	public Command(byte o, String r, Object k,byte[] value) {
@@ -88,5 +106,13 @@ public class Command {
 
 	public void setValue(byte[] value) {
 		this.value = value;
+	}
+
+	public int getSrcid() {
+		return srcid;
+	}
+
+	public void setSrcid(int srcid) {
+		this.srcid = srcid;
 	}
 }
