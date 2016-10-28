@@ -1,12 +1,16 @@
 package com.lovver.atoms;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.lovver.atoms.core.CacheChannel;
 
 public class CacheChannelTest {
 
 	public static void main(String[] args) {
 		CacheChannel cc=CacheChannel.getInstance();
-		cc.set("hello", "dddd", "nihaoya");
+//		cc.set("hello", "dddd", "nihaoya");
+//		cc.set("hello", "dddd2", "nihaoya");
 //		while(true){
 //			Object value=cc.get("hello", "dddd");
 //			if(value==null){
@@ -15,7 +19,10 @@ public class CacheChannelTest {
 //				System.out.println("==============="+value);
 //			}
 //		}
-//		cc.evict("hello", "dddd");
+		List<String> dd=new ArrayList<String>();
+		dd.add("dddd");
+		dd.add("dddd2");
+		cc.evict("hello", dd);
 //		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 //		while(true){
