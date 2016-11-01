@@ -7,7 +7,7 @@ import com.lovver.atoms.core.CacheChannel;
 
 public class CacheChannelTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		CacheChannel cc=CacheChannel.getInstance();
 //		cc.set("hello", "dddd", "nihaoya");
 //		cc.set("hello", "dddd2", "nihaoya");
@@ -23,6 +23,11 @@ public class CacheChannelTest {
 		dd.add("dddd");
 		dd.add("dddd2");
 		cc.evict("hello", dd);
+		
+		
+		Thread.sleep(3000);
+		
+		cc.set("hello", "dddd", "jobell");
 //		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 //		while(true){

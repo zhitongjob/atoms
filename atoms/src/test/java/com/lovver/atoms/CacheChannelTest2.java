@@ -19,13 +19,13 @@ public class CacheChannelTest2 {
 //			}
 //		}
 //		cc.get("hello", "dddd");
-//		while(true){
-//			Object dd=cc.get("hello", "dddd");
+		while(true){
+			Object dd=cc.get("hello", "dddd");
 //			if(dd!=null){
-//				System.out.println("=============== CacheChannelTest2"+dd);
+				System.out.println("=============== CacheChannelTest2"+dd);
 //			}
-//			Thread.sleep(3000);
-//		}
+			Thread.sleep(3000);
+		}
 		
 //		cc.set("jiangbiao", "hello", "ddddddd");
 //		for(int i=0;i<100000;i++){
