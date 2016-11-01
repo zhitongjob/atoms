@@ -15,13 +15,13 @@ public class RedisBroadCast implements BroadCast{
 	
 	private Thread thread_subscribe;
 	
-	private int level;
+//	private int level;
 	
-	public void init(AtomsBroadCastBean broadcastBean,final int level){
-		redisSub=new RedisPubSub(broadcastBean,level); 
-		redisPub=new RedisPubSub(broadcastBean,level); 
-		channel =  channel_prefix+"_level_"+level;
-		this.level=level;
+	public void init(AtomsBroadCastBean broadcastBean){
+		redisSub=new RedisPubSub(broadcastBean); 
+		redisPub=new RedisPubSub(broadcastBean); 
+		channel =  channel_prefix;
+//		this.level=level;
 		thread_subscribe = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -32,11 +32,11 @@ public class RedisBroadCast implements BroadCast{
 	}
 
 	public void broadcast(String message){
-		System.out.println(level+"---------------"+channel);
+//		System.out.println(level+"---------------"+channel);
 		redisPub.pub(channel, message);
 	}
 	
-	public int getLevel(){
-		return this.level;
-	}
+//	public int getLevel(){
+//		return this.level;
+//	}
 }

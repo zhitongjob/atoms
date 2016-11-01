@@ -9,6 +9,7 @@ import net.sf.ehcache.event.CacheEventListener;
 
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.common.exception.CacheException;
+import com.lovver.atoms.context.AtomsContext;
 
 /**
  * EHCache
@@ -17,6 +18,7 @@ public class EhCache implements Cache, CacheEventListener {
 	
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
+	private String client_id;
 
 	/**
 	 * Creates a new Hibernate pluggable cache based on a cache name.
@@ -24,10 +26,11 @@ public class EhCache implements Cache, CacheEventListener {
 	 * @param cache The underlying EhCache instance to use.
 	 * @param listener cache listener
 	 */
-	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener) {
+	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener,String client_id) {
 		this.cache = cache;
 		this.cache.getCacheEventNotificationService().registerListener(this);
 		this.listener = listener;
+		this.client_id=client_id;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -168,44 +171,44 @@ public class EhCache implements Cache, CacheEventListener {
 
 	@Override
 	public void notifyElementEvicted(Ehcache cache, Element elem) {
-//		if(listener != null){
-//			listener.notifyElementEvicted(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
-//		}
+		if(listener != null&&AtomsContext.isMe(client_id)){ 
+			listener.notifyElementEvicted(cache.getName(), elem.getObjectKey(),elem.getObjectValue(),client_id);
+		}
 	}
 
 	@Override
 	public void notifyElementExpired(Ehcache cache, Element elem) {
-		if(listener != null){
-			listener.notifyElementExpired(cache.getName(), elem.getObjectKey());
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),client_id);
 		}
 	}
 
 	@Override
 	public void notifyElementPut(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-//		if(listener != null){
-//			listener.notifyElementPut(cache.getName(), elem.getObjectKey(),elem.getObjectValue());
-//		}
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyElementPut(cache.getName(), elem.getObjectKey(),elem.getObjectValue(),client_id);
+		}
 	}
 
 	@Override
 	public void notifyElementRemoved(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-//		if(listener != null){
-//			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
-//		}
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey(),client_id);
+		}
 	}
 
 	@Override
 	public void notifyElementUpdated(Ehcache cache, Element elem) throws net.sf.ehcache.CacheException {
-//		if(listener != null){
-//			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey());
-//		}
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyElementRemoved(cache.getName(), elem.getObjectKey(),client_id);
+		}
 	}
 
 	@Override
 	public void notifyRemoveAll(Ehcache cache) {
-//		if(listener != null){
-//			listener.notifyRemoveAll(cache.getName());
-//		}
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyRemoveAll(cache.getName(),client_id);
+		}
 	}
 
 }

@@ -16,13 +16,15 @@ public class CacheManager {
 	public static Cache getCache(int level, String regionName, boolean autoCreate){
 		CacheProvider cacheProvider=cacheProviders.get(level+"");
 		
-		if(level==cacheProviders.size()){
-			//最后一级缓存不需要添加监听器
-			return cacheProvider.buildCache(regionName, autoCreate, null);
-		}
+//		if(level==cacheProviders.size()){
+//			//最后一级缓存不需要添加监听器
+//			return cacheProvider.buildCache(regionName, autoCreate, null);
+//		}
 		CacheEventListener listener = null;
-		listener = CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level+"");
-		return cacheProvider.buildCache(regionName, autoCreate, listener);
+		if(level==1){
+			listener = CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
+		}
+		return cacheProvider.buildCache(regionName, autoCreate, listener,AtomsContext.CLIENT_ID);
 	}
 	
 	

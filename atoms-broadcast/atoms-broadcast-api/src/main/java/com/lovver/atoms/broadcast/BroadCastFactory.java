@@ -8,14 +8,14 @@ public class BroadCastFactory {
 	private static ExtensionLoader<BroadCast> exloader = ExtensionLoader
 			.getExtensionLoader(BroadCast.class);
 
-	public  static BroadCast getBroadCast(AtomsBroadCastBean atomBean,int level)
+	public  static BroadCast getBroadCast(AtomsBroadCastBean atomBean)
 			throws InstantiationException, IllegalAccessException {
 		String type = atomBean.getType();
 		if (StringUtils.isEmpty(type)) {
 			type = "redis";
 		}
-		BroadCast broadCast = exloader.getExtension(type,level);
-		broadCast.init(atomBean,level); 
+		BroadCast broadCast = exloader.getExtension(type);
+		broadCast.init(atomBean); 
 		return broadCast;
 	}
 }

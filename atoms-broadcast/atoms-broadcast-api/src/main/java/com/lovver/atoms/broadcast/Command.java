@@ -1,6 +1,7 @@
 package com.lovver.atoms.broadcast;
 
-import java.util.Random;
+import java.util.UUID;
+
 
 
 /**
@@ -14,14 +15,12 @@ public class Command {
 	public final static byte OPT_CLEAR_KEY = 0x02; 		//清除缓存
 	public final static byte OPT_PUT_KEY = 0x03; 		//添加或更新缓存
 	
-	private final static int SRCID = genRandomSrc();
-	
 	private byte operator;
 	private byte expire_operator;
 	private String region;
 	private Object key;
 	private byte[] value;
-	private int srcid;
+	private String client_id;
 	
 	public final static byte EXPIRE_UPDATE=0x10;//失效后更新，即从多级缓存中拿出数据从新设置
 	public final static byte EXPIRE_DELETE=0x11;//失效后删除，删除后面多级缓存中的数据
@@ -30,44 +29,36 @@ public class Command {
 	public Command(){
 	}
 	
-	private static int genRandomSrc() {
-		long ct = System.currentTimeMillis();
-		Random rnd_seed = new Random(ct);
-		return (int)(rnd_seed.nextInt(10000) * 1000 + ct % 1000);
-	}
 	
-	public Command(byte o, String r, Object k){
-		this.operator = o;
-		this.region = r;
-		this.key = k;
+	public Command(byte operator, String region, Object key,String client_id){
+		this.operator = operator;
+		this.region = region;
+		this.key = key;
 		this.expire_operator = EXPIRE_DELETE;
-		this.srcid=SRCID;
+		this.client_id=client_id;
 	}
 	
-	public Command(byte o, String r){
-		this.operator = o;
-		this.region = r;
+	public Command(byte operator, String region,String client_id){
+		this.operator = operator;
+		this.region = region;
 		this.expire_operator = EXPIRE_DELETE;
-		this.srcid=SRCID;
+		this.client_id=client_id;
 	}
 	
-	public Command(byte o, byte eo,String r, Object k){
-		this.operator = o;
-		this.region = r;
-		this.key = k;
-		this.expire_operator = eo;
-		this.srcid=SRCID;
+	public Command(byte operator, byte expire_operator,String region, Object key,String client_id){
+		this.operator = operator;
+		this.region = region;
+		this.key = key;
+		this.expire_operator = expire_operator;
+		this.client_id=client_id;
 	}
 	
-	public boolean isSender() {
-		return this.srcid == SRCID;
-	}
-	
-	public Command(byte o, String r, Object k,byte[] value) {
+   public Command(byte o, String r, Object k,byte[] value,String client_id){
 		this.operator = o;
 		this.region = r;
 		this.key = k;
 		this.value=value;
+		this.client_id=client_id;
 	}
 	
 	public byte getOperator() {
@@ -108,11 +99,12 @@ public class Command {
 		this.value = value;
 	}
 
-	public int getSrcid() {
-		return srcid;
+
+	public String getClient_id() {
+		return client_id;
 	}
 
-	public void setSrcid(int srcid) {
-		this.srcid = srcid;
+	public void setClient_id(String client_id) {
+		this.client_id = client_id;
 	}
 }

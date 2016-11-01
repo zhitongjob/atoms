@@ -6,10 +6,10 @@ import com.lovver.atoms.config.AtomsBroadCastBean;
 @Extension("spi")
 public interface BroadCast extends Cloneable{
 	
-	public void init(AtomsBroadCastBean atomBean,int level);
+	public void init(AtomsBroadCastBean atomBean);
 	
 	public void broadcast(String message);
 	
-	public int getLevel();
+//	public int getLevel();
 	
 }

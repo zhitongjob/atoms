@@ -1,6 +1,5 @@
 package com.lovver.atoms.config;
 
-import com.lovver.atoms.common.utils.StringUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -10,12 +9,12 @@ public class AtomsCacheBean {
 	private String level;
 	@XStreamAsAttribute
 	private String type;
-	@XStreamAsAttribute
-	private String expiredOperator;
-	@XStreamAsAttribute
-	private String waitTime;
-	@XStreamAsAttribute
-	private String delete_atom="true";
+//	@XStreamAsAttribute
+//	private String expiredOperator;
+//	@XStreamAsAttribute
+//	private String waitTime;
+//	@XStreamAsAttribute
+//	private String delete_atom="true";
 	
 	private AtomsCacheConfigBean cacheConfig;
 	
@@ -53,31 +52,31 @@ public class AtomsCacheBean {
 		this.cacheConfig = cacheConfig;
 	}
 
-	public String getExpiredOperator() {
-		return expiredOperator;
-	}
+//	public String getExpiredOperator() {
+//		return expiredOperator;
+//	}
+//
+//	public void setExpiredOperator(String expiredOperator) {
+//		this.expiredOperator = expiredOperator;
+//	}
+//
+//	public String getWaitTime() {
+//		return waitTime;
+//	}
+//
+//	public void setWaitTime(String waitTime) {
+//		this.waitTime = waitTime;
+//	}
 
-	public void setExpiredOperator(String expiredOperator) {
-		this.expiredOperator = expiredOperator;
-	}
-
-	public String getWaitTime() {
-		return waitTime;
-	}
-
-	public void setWaitTime(String waitTime) {
-		this.waitTime = waitTime;
-	}
-
-	public String getDelete_atom() {
-		if(StringUtils.isEmpty(delete_atom)){
-			delete_atom="true";
-		}
-		return delete_atom;
-	}
-
-	public void setDelete_atom(String delete_atom) {
-		this.delete_atom = delete_atom;
-	}
+//	public String getDelete_atom() {
+//		if(StringUtils.isEmpty(delete_atom)){
+//			delete_atom="true";
+//		}
+//		return delete_atom;
+//	}
+//
+//	public void setDelete_atom(String delete_atom) {
+//		this.delete_atom = delete_atom;
+//	}
 	
 }

@@ -37,7 +37,7 @@ public class EhCacheProvider implements CacheProvider {
 		return "ehcache";
 	}
 
-    public EhCache buildCache(String regionName, boolean autoCreate, CacheEventListener listener) throws CacheException {
+    public EhCache buildCache(String regionName, boolean autoCreate, CacheEventListener listener,String client_id) throws CacheException {
     	EhCache ehcache = _CacheManager.get(regionName);
     	if(ehcache == null && autoCreate){
 		    try {
@@ -63,7 +63,7 @@ public class EhCacheProvider implements CacheProvider {
 			            	}
 			                log.debug("started EHCache region: " + regionName);                
 			            }
-			            ehcache = new EhCache(cache, listener);
+			            ehcache = new EhCache(cache, listener,client_id);
 			            _CacheManager.put(regionName, ehcache);
 	            	}
 	            }

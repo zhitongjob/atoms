@@ -2,6 +2,7 @@ package com.lovver.atoms.context;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.lovver.atoms.broadcast.BroadCast;
@@ -23,17 +24,23 @@ import com.lovver.atoms.serializer.SerializerFactory;
 public class AtomsContext {
 	private static AtomsBean atomBean = AtomsConfig.getAtomsConfig();
 	private static Serializer serializer = null;
-//	private static BroadCast broadCast = null;
+	private static BroadCast broadCast = null;
+	
+	
+	//客户端身份标示
+	public final static String CLIENT_ID = UUID.randomUUID().toString();
 	
 	private static ConcurrentHashMap<String,CacheProvider> cacheProvider=new ConcurrentHashMap<String,CacheProvider>();
 	private static ConcurrentHashMap<String,AtomsCacheBean> cacheConfig=new ConcurrentHashMap<String,AtomsCacheBean>();
-	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
+//	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,String>> cahcelevelTTLConfig=new ConcurrentHashMap<String,ConcurrentHashMap<String,String>>();
 
 	static {
 		try {
 			serializer=SerializerFactory.getSerializer(atomBean.getSerializer());
 			List<AtomsCacheBean> lstCache= atomBean.getCache();
+			
+			broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
 			
 			ConcurrentHashMap<String,String> levelTTLConfig=null;
 			for(AtomsCacheBean cacheBean:lstCache){
@@ -44,10 +51,7 @@ public class AtomsContext {
 				}
 				int level=Integer.parseInt(cacheBean.getLevel());
 				cacheProvider.put(cacheBean.getLevel(), CacheProviderFactory.getCacheProvider(cacheBean,level));
-				if(level<lstCache.size()){//最后一级缓存不需要广播
-					BroadCast broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast(),level);
-					broadCasts.put(cacheBean.getLevel(), broadCast);
-				}
+				
 				cacheConfig.put(cacheBean.getLevel(), cacheBean);
 				
 				AtomsCacheTTLBean cacheTTLBean=cacheBean.getCacheTTL();
@@ -81,14 +85,27 @@ public class AtomsContext {
 		return serializer;
 	}
 	
-	public static Map<String,BroadCast> getBroadCast(){
-		return broadCasts;
+	public static BroadCast getBroadCast(){
+		return broadCast;
 	}
 	
 	public static Cache getCache(String region,int level){
 		CacheProvider cacheProvider=AtomsContext.getCacheProvider().get(level+"");
-		CacheEventListener listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(), level+"");
-		Cache cache=cacheProvider.buildCache(region, true, listener);
+		CacheEventListener listener=null;
+		if(level==1){//只有第一级缓存有监听器
+			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
+		}
+		Cache cache=cacheProvider.buildCache(region, true, listener,CLIENT_ID);
+		return cache;
+	}
+	
+	public static Cache getCache(String region,int level,String client_id){
+		CacheProvider cacheProvider=AtomsContext.getCacheProvider().get(level+"");
+		CacheEventListener listener=null;
+		if(level==1){//只有第一级缓存有监听器
+			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
+		}
+		Cache cache=cacheProvider.buildCache(region, true, listener,client_id);
 		return cache;
 	}
 	
@@ -103,9 +120,19 @@ public class AtomsContext {
 	 */
 	public static Object[] getCacheAndListener(String region,int level){
 		CacheProvider cacheProvider=AtomsContext.getCacheProvider().get(level+"");
-		CacheEventListener listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(), level+"");
-		Cache cache=cacheProvider.buildCache(region, true, listener);
+		CacheEventListener listener=null;
+		if(level==1){
+			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
+		}
+		Cache cache=cacheProvider.buildCache(region, true, listener,CLIENT_ID);
 		return new Object[]{cache,listener};
 	}
-
+	
+	public static boolean isMe(String client_id){
+		if(client_id!=null&&client_id.equals(CLIENT_ID)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
