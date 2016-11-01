@@ -105,7 +105,7 @@ public class RedisCacheEventListener implements CacheEventListener {
 	}
 
 	@Override
-	public void notifyElementEvicted(String region, Object key, Object value,String client_id) {
+	public void notifyElementEvicted(String region, Object key, String client_id) {
 		System.out.println("notifyElementEvicted");
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key,client_id);
