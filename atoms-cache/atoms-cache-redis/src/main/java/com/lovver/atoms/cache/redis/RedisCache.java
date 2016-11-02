@@ -123,6 +123,29 @@ public class RedisCache implements Cache {
 			listener.notifyElementPut(this.srcRegion, key, value, client_id);
 		}
 	}
+	
+	
+	public void expireUpdate(Object key, Object value) throws CacheException{
+		System.out.println(this.host+" ==================expireUpdate reids");
+		if (key == null){
+			return;
+		}
+		if (value == null){
+			evict(key);
+		}else {
+			try (Jedis cache = pool.getResource()) {
+				cache.hset(region2, getKeyName(key), serializer.serialize(value));
+				if(ttlSeconds!=null){
+					cache.expire(region2, ttlSeconds);
+				}
+				if(listener!=null&&AtomsContext.isMe(client_id)){
+					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+				}
+			} catch (Exception e) {
+				throw new CacheException(e);
+			}
+		}
+	}
 
 	public void evict(Object key) throws CacheException {
 		if (key == null)

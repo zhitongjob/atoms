@@ -14,7 +14,7 @@ import com.lovver.atoms.context.AtomsContext;
 /**
  * EHCache
  */
-public class EhCache implements Cache, CacheEventListener{
+public class EhCache implements Cache{//, CacheEventListener{
 	
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
@@ -73,6 +73,23 @@ public class EhCache implements Cache, CacheEventListener{
 		put( key, value );
 		if(listener != null&&AtomsContext.isMe(client_id)){
 			listener.notifyElementUpdated(cache.getName(), key,value,client_id);
+		}
+	}
+	
+	
+	public void expireUpdate(Object key, Object value) throws CacheException{
+		try {
+			Element element = new Element( key, value );
+			cache.put( element );
+		}
+		catch (IllegalArgumentException e) {
+			throw new CacheException( e );
+		}
+		catch (IllegalStateException e) {
+			throw new CacheException( e );
+		}
+		catch (net.sf.ehcache.CacheException e) {
+			throw new CacheException( e );
 		}
 	}
 
@@ -183,40 +200,41 @@ public class EhCache implements Cache, CacheEventListener{
 		throw new CloneNotSupportedException(); 
 	}
 
-	@Override
-	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
+//	@Override
+//	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+//		
+//	}
+//
+//	@Override
+//	public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+//		
+//	}
+//
+//	@Override
+//	public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+//		
+//	}
+//
+//	@Override
+//	public void notifyElementEvicted(Ehcache cache, Element element) {
+//		
+//	}
+//
+//	@Override
+//	public void notifyRemoveAll(Ehcache cache) {
+//		
+//	}
+//
+//	@Override
+//	public void dispose() {
+//		
+//	}
 
-	@Override
-	public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
-
-	@Override
-	public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
-
-	@Override
-	public void notifyElementEvicted(Ehcache cache, Element element) {
-		
-	}
-
-	@Override
-	public void notifyRemoveAll(Ehcache cache) {
-		
-	}
-
-	@Override
-	public void dispose() {
-		
-	}
-
-	@Override
-	public void notifyElementExpired(Ehcache cache, Element elem) {
-		if(listener != null){
-			listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),client_id);
-		}
-	}
+//	@Override
+//	public void notifyElementExpired(Ehcache cache, Element elem) {
+//		System.out.println("EhCache-notifyElementExpired");
+//		if(listener != null){
+//			listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),client_id);
+//		}
+//	}
 }

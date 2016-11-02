@@ -29,7 +29,7 @@ public class EhCacheProvider implements CacheProvider {
 	private final static Logger log = LoggerFactory.getLogger(EhCacheProvider.class);
 
 	private CacheManager manager;
-	private ConcurrentHashMap<String, EhCache> _CacheManager = new ConcurrentHashMap<String, EhCache> () ;
+//	private ConcurrentHashMap<String, EhCache> _CacheManager = new ConcurrentHashMap<String, EhCache> () ;
 	private int level;
 
 	@Override
@@ -99,7 +99,7 @@ public class EhCacheProvider implements CacheProvider {
 			manager = CacheManager.getInstance();
 		}
 		this.level=Integer.parseInt(cacheBean.getLevel());
-        _CacheManager = new ConcurrentHashMap<String, EhCache>();
+//        _CacheManager = new ConcurrentHashMap<String, EhCache>();
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class EhCacheProvider implements CacheProvider {
 	public void stop() {
 		if (manager != null) {
             manager.shutdown();
-            _CacheManager.clear();
+//            _CacheManager.clear();
             manager = null;
         }
 	}

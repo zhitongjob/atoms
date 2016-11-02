@@ -1,6 +1,7 @@
 package com.lovver.atoms;
 
 import com.lovver.atoms.core.CacheChannel;
+import com.lovver.atoms.core.ExpireOperator;
 
 public class CacheChannelTest2 {
 
