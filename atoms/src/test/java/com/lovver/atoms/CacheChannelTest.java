@@ -19,20 +19,15 @@ public class CacheChannelTest {
 //				System.out.println("==============="+value);
 //			}
 //		}
-		List<String> dd=new ArrayList<String>();
-		dd.add("dddd");
-		dd.add("dddd2");
-		cc.evict("hello", dd);
-		
-		
-		Thread.sleep(3000);
+//		Thread.sleep(3000);
 		
 		cc.set("hello", "dddd", "jobell");
 //		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
-//		while(true){
-//			System.out.println("==============="+cc.get("hello", "dddd"));
-//		}
+		while(true){
+			System.out.println("==============="+cc.get("hello", "dddd"));
+			Thread.sleep(5000);
+		}
 //		
 //		cc.set("jiangbiao", "hello", "ddddddd");
 //		for(int i=0;i<100000;i++){

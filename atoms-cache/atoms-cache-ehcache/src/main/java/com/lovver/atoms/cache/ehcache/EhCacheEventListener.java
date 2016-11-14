@@ -32,6 +32,12 @@ public class EhCacheEventListener implements CacheEventListener {
 	@Override
 	public void notifyElementExpired(String region, Object key,String client_id) {
 		System.out.println("EhCacheEventListener-notifyElementExpired");
+		if(null!=broadCast){
+			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key,client_id);
+			if(AtomsContext.isMe(client_id)){
+				broadCast.broadcast(JSON.toJSONString(cmd));
+			}
+		}
 //		byte expiredOperator=getExpiredOperator();
 //		if(level==1){//判断是否是第一级缓存失效
 //			byte operator;
