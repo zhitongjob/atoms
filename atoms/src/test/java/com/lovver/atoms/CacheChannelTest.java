@@ -25,10 +25,12 @@ public class CacheChannelTest {
 		cc.evict("hello", dd);
 		
 		
-		Thread.sleep(3000);
-		
+//		Thread.sleep(3000);
+
 		cc.set("hello", "dddd", "jobell");
-//		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+		List keys=cc.keys("hello");
+		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 //		while(true){
 //			System.out.println("==============="+cc.get("hello", "dddd"));

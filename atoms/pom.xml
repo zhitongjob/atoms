@@ -66,6 +66,7 @@
 									<include>com.lovver.atoms:atoms-cache-api</include>
 									<include>com.lovver.atoms:atoms-cache-redis</include>
 									<include>com.lovver.atoms:atoms-cache-ehcache</include>
+									<include>com.lovver.atoms:atoms-cache-ssdb</include>
 									<include>com.lovver.atoms:atoms-core</include>
 									<include>com.lovver.atoms:atoms-context</include>
 								</includes>
@@ -165,5 +166,10 @@
   		<artifactId>atoms-cache-ehcache</artifactId>
   		<version>1.0.0-SNAPSHOT</version>
   	</dependency>
+	  <dependency>
+		  <groupId>com.lovver.atoms</groupId>
+		  <artifactId>atoms-cache-ssdb</artifactId>
+		  <version>1.0.0-SNAPSHOT</version>
+	  </dependency>
   </dependencies>
 </project>
