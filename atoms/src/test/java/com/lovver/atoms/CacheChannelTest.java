@@ -32,10 +32,13 @@ public class CacheChannelTest {
 		List keys=cc.keys("hello");
 		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
-//		while(true){
-//			System.out.println("==============="+cc.get("hello", "dddd"));
-//		}
-//		
+		while(true){
+			System.out.println("==============="+cc.getWithExpireUpdate("hello", "dddd"));
+			Thread.sleep(6000);
+		}
+
+
+
 //		cc.set("jiangbiao", "hello", "ddddddd");
 //		for(int i=0;i<100000;i++){
 //			System.out.println("==============="+cc.get("jiangbiao", "hello"));

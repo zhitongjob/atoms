@@ -146,9 +146,7 @@ public class SsdbCacheProvider implements CacheProvider {
 		if(StringUtils.isNotEmpty(lifo)) {
             info.setProperty("lifo", lifo);
         }
-//		config.setLifo(Boolean.parseBoolean(lifo));
-		//spool = new JedisPool(config, host, port, timeout, password, database);
-		
+
 		level=Integer.parseInt(cacheBean.getLevel());
 
 		ssdbDs = new SSDBDataSource(host,port,null,info);

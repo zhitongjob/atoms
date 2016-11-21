@@ -60,37 +60,6 @@ public class CacheChannel {
 		}
 		return null;
 	}
-	
-	
-	/**
-	 * 获取缓存中的数据,上级失效用下级缓存数据更新上级缓存
-	 * 
-	 * @param region
-	 *            : Cache Region name
-	 * @param key
-	 *            : Cache key
-	 * @return cache object
-	 */
-	public Object getWithExpireUpdate(String region, Object key) {
-		
-		if (region != null && key != null) {
-			Cache tCache=CacheManager.getCache(1, region, true);
-			Object value=tCache.get(key);
-			if(value==null){
-				Object[] levelValue=getNextLevelCache(region,key);
-				if(levelValue!=null){
-					value=levelValue[1];
-					int lastLevel=(int)levelValue[0];
-					for(int i=1;i<lastLevel;i++){
-						Cache eCache=AtomsContext.getCache(region, i, AtomsContext.CLIENT_ID);
-						eCache.expireUpdate(key, value); 
-					}
-				}
-			}
-			return value;
-		}
-		return null;
-	}
 
 	/**
 	 * 写入缓存
