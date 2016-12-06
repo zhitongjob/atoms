@@ -55,6 +55,7 @@ public class CacheChannel {
 				if(levelValue!=null){
 					value=levelValue[1];
 				}
+				tCache.put(key,value);
 			}
 			return value;
 		}

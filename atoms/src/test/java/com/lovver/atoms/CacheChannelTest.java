@@ -33,7 +33,7 @@ public class CacheChannelTest {
 		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 		while(true){
-			System.out.println("==============="+cc.getWithExpireUpdate("hello", "dddd"));
+			System.out.println("==============="+cc.get("hello", "dddd"));
 			Thread.sleep(6000);
 		}
 

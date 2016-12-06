@@ -9,7 +9,7 @@ public class CacheChannelTest2 {
 		CacheChannel cc=CacheChannel.getInstance();
 		
 //		cc.evict("hello", "dddd");
-		cc.set("hello", "dddd", "nihaoya");
+//		cc.set("hello", "dddd", "nihaoya");
 //		cc.set("hello", "dddd2", "nihaoya");
 //		while(true){
 //			Object value=cc.get("hello", "dddd");
