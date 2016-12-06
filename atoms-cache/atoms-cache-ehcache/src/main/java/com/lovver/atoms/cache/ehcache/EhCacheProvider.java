@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.ehcache.CacheManager;
 
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,9 @@ public class EhCacheProvider implements CacheProvider {
 		return "ehcache";
 	}
 
-    public EhCache buildCache(String regionName, boolean autoCreate, CacheEventListener listener,String client_id) throws CacheException {
+
+
+    public EhCache buildCache(String regionName, boolean autoCreate,final CacheEventListener listener,String client_id) throws CacheException {
     	EhCache ehcache = null;
 //    	EhCache ehcache = _CacheManager.get(regionName);
 //    	if(ehcache == null && autoCreate){
@@ -62,7 +66,40 @@ public class EhCacheProvider implements CacheProvider {
 			            	if(StringUtils.isNotEmpty(ttlSeconds)){
 			            		cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
 			            	}
-			                log.debug("started EHCache region: " + regionName);                
+			                log.debug("started EHCache region: " + regionName);
+
+							cache.getCacheEventNotificationService().registerListener(new net.sf.ehcache.event.CacheEventListener(){
+
+								public Object clone() throws CloneNotSupportedException {
+									throw new CloneNotSupportedException();
+								}
+								@Override
+								public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+								}
+								@Override
+								public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+								}
+								@Override
+								public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+								}
+								@Override
+								public void notifyElementEvicted(Ehcache cache, Element element) {
+								}
+								@Override
+								public void notifyRemoveAll(Ehcache cache) {
+								}
+								@Override
+								public void dispose() {
+								}
+								@Override
+								public void notifyElementExpired(Ehcache cache, Element elem) {
+									System.out.println("EhCache-notifyElementExpired[name]="+cache.getName()+"[key]="+elem.getObjectKey());
+									if(listener != null){
+										listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),AtomsContext.CLIENT_ID);
+									}
+								}
+							});
+//							this.cache.getCacheEventNotificationService().registerListener(this);
 			            }
 			            ehcache = new EhCache(cache, listener,client_id);
 //			            _CacheManager.put(regionName, ehcache);

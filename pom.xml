@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.lovver.atoms</groupId>
 	<artifactId>atoms-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>
@@ -30,4 +30,14 @@
 		<module>atoms-core</module>
 		<module>atoms-context</module>
 	</modules>
+	<distributionManagement>
+		<repository>
+			<id>Releases</id>
+			<url>http://192.168.1.61:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<url>http://192.168.1.61:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

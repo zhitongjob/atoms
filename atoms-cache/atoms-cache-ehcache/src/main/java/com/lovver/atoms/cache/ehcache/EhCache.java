@@ -14,7 +14,7 @@ import com.lovver.atoms.context.AtomsContext;
 /**
  * EHCache
  */
-public class EhCache implements Cache, CacheEventListener{
+public class EhCache implements Cache{
 	
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
@@ -28,7 +28,7 @@ public class EhCache implements Cache, CacheEventListener{
 	 */
 	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener,String client_id) {
 		this.cache = cache;
-		this.cache.getCacheEventNotificationService().registerListener(this);
+//		this.cache.getCacheEventNotificationService().registerListener(this);
 		this.listener = listener;
 		this.client_id=client_id;
 	}
@@ -196,45 +196,5 @@ public class EhCache implements Cache, CacheEventListener{
 		}
 	}
 	
-	public Object clone() throws CloneNotSupportedException { 
-		throw new CloneNotSupportedException(); 
-	}
 
-	@Override
-	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
-
-	@Override
-	public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
-
-	@Override
-	public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		
-	}
-
-	@Override
-	public void notifyElementEvicted(Ehcache cache, Element element) {
-		
-	}
-
-	@Override
-	public void notifyRemoveAll(Ehcache cache) {
-		
-	}
-
-	@Override
-	public void dispose() {
-		
-	}
-
-	@Override
-	public void notifyElementExpired(Ehcache cache, Element elem) {
-		System.out.println("EhCache-notifyElementExpired[name]="+cache.getName()+"[key]="+elem.getObjectKey());
-		if(listener != null){
-			listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),AtomsContext.CLIENT_ID);
-		}
-	}
 }

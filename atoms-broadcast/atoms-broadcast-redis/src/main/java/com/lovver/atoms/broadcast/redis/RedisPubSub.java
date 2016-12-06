@@ -29,7 +29,13 @@ public class RedisPubSub extends JedisPubSub{
 			port="6379";
 		}
 		int iPort=Integer.parseInt(port);
-		jedis = new Jedis(host,iPort);
+		String timeout=this.broadcastConfig.getTimeout();
+		if(StringUtils.isEmpty(timeout)) {
+			jedis = new Jedis(host, iPort);
+		}else{
+			int iTimeout=Integer.parseInt(timeout);
+			jedis = new Jedis(host, iPort,iTimeout);
+		}
 		String password=broadcastConfig.getPassword();
 		if(!StringUtils.isEmpty(password)){
 			jedis.auth(password);

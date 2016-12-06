@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <atoms>
 	<broadcast type="redis" >
-		<broadcastConfig host="127.0.0.1" port="6379"/>
+		<broadcastConfig host="192.168.1.85" port="6379" timeout="0"/>
 	</broadcast>
 	<serializer type="fst"/>
 	<cache level="1" type="ehcache" >
@@ -10,13 +10,13 @@
 			<ttl name="hello" value="10"/><!-- name:regionName value:失效时间 单位（秒） -->
 		</cacheTTL>
 	</cache>
-	<cache level="2" type="ssdb">
-		<cacheConfig host="192.168.3.27" port="8888" timeout="2000" database="13" namespace="atoms" maxTotal="-1" maxIdle="2000"
+	<cache level="2" type="redis">
+		<cacheConfig host="192.168.1.85" port="6379" timeout="2000" database="15" namespace="atoms" maxTotal="-1" maxIdle="2000"
 		 maxWaitMillis="100" minEvictableIdleTimeMillis="864000000" minIdle="1000" numTestsPerEvictionRun="10" lifo="false"
 		 softMinEvictableIdleTimeMillis="10" testOnBorrow="true" testOnReturn="false" testWhileIdle="false" timeBetweenEvictionRunsMillis="300000"
 		 blockWhenExhausted="true" password=""/>
 		<cacheTTL>
-			<ttl name="hello" value="20"/><!-- name:regionName value:失效时间 单位（秒） -->
+			<ttl name="hello" value="10"/><!-- name:regionName value:失效时间 单位（秒） -->
 		</cacheTTL>
 	</cache>
 <!-- 	<cache level="3" type="redis"> -->
