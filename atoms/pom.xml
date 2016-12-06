@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.lovver.atoms</groupId>
         <artifactId>atoms-parent</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>atoms</artifactId>
     <build>
@@ -100,77 +100,77 @@
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-broadcast-api</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-broadcast-redis</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-common</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-config</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-serializer-api</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-serializer-fst</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-serializer-java</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-serializer-kryo</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-serializer-kryopool</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-cache-api</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-cache-redis</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-context</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-core</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-cache-ehcache</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-cache-ssdb</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

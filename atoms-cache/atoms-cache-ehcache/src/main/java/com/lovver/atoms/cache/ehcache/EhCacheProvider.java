@@ -1,9 +1,11 @@
 package com.lovver.atoms.cache.ehcache;
 
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lovver.atoms.cache.Cache;
 import net.sf.ehcache.CacheManager;
 
 import net.sf.ehcache.Ehcache;
@@ -91,9 +93,21 @@ public class EhCacheProvider implements CacheProvider {
 								@Override
 								public void dispose() {
 								}
+
+								private Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+
 								@Override
 								public void notifyElementExpired(Ehcache cache, Element elem) {
 									System.out.println("EhCache-notifyElementExpired[name]="+cache.getName()+"[key]="+elem.getObjectKey());
+									for(int i=(level+1);i<=mCacheProvider.size();i++){
+										Cache lCache=AtomsContext.getCache(cache.getName(), i);
+										Object key=elem.getObjectKey();
+										if(key instanceof List){
+											lCache.evict((List)key);
+										}else{
+											lCache.evict(key);
+										}
+									}
 									if(listener != null){
 										listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),AtomsContext.CLIENT_ID);
 									}
@@ -117,7 +131,7 @@ public class EhCacheProvider implements CacheProvider {
 	 * Callback to perform any necessary initialization of the underlying cache implementation
 	 * during SessionFactory construction.
 	 *
-	 * @param props current configuration settings.
+	 * @param  cacheBean current configuration settings.
 	 */
 	public void start(AtomsCacheBean cacheBean) throws CacheException {
 		if (manager != null) {

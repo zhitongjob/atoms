@@ -13,6 +13,9 @@ import com.lovver.atoms.context.AtomsContext;
 
 public class CacheChannel {
 	private static CacheChannel instance=new CacheChannel();
+
+    private Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+
 	public static CacheChannel getInstance(){
 		return instance;
 	}
@@ -77,8 +80,10 @@ public class CacheChannel {
 			if (value == null)
 				evict(region, key);
 			else {
-				Cache cache=CacheManager.getCache(1,region,true);
-				cache.put(key, value); 
+                for(int i=1;i<mCacheProvider.size();i++) {
+                    Cache cache = CacheManager.getCache(i, region, true);
+                    cache.put(key, value);
+                }
 			}
 		}
 	}
@@ -92,8 +97,10 @@ public class CacheChannel {
 	 *            : Cache key
 	 */
 	public void evict(String region, Object key) {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.evict(key); 
+        for(int i=1;i<mCacheProvider.size();i++) {
+            Cache cache=CacheManager.getCache(i,region,true);
+            cache.evict(key);
+        }
 	}
 
 	/**
@@ -106,8 +113,10 @@ public class CacheChannel {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void batchEvict(String region, List keys) {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.evict(keys);
+        for(int i=1;i<mCacheProvider.size();i++) {
+            Cache cache = CacheManager.getCache(i, region, true);
+            cache.evict(keys);
+        }
 	}
 
 	/**
@@ -117,8 +126,10 @@ public class CacheChannel {
 	 *            : Cache region name
 	 */
 	public void clear(String region) throws CacheException {
-		Cache cache=CacheManager.getCache(1,region,true);
-		cache.clear(); 
+        for(int i=1;i<mCacheProvider.size();i++) {
+            Cache cache = CacheManager.getCache(i, region, true);
+            cache.clear();
+        }
 	}
 
 	/**
@@ -131,8 +142,8 @@ public class CacheChannel {
 	@SuppressWarnings("rawtypes")
 	public List keys(String region) throws CacheException {
 		List lstRet=null;
-		Cache cache=CacheManager.getCache(1,region,true);
-		lstRet= cache.keys();
+        Cache cache = CacheManager.getCache(1, region, true);
+        lstRet = cache.keys();
 		return lstRet;
 	}
 

@@ -29,8 +29,8 @@ public class CacheChannelTest {
 
 		cc.set("hello", "dddd", "jobell");
 
-		List keys=cc.keys("hello");
-		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		List keys=cc.keys("hello");
+//		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 		while(true){
 			System.out.println("==============="+cc.get("hello", "dddd"));

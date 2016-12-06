@@ -68,14 +68,14 @@ public class RedisPubSub extends JedisPubSub{
 				return;
 			String client_id=cmd.getClient_id();
 			
-			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+//			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
 			switch (cmd.getOperator()) {
 			case Command.OPT_DELETE_KEY:
-				for(int i=1;i<=mCacheProvider.size();i++){
-					if(i==1&&AtomsContext.isMe(client_id)){
-						continue;
+//				for(int i=1;i<=mCacheProvider.size();i++){
+					if(AtomsContext.isMe(client_id)){
+						return;
 					}else{
-						Cache cache=AtomsContext.getCache(cmd.getRegion(), i,client_id);
+						Cache cache=AtomsContext.getCache(cmd.getRegion(), 1,client_id);
 						Object key=cmd.getKey();
 						if(key instanceof List){
 							cache.evict((List)key);
@@ -83,27 +83,27 @@ public class RedisPubSub extends JedisPubSub{
 							cache.evict(cmd.getKey()); 
 						}
 					}
-				}
+//				}
 				break;
 			case Command.OPT_CLEAR_KEY:
-				for(int i=1;i<=mCacheProvider.size();i++){
-					if(i==1&&AtomsContext.isMe(client_id)){
-						continue;
+//				for(int i=1;i<=mCacheProvider.size();i++){
+					if(AtomsContext.isMe(client_id)){
+						return;
 					}else{
-						Cache cache=AtomsContext.getCache(cmd.getRegion(), i,client_id);
+						Cache cache=AtomsContext.getCache(cmd.getRegion(), 1,client_id);
 						cache.clear();
 					}
-				}
+//				}
 				break;
 			case Command.OPT_PUT_KEY:
-				for(int i=1;i<=mCacheProvider.size();i++){
-					if(i==1&&AtomsContext.isMe(client_id)){
-						continue;
+//				for(int i=1;i<=mCacheProvider.size();i++){
+					if(AtomsContext.isMe(client_id)){
+						return;
 					}else{
-						Cache cache=AtomsContext.getCache(cmd.getRegion(), i,client_id);
+						Cache cache=AtomsContext.getCache(cmd.getRegion(), 1,client_id);
 						cache.put(cmd.getKey(), serializer.deserialize(cmd.getValue())); 
 					}
-				}
+//				}
 				break;
 			default:
 //				log.warn("Unknown message type = " + cmd.getOperator());
