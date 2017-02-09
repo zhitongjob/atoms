@@ -13,11 +13,7 @@ import com.lovver.atoms.cache.CacheEventListenerFactory;
 import com.lovver.atoms.cache.CacheProvider;
 import com.lovver.atoms.cache.CacheProviderFactory;
 import com.lovver.atoms.common.utils.StringUtils;
-import com.lovver.atoms.config.AtomsBean;
-import com.lovver.atoms.config.AtomsCacheBean;
-import com.lovver.atoms.config.AtomsCacheTTLBean;
-import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
-import com.lovver.atoms.config.AtomsConfig;
+import com.lovver.atoms.config.*;
 import com.lovver.atoms.serializer.Serializer;
 import com.lovver.atoms.serializer.SerializerFactory;
 
@@ -72,7 +68,10 @@ public class AtomsContext {
 			e.printStackTrace();
 		}
 	}
-	
+	public static AtomsBroadCastBean getAtomsBroadCastBean(){
+		return atomBean.getBroadcast();
+	}
+
 	public static AtomsCacheBean getAtomsCacheBean(int level){
 		return cacheConfig.get(level+"");
 	}

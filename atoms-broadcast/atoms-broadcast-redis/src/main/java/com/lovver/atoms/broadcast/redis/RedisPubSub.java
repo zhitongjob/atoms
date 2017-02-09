@@ -21,10 +21,30 @@ public class RedisPubSub extends JedisPubSub{
 	private Jedis jedis;//
 	
 	private AtomsBroadCastConfigBean broadcastConfig;
+	private AtomsBroadCastBean broadcastBean;
+
 	public RedisPubSub(AtomsBroadCastBean broadcastBean){
+	    this.broadcastBean=broadcastBean;
+		jedis=getJedis(broadcastBean);
+	}
+
+
+
+    private Jedis getJedis(AtomsBroadCastBean broadcastBean){
+	    if(this.broadcastBean==null){
+	        this.broadcastBean=AtomsContext.getAtomsBroadCastBean();
+        }
+	    if(this.broadcastConfig==null){
+	        this.broadcastConfig=this.broadcastBean.getBroadcastConfig();
+        }
+        if(this.jedis!=null){
+	        return jedis;
+        }
 		broadcastConfig=broadcastBean.getBroadcastConfig();
 		String host=this.broadcastConfig.getHost();
 		String port=broadcastConfig.getPort();
+		Jedis jedis;//
+
 		if(StringUtils.isEmpty(port)){
 			port="6379";
 		}
@@ -40,15 +60,17 @@ public class RedisPubSub extends JedisPubSub{
 		if(!StringUtils.isEmpty(password)){
 			jedis.auth(password);
 		}
+		this.jedis=jedis;
+		return jedis;
 	}
 	
 	public void pub(String channel,String message){
-		jedis.publish(channel, message);
+        getJedis(broadcastBean).publish(channel, message);
 	}
 	
 	
 	public void sub(JedisPubSub listener,String channel){
-		jedis.subscribe(listener, channel);
+        getJedis(broadcastBean).subscribe(listener, channel);
 	}
 	
 	public void close(String channel){

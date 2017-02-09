@@ -80,7 +80,7 @@ public class CacheChannel {
 			if (value == null)
 				evict(region, key);
 			else {
-                for(int i=1;i<mCacheProvider.size();i++) {
+                for(int i=1;i<=mCacheProvider.size();i++) {
                     Cache cache = CacheManager.getCache(i, region, true);
                     cache.put(key, value);
                 }
@@ -97,7 +97,7 @@ public class CacheChannel {
 	 *            : Cache key
 	 */
 	public void evict(String region, Object key) {
-        for(int i=1;i<mCacheProvider.size();i++) {
+        for(int i=1;i<=mCacheProvider.size();i++) {
             Cache cache=CacheManager.getCache(i,region,true);
             cache.evict(key);
         }
@@ -113,7 +113,7 @@ public class CacheChannel {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void batchEvict(String region, List keys) {
-        for(int i=1;i<mCacheProvider.size();i++) {
+        for(int i=1;i<=mCacheProvider.size();i++) {
             Cache cache = CacheManager.getCache(i, region, true);
             cache.evict(keys);
         }
@@ -126,7 +126,7 @@ public class CacheChannel {
 	 *            : Cache region name
 	 */
 	public void clear(String region) throws CacheException {
-        for(int i=1;i<mCacheProvider.size();i++) {
+        for(int i=1;i<=mCacheProvider.size();i++) {
             Cache cache = CacheManager.getCache(i, region, true);
             cache.clear();
         }
