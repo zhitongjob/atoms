@@ -62,6 +62,18 @@
         <property name="level" value="1"/>
         <property name="type" value="ehcache"/>
         <property name="cacheConfig" ref="cache_1_config"/>
+        <property name="cacheTTL" ref="cacheTTL"/>
+    </bean>
+    <bean id="cacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLBean">
+        <property name="lstTTL">
+            <list>
+                <ref bean="helloCacheTTL"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="helloCacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLConfigBean">
+        <property name="name" value="hello"/>
+        <property name="value" value="10"/>
     </bean>
 
     <bean id="cache_1_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">
