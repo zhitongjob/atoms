@@ -80,7 +80,7 @@ public class RedisCacheEventListener implements CacheEventListener {
 	public void notifyElementPut(String region, Object key, Object value,String client_id)
 			throws CacheException {
 		try{
-			System.out.println("notifyElementPut");
+			System.out.println("notifyElementPut|["+region+"]["+key+"]------client_id="+client_id);
 			if(null!=broadCast){
 				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value),client_id);
 				broadCast.broadcast(JSON.toJSONString(cmd));
@@ -94,7 +94,7 @@ public class RedisCacheEventListener implements CacheEventListener {
 	public void notifyElementUpdated(String region, Object key, Object value,String client_id)
 			throws CacheException {
 		try{
-			System.out.println("notifyElementUpdated");
+			System.out.println("notifyElementUpdated|["+region+"]["+key+"]------client_id="+client_id);
 			if(null!=broadCast){
 				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value),client_id);
 				broadCast.broadcast(JSON.toJSONString(cmd));
@@ -106,7 +106,7 @@ public class RedisCacheEventListener implements CacheEventListener {
 
 	@Override
 	public void notifyElementEvicted(String region, Object key, String client_id) {
-		System.out.println("notifyElementEvicted");
+		System.out.println("notifyElementEvicted|["+region+"]["+key+"]------client_id="+client_id);
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_DELETE_KEY,region,key,client_id);
 			broadCast.broadcast(JSON.toJSONString(cmd));
@@ -115,7 +115,7 @@ public class RedisCacheEventListener implements CacheEventListener {
 
 	@Override
 	public void notifyRemoveAll(String region,String client_id) {
-		System.out.println("notifyRemoveAll");
+		System.out.println("notifyRemoveAll|["+region+"]------client_id="+client_id);
 		if(null!=broadCast){
 			Command cmd=new Command(Command.OPT_CLEAR_KEY,region,client_id);
 			broadCast.broadcast(JSON.toJSONString(cmd));
