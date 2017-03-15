@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.lovver.atoms</groupId>
         <artifactId>atoms-cache</artifactId>
-        <version>1.0.7-SNAPSHOT</version>
+        <version>1.0.8-SNAPSHOT</version>
     </parent>
     <artifactId>atoms-cache-ssdb</artifactId>
     <build/>
@@ -11,7 +11,7 @@
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-cache-api</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
+            <version>1.0.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.ssdbj</groupId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-context</artifactId>
-            <version>1.0.7-SNAPSHOT</version>
+            <version>1.0.8-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

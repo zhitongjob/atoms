@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class AtomsConfig {
 
-	private static AtomsBean atomsBean;
+	protected static AtomsBean atomsBean;
 	
 	public static AtomsBean getAtomsConfig(){
 		return atomsBean;
@@ -21,9 +21,9 @@ public class AtomsConfig {
 	static {
 		InputStream is = AtomsConfig.class.getClassLoader()
 				.getResourceAsStream("atoms.xml");
-		xmlToJavaBean(is);
-		mergeAtomsProperty(atomsBean);
 		if(is!=null){
+			xmlToJavaBean(is);
+			mergeAtomsProperty(atomsBean);
 			try {
 				is.close();
 			} catch (IOException e) {
