@@ -1,10 +1,10 @@
-»ùÓÚj2cacheµÄÀíÄî£¬ÖØĞÂÉè¼Æ¿ª·¢µÄÒ»Ì×·Ö²¼Ê½»º´æ¡£Ö§³Ö2¼¶²¢²»ÏŞÓÚ2¼¶µÄ¶à¼¶»º´æÏµÍ³¡£
+åŸºäºj2cacheçš„ç†å¿µï¼Œé‡æ–°è®¾è®¡å¼€å‘çš„ä¸€å¥—åˆ†å¸ƒå¼ç¼“å­˜ã€‚ã€‚
 
-githubµØÖ·£º[atoms](https://github.com/zhitongjob/atoms)
+githubåœ°å€ï¼š[atoms](https://github.com/zhitongjob/atoms)
 ## Who's using atoms?
-![Ö°Í¨Íø](http://www.zhitongjob.com/images/logo.png) [Ö°Í¨Íø] (http://www.zhitongjob.com)
+![èŒé€šç½‘](http://www.zhitongjob.com/images/logo.png) [èŒé€šç½‘] (http://www.zhitongjob.com)
 
-ÅäÖÃÎÄ¼ş
+é…ç½®æ–‡ä»¶
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <atoms>
@@ -12,10 +12,10 @@ githubµØÖ·£º[atoms](https://github.com/zhitongjob/atoms)
 		<broadcastConfig host="192.168.1.53" port="6379"/>
 	</broadcast>
 	<serializer type="fst"/>
-	<cache level="1" type="ehcache" delete_atom="true" ><!-- expiredOperator="update" waitTime="100" --><!-- expiredOperator: update,delete  µ±ÎªupdateÊ±waitTimeÓĞĞ§-->
+	<cache level="1" type="ehcache" delete_atom="true" ><!-- expiredOperator="update" waitTime="100" --><!-- expiredOperator: update,delete  å½“ä¸ºupdateæ—¶waitTimeæœ‰æ•ˆ-->
 		<cacheConfig configFile="ehcache.xml"/>
 		<cacheTTL>
-			<ttl name="hello" value="1000"/><!-- name:regionName value:Ê§Ğ§Ê±¼ä µ¥Î»£¨Ãë£© -->
+			<ttl name="hello" value="1000"/><!-- name:regionName value:å¤±æ•ˆæ—¶é—´ å•ä½ï¼ˆç§’ï¼‰ -->
 		</cacheTTL>
 	</cache>
 	<cache level="2" type="redis">
@@ -24,22 +24,13 @@ githubµØÖ·£º[atoms](https://github.com/zhitongjob/atoms)
 		 softMinEvictableIdleTimeMillis="10" testOnBorrow="true" testOnReturn="false" testWhileIdle="false" timeBetweenEvictionRunsMillis="300000"
 		 blockWhenExhausted="true" password=""/>
 		<cacheTTL>
-			<ttl name="hello" value="3000"/><!-- name:regionName value:Ê§Ğ§Ê±¼ä µ¥Î»£¨Ãë£© -->
-		</cacheTTL>
-	</cache>
-	<cache level="3" type="redis">
-		<cacheConfig host="192.168.1.22" port="6379" timeout="2000" database="13" namespace="atoms" maxTotal="-1" maxIdle="2000"
-		 maxWaitMillis="100" minEvictableIdleTimeMillis="864000000" minIdle="1000" numTestsPerEvictionRun="10" lifo="false"
-		 softMinEvictableIdleTimeMillis="10" testOnBorrow="true" testOnReturn="false" testWhileIdle="false" timeBetweenEvictionRunsMillis="300000"
-		 blockWhenExhausted="true" password=""/>
-		 <cacheTTL>
-			<ttl name="hello" value="5000"/><!-- name:regionName value:Ê§Ğ§Ê±¼ä µ¥Î»£¨Ãë£© -->
+			<ttl name="hello" value="3000"/><!-- name:regionName value:å¤±æ•ˆæ—¶é—´ å•ä½ï¼ˆç§’ï¼‰ -->
 		</cacheTTL>
 	</cache>
 </atoms>
 ```
 
-Ê¹ÓÃ´úÂë£º
+ä½¿ç”¨ä»£ç ï¼š
 ``` java
 CacheChannel cc=CacheChannel.getInstance();
 cc.set("jobell", "hello", "nihaoya");
@@ -53,3 +44,5 @@ while(true){
 	}
 }
 ```
+
+Springé…ç½®å‚è€ƒatoms-config/src/test/resources/applicationContext.xml
