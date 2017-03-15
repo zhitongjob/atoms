@@ -11,6 +11,9 @@ public class AtomsBroadCastConfigBean {
 
 	@XStreamAsAttribute
 	private String host;
+
+	@XStreamAsAttribute
+	private String usePool;
 	
 	@XStreamAsAttribute
 	private String port;
@@ -228,4 +231,11 @@ public class AtomsBroadCastConfigBean {
 		this.blockWhenExhausted = blockWhenExhausted;
 	}
 
+	public String getUsePool() {
+		return usePool;
+	}
+
+	public void setUsePool(String usePool) {
+		this.usePool = usePool;
+	}
 }

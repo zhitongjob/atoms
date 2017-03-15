@@ -1,17 +1,17 @@
 package com.lovver.atoms.broadcast.redis;
 
-import java.net.SocketException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 
+import com.lovver.atoms.common.exception.CacheException;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
 import com.alibaba.fastjson.JSON;
 import com.lovver.atoms.broadcast.Command;
 import com.lovver.atoms.cache.Cache;
-import com.lovver.atoms.cache.CacheProvider;
 import com.lovver.atoms.common.utils.StringUtils;
 import com.lovver.atoms.config.AtomsBroadCastBean;
 import com.lovver.atoms.config.AtomsBroadCastConfigBean;
@@ -20,19 +20,26 @@ import com.lovver.atoms.serializer.Serializer;
 import java.util.concurrent.Executors;
 
 public class RedisPubSub extends JedisPubSub {
-    ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
+    private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
 
     private static Serializer serializer = AtomsContext.getSerializer();
+    private JedisPool pool;
     private Jedis jedis;//
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
-
-    public RedisPubSub(AtomsBroadCastBean broadcastBean) {
+    private boolean isUsePool=false;
+    public RedisPubSub(final AtomsBroadCastBean broadcastBean) {
 
         System.out.println("<RedisPubSub>");
         this.broadcastBean = broadcastBean;
-        jedis = getJedis(broadcastBean);
+        this.broadcastConfig = broadcastBean.getBroadcastConfig();
+        this.isUsePool = Boolean.valueOf(null2default(broadcastConfig.getUsePool(), "true"));
+        if (isUsePool){
+            this.pool = buildPool(broadcastConfig);
+        }
+        jedis = getJedis();
         System.out.println("</RedisPubSub>");
+
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -41,7 +48,10 @@ public class RedisPubSub extends JedisPubSub {
                         jedis.connect();
                     }
                 }catch(Exception e){
-                    jedis.connect();
+                    if(jedis!=null){
+                        jedis.close();
+                    }
+                    jedis = getJedis();
                 }
 
             }
@@ -49,31 +59,7 @@ public class RedisPubSub extends JedisPubSub {
     }
 
 
-
-    private Jedis getJedis(AtomsBroadCastBean broadcastBean) {
-        System.out.println("RedisPubSub--------getJedis");
-        if (this.broadcastBean == null) {
-            this.broadcastBean = AtomsContext.getAtomsBroadCastBean();
-        }
-        if (this.broadcastConfig == null) {
-            this.broadcastConfig = this.broadcastBean.getBroadcastConfig();
-        }
-        if (jedis != null) {
-            jedis.connect();
-            System.out.println(jedis.asking());
-        }
-
-        if (this.jedis != null && jedis.isConnected()) {
-            return jedis;
-        } else {
-            try {
-                if (jedis != null) {
-                    jedis.close();
-                }
-            } catch (Exception e) {
-            }
-        }
-        broadcastConfig = broadcastBean.getBroadcastConfig();
+    private Jedis getJedisWithoutPool(){
         String host = this.broadcastConfig.getHost();
         String port = broadcastConfig.getPort();
         Jedis jedis;//
@@ -93,16 +79,33 @@ public class RedisPubSub extends JedisPubSub {
         if (!StringUtils.isEmpty(password)) {
             jedis.auth(password);
         }
-        this.jedis = jedis;
         return jedis;
+    }
+    private Jedis getJedis() {
+        if (this.broadcastBean == null) {
+            this.broadcastBean = AtomsContext.getAtomsBroadCastBean();
+        }
+        if (this.broadcastConfig == null) {
+            this.broadcastConfig = this.broadcastBean.getBroadcastConfig();
+        }
+
+        if(this.isUsePool){
+            return this.pool.getResource();
+        }else{
+            return this.getJedisWithoutPool();
+        }
     }
 
     public void pub(String channel, String message) {
         System.out.println("<RedisPubSub--pub>|channel=" + channel);
         try {
-            getJedis(broadcastBean).publish(channel, message);
+            jedis.connect();
+            getJedis().publish(channel, message);
         } catch (Exception ex ) {
-            this.jedis.connect();
+            if(jedis!=null){
+                jedis.close();
+            }
+            jedis = getJedis();
         }
         System.out.println("RedisPubSub.jedis==" + this.jedis);
         System.out.println("</RedisPubSub--pub>|channel=" + channel);
@@ -112,15 +115,22 @@ public class RedisPubSub extends JedisPubSub {
     public void sub(JedisPubSub listener, String channel) {
         System.out.println("<RedisPubSub--sub>|channel=" + channel);
         try {
-            getJedis(broadcastBean).subscribe(listener, channel);
+            jedis.connect();
+            getJedis().subscribe(listener, channel);
         } catch (Exception ex) {
-            this.jedis.connect();
+            if(jedis!=null){
+                jedis.close();
+            }
+            jedis = getJedis();
         }
         System.out.println("</RedisPubSub--sub>|channel=" + channel);
     }
 
     public void close(String channel) {
         jedis.close();
+        if(this.isUsePool){
+            this.pool.destroy();
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -180,6 +190,72 @@ public class RedisPubSub extends JedisPubSub {
             e.printStackTrace();
 //			log.error("Unable to handle received msg", e);
         }
+    }
 
+    public JedisPool buildPool(AtomsBroadCastConfigBean broadcastConfig) throws CacheException {
+        JedisPoolConfig config = new JedisPoolConfig();
+
+        String host = null2default(broadcastConfig.getHost(),"127.0.0.1");
+        String password = broadcastConfig.getPassword();
+        if(org.apache.commons.lang.StringUtils.isEmpty(password)){
+            password=null;
+        }
+        String sPort=null2default(broadcastConfig.getPort(),"6379");
+        int port = Integer.parseInt(sPort);
+
+        String sTimeout=null2default(broadcastConfig.getTimeout(),"2000");
+        int timeout = Integer.parseInt(sTimeout);//getProperty(props, "timeout", 2000);
+
+        String sDatabase=null2default(broadcastConfig.getDatabase(),"0");
+        int database =Integer.parseInt(sDatabase);
+
+        String sBlockWhenExhausted=null2default(broadcastConfig.getBlockWhenExhausted(),"true");
+        config.setBlockWhenExhausted(Boolean.parseBoolean(sBlockWhenExhausted));
+
+        String sMaxIdle=null2default(broadcastConfig.getMaxIdle(),"10");
+        config.setMaxIdle(Integer.parseInt(sMaxIdle));
+
+        String sMinIdle=null2default(broadcastConfig.getMinIdle(),"5");
+        config.setMinIdle(Integer.parseInt(sMinIdle));
+
+        String sMaxTotal=null2default(broadcastConfig.getMaxTotal(), "10000");
+        config.setMaxTotal(Integer.parseInt(sMaxTotal));
+
+        String sMaxWait=null2default(broadcastConfig.getMaxWaitMillis(), "100");
+        config.setMaxWaitMillis(Integer.parseInt(sMaxWait));
+
+        String sTestWhileIdle=null2default(broadcastConfig.getTestWhileIdle(), "false");
+        config.setTestWhileIdle(Boolean.parseBoolean(sTestWhileIdle));
+
+        String sTestOnBorrow=null2default(broadcastConfig.getTestOnBorrow(), "true");
+        config.setTestOnBorrow(Boolean.parseBoolean(sTestOnBorrow));
+
+        String sTestOnReturn =null2default(broadcastConfig.getTestOnReturn(), "false");
+        config.setTestOnReturn(Boolean.parseBoolean(sTestOnReturn));
+
+        String sNumTestsPerEvictionRun=null2default(broadcastConfig.getNumTestsPerEvictionRun(), "10");
+        config.setNumTestsPerEvictionRun(Integer.parseInt(sNumTestsPerEvictionRun));
+
+        String sMinEvictableIdelTimeMillis=null2default(broadcastConfig.getMinEvictableIdleTimeMillis(), "1000");
+        config.setMinEvictableIdleTimeMillis(Integer.parseInt(sMinEvictableIdelTimeMillis));
+
+        String sSoftMinEvictableIdleTimeMillis=null2default(broadcastConfig.getSoftMinEvictableIdleTimeMillis(), "10");
+        config.setSoftMinEvictableIdleTimeMillis(Integer.parseInt(sSoftMinEvictableIdleTimeMillis));
+
+        String timeBetweenEvictionRunsMillis=null2default(broadcastConfig.getTimeBetweenEvictionRunsMillis(), "10");
+        config.setTimeBetweenEvictionRunsMillis(Integer.parseInt(timeBetweenEvictionRunsMillis));
+
+        String lifo=null2default(broadcastConfig.getLifo(), "false");
+        config.setLifo(Boolean.parseBoolean(lifo));
+        pool = new JedisPool(config, host, port, timeout, password, database);
+        return pool;
+    }
+
+    private String null2default(String value,String defalutValue){
+        if(org.apache.commons.lang.StringUtils.isEmpty(value)){
+            return defalutValue;
+        }else{
+            return value;
+        }
     }
 }
