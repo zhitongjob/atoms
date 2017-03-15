@@ -88,6 +88,19 @@ public class CacheChannel {
 		}
 	}
 
+	public void set(String region, Object key, Object value,Integer expiretime) {
+		if (region != null && key != null) {
+			if (value == null)
+				evict(region, key);
+			else {
+				for(int i=1;i<=mCacheProvider.size();i++) {
+					Cache cache = CacheManager.getCache(i, region, true);
+					cache.put(key, value,expiretime);
+				}
+			}
+		}
+	}
+
 	/**
 	 * 删除缓存
 	 * 

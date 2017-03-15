@@ -122,6 +122,27 @@ public class EhCache implements Cache{
 
 	}
 
+	@Override
+	public void put(Object key, Object value, Integer expiretime) throws CacheException {
+		try {
+			Element element = new Element( key, value,false,expiretime,expiretime );
+			cache.put( element );
+		}
+		catch (IllegalArgumentException e) {
+			throw new CacheException( e );
+		}
+		catch (IllegalStateException e) {
+			throw new CacheException( e );
+		}
+		catch (net.sf.ehcache.CacheException e) {
+			throw new CacheException( e );
+		}
+
+		if(listener != null&&AtomsContext.isMe(client_id)){
+			listener.notifyElementPut(cache.getName(), key,value,client_id);
+		}
+	}
+
 	/**
 	 * Removes the element which matches the key
 	 * If no element matches, nothing is removed and no Exception is thrown.

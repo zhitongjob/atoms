@@ -27,14 +27,14 @@ public class CacheChannelTest {
 		
 //		Thread.sleep(3000);
 
-		cc.set("hello", "dddd", "jobell");
+		cc.set("hello", "dddd", "jobell",1);
 
 //		List keys=cc.keys("hello");
 //		System.out.println("removed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		
 		while(true){
 			System.out.println("==============="+cc.get("hello", "dddd"));
-			Thread.sleep(6000);
+			Thread.sleep(2000);
 		}
 
 

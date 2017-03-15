@@ -117,6 +117,11 @@ public class RedisCache implements Cache {
 		}
 	}
 
+	@Override
+	public void put(Object key, Object value, Integer expiretime) throws CacheException {
+		this.put(key,value);
+	}
+
 	public void update(Object key, Object value) throws CacheException {
 		put(key, value);
 		if(listener!=null&&AtomsContext.isMe(client_id)){
