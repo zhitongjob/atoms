@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <atoms>
-	<broadcast type="redis" >
-		<broadcastConfig host="192.168.1.85" port="6379" timeout="0" usePool="true"/>
+	<broadcast type="jgroups" >
+		<broadcastConfig configFile="network.xml"/>
 	</broadcast>
 	<serializer type="fst"/>
 	<cache level="1" type="ehcache" >

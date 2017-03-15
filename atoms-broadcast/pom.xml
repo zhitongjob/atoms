@@ -21,5 +21,6 @@
   <modules>
   	<module>atoms-broadcast-api</module>
   	<module>atoms-broadcast-redis</module>
+  	<module>atoms-broadcast-jgroups</module>
   </modules>
 </project>
