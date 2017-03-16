@@ -23,7 +23,7 @@ public class RedisPubSub extends JedisPubSub {
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
 
     private static Serializer serializer = AtomsContext.getSerializer();
-    private JedisPool pool;
+    private static JedisPool pool;
     private Jedis jedis;//
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
@@ -35,7 +35,9 @@ public class RedisPubSub extends JedisPubSub {
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.isUsePool = Boolean.valueOf(null2default(broadcastConfig.getUsePool(), "true"));
         if (isUsePool){
-            this.pool = buildPool(broadcastConfig);
+            if(this.pool==null) {
+                this.pool = buildPool(broadcastConfig);
+            }
         }
         jedis = getJedis();
         System.out.println("</RedisPubSub>");
