@@ -22,5 +22,6 @@
   	<module>atoms-broadcast-api</module>
   	<module>atoms-broadcast-redis</module>
   	<module>atoms-broadcast-jgroups</module>
+    <module>atoms-broadcast-zookeeper</module>
   </modules>
 </project>
