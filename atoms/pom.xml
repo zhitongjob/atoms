@@ -60,6 +60,7 @@
                                     <include>com.lovver.atoms:atoms-broadcast-api</include>
                                     <include>com.lovver.atoms:atoms-broadcast-redis</include>
                                     <include>com.lovver.atoms:atoms-broadcast-jgroups</include>
+                                    <include>com.lovver.atoms:atoms-broadcast-zookeeper</include>
                                     <include>com.lovver.atoms:atoms-serializer-api</include>
                                     <include>com.lovver.atoms:atoms-serializer-fst</include>
                                     <include>com.lovver.atoms:atoms-serializer-java</include>
@@ -111,6 +112,11 @@
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-broadcast-jgroups</artifactId>
+            <version>1.0.9-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lovver.atoms</groupId>
+            <artifactId>atoms-broadcast-zookeeper</artifactId>
             <version>1.0.9-SNAPSHOT</version>
         </dependency>
         <dependency>

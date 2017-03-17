@@ -25,7 +25,8 @@ public class CacheChannelTest2 {
 //			if(dd!=null){
 				System.out.println("=============== CacheChannelTest2"+dd);
 //			}
-			Thread.sleep(3000);
+			Thread.sleep(2100);
+			//cc.evict("hello","dddd");
 		}
 		
 //		cc.set("jiangbiao", "hello", "ddddddd");

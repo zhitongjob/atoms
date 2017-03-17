@@ -1,1 +1,1 @@
-com.lovver.atoms.broadcast.redis.RedisBroadCast
+com.lovver.atoms.broadcast.zookeeper.ZookeeperBroadCast

@@ -1,9 +1,18 @@
 package com.lovver.atoms.broadcast.zookeeper;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.*;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.api6.zkclient.ZKClient;
+import com.api6.zkclient.ZKClientBuilder;
+import com.api6.zkclient.listener.ZKChildDataListener;
+import com.api6.zkclient.listener.ZKStateListener;
+import com.api6.zkclient.serializer.SerializableSerializer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
@@ -14,26 +23,31 @@ import com.lovver.atoms.config.AtomsBroadCastBean;
 import com.lovver.atoms.config.AtomsBroadCastConfigBean;
 import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
+
 import java.util.concurrent.Executors;
 
-public class ZookeeperPubSub implements Watcher {
-    private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
+public class ZookeeperPubSub {
 
     private static Serializer serializer = AtomsContext.getSerializer();
-    protected ZooKeeper zooKeeper;
+    protected static ZKClient zkClient;
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
-    protected CountDownLatch countDownLatch=new CountDownLatch(1);
-    private static final int SESSION_TIME   = 2000;
+    private static final int SESSION_TIME = 2000;
     public static final String authScheme = "digest";
+    protected final String root;
 
-    public ZookeeperPubSub(final AtomsBroadCastBean broadcastBean) {
+    public ZookeeperPubSub(final AtomsBroadCastBean broadcastBean,final String root) {
 
         System.out.println("<RedisPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
+        this.root="/"+root;
         try {
             connect();
+            if(!zkClient.exists(this.root)) {
+                zkClient.create(this.root, "", CreateMode.PERSISTENT);
+            }
+            sub(this.root);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -42,74 +56,108 @@ public class ZookeeperPubSub implements Watcher {
         System.out.println("</RedisPubSub>");
     }
 
-    private void connect() throws IOException, InterruptedException{
-        String host = null2default(broadcastConfig.getHost(),"127.0.0.1");
+    private void connect() throws IOException, InterruptedException {
+        String host = null2default(broadcastConfig.getHost(), "127.0.0.1");
         String password = broadcastConfig.getPassword();
 
-        String sPort=null2default(broadcastConfig.getPort(),"6379");
+        String sPort = null2default(broadcastConfig.getPort(), "6379");
         int port = Integer.parseInt(sPort);
 
-        String sTimeout=null2default(broadcastConfig.getTimeout(),SESSION_TIME+"");
+        String sTimeout = null2default(broadcastConfig.getTimeout(), SESSION_TIME + "");
         int timeout = Integer.parseInt(sTimeout);//getProperty(props, "timeout", 2000);
 
-        String connectString=host+":"+port;
-        zooKeeper = new ZooKeeper(connectString,timeout,this);
-        if(!org.apache.commons.lang.StringUtils.isEmpty(password)){
-            zooKeeper.addAuthInfo(authScheme, password.getBytes());
+        String connectString = host + ":" + port;
+        zkClient = ZKClientBuilder.newZKClient(connectString)
+//                .sessionTimeout(timeout)//可选
+                .serializer(new SerializableSerializer())//可选
+                .eventThreadPoolSize(1)//可选
+                .retryTimeout(1000 * 60)//可选
+                .connectionTimeout(Integer.MAX_VALUE)//可选
+                .build();
+        if(StringUtils.isNotEmpty(password)) {
+            zkClient.addAuthInfo(authScheme, password.getBytes());
         }
-        countDownLatch.await();
-    }
 
-    private void create(String path,byte[] data)throws KeeperException, InterruptedException{
-        /**
-         * 此处采用的是CreateMode是PERSISTENT
-         *  表示The znode will not be automatically deleted upon client's disconnect.
-         * EPHEMERAL
-         * 表示The znode will be deleted upon the client's disconnect.
-         */
-        this.zooKeeper.create(path, data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-    }
-
-    private byte[] getData(String path) throws KeeperException, InterruptedException {
-        return  this.zooKeeper.getData(path, false,null);
-    }
-
-    private void setData(String path,byte[] data) throws KeeperException, InterruptedException {
-        Stat st= this.zooKeeper.setData(path, data,-1);
     }
 
 
-    public void pub(String channel, String message) {
-        System.out.println("<RedisPubSub--pub>|channel=" + channel);
+    public void pub(String message) {
+        System.out.println("<RedisPubSub--pub>");
+        Command cmd = JSON.parseObject(message, Command.class);
+        byte op = cmd.getOperator();
+        String region = cmd.getRegion();
+        Object key=cmd.getKey();
+        String regionPath = root + "/" + region;
+        switch (op) {
+            case Command.OPT_DELETE_KEY:
+                zkClient.setData(regionPath, message,-1);
+                break;
+            case Command.OPT_CLEAR_KEY:
+                zkClient.setData(regionPath, message,-1);
+                break;
+            case Command.OPT_PUT_KEY:
+                if(!zkClient.exists(regionPath)){
+                    zkClient.create(regionPath,"",CreateMode.PERSISTENT);
+                }
+                zkClient.setData(regionPath, message, -1);
+//                if(key instanceof  String){
+//                    String keyPath = regionPath + "/" + key;
+//                    if (zkClient.exists(keyPath)) {
+//                        zkClient.setData(keyPath, message, -1);
+//                    } else {
+//                        zkClient.createEphemerale(keyPath, message, false);
+//                    }
+//                }else{
+//                    JSONArray keys= (JSONArray) cmd.getKey();
+//                    Iterator iteKeys=keys.iterator();
+//                    while(iteKeys.hasNext()){
+//                        String keyPath = regionPath + "/" + key;
+//                        if (zkClient.exists(keyPath)) {
+//
+//                        } else {
+//                            zkClient.createEphemerale(keyPath, message, false);
+//                        }
+//                    }
+//                }
 
-        System.out.println("</RedisPubSub--pub>|channel=" + channel);
+                break;
+        }
+
+        sub(this.root);
+
+        System.out.println("</RedisPubSub--pub>");
     }
 
 
-//    public void sub(JedisPubSub listener, String channel) {
-//        System.out.println("<RedisPubSub--sub>|channel=" + channel);
-//        try {
-//            jedis.connect();
-//            getJedis().subscribe(listener, channel);
-//        } catch (Exception ex) {
-//            if(jedis!=null){
-//                jedis.close();
-//            }
-//            jedis = getJedis();
-//        }
-//        System.out.println("</RedisPubSub--sub>|channel=" + channel);
-//    }
+    public void sub(String path) {
+
+        zkClient.listenChildDataChanges(path, new ZKChildDataListener() {
+            @Override
+            public void handleSessionExpired(String path, Object data) throws Exception {//会话过期
+                System.out.println("session expired");
+                zkClient.reconnect();
+            }
+
+            @Override
+            public void handleChildDataChanged(String path, Object data) throws Exception {//子节点数据发生改变
+//                System.out.println("the child data is changed:[path:" + path + ",data:" + data + "]");
+                onMessage((String)data);
+            }
+
+            @Override
+            public void handleChildCountChanged(String path, List<String> children) throws Exception {//子节点数量发生改变
+                for(String child:children) {
+                    System.out.println("children change:" + path + "==========" + child);
+                }
+            }
+        });
+    }
 
     public void close() {
-        try {
-            zooKeeper.close();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        zkClient.close();
     }
 
-    @SuppressWarnings("rawtypes")
-    public void onMessage(String channel, String message) {
+    public void onMessage(String message) {
         if (message != null && message.length() <= 0) {
             System.out.println("Message is empty.");
             return;
@@ -158,18 +206,12 @@ public class ZookeeperPubSub implements Watcher {
         }
     }
 
-    private String null2default(String value,String defalutValue){
-        if(org.apache.commons.lang.StringUtils.isEmpty(value)){
+    private String null2default(String value, String defalutValue) {
+        if (org.apache.commons.lang.StringUtils.isEmpty(value)) {
             return defalutValue;
-        }else{
+        } else {
             return value;
         }
     }
 
-    @Override
-    public void process(WatchedEvent event) {
-        if(event.getState()== Event.KeeperState.SyncConnected){
-            countDownLatch.countDown();
-        }
-    }
 }
