@@ -38,7 +38,7 @@ public class ZookeeperPubSub {
 
     public ZookeeperPubSub(final AtomsBroadCastBean broadcastBean,final String root) {
 
-        System.out.println("<RedisPubSub>");
+        System.out.println("<ZookeeperPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.root="/"+root;
@@ -53,7 +53,7 @@ public class ZookeeperPubSub {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("</RedisPubSub>");
+        System.out.println("</ZookeeperPubSub>");
     }
 
     private void connect() throws IOException, InterruptedException {
@@ -82,11 +82,10 @@ public class ZookeeperPubSub {
 
 
     public void pub(String message) {
-        System.out.println("<RedisPubSub--pub>");
+        System.out.println("<ZookeeperPubSub--pub>");
         Command cmd = JSON.parseObject(message, Command.class);
         byte op = cmd.getOperator();
         String region = cmd.getRegion();
-        Object key=cmd.getKey();
         String regionPath = root + "/" + region;
         switch (op) {
             case Command.OPT_DELETE_KEY:
@@ -123,9 +122,9 @@ public class ZookeeperPubSub {
                 break;
         }
 
-        sub(this.root);
+       // sub(this.root);
 
-        System.out.println("</RedisPubSub--pub>");
+        System.out.println("</ZookeeperPubSub--pub>");
     }
 
 
