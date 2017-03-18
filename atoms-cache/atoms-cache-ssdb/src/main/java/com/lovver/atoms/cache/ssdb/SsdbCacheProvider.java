@@ -83,7 +83,7 @@ public class SsdbCacheProvider implements CacheProvider {
 		String host = null2default(cacheConfig.getHost(),"127.0.0.1");
 		this.host=host;
 		String password = cacheConfig.getPassword();
-		if(StringUtils.isEmpty(password)){
+		if(!StringUtils.isEmpty(password)){
             info.setProperty("password", password);
         }
 

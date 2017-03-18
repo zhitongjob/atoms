@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.lovver.atoms</groupId>
         <artifactId>atoms-broadcast</artifactId>
-        <version>1.0.9-SNAPSHOT</version>
+        <version>1.0.10-SNAPSHOT</version>
     </parent>
     <artifactId>atoms-broadcast-zookeeper</artifactId>
     <build>
@@ -23,26 +23,27 @@
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>3.4.8</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.lovver.zkclient</groupId>
+            <groupId>com.bienei.zkclient</groupId>
             <artifactId>zkclient</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.netflix.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>1.1.16</version>
-        </dependency>
-        <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-broadcast-api</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>1.0.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-context</artifactId>
-            <version>1.0.9-SNAPSHOT</version>
+            <version>1.0.10-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
