@@ -102,7 +102,7 @@
         <dependency>
             <groupId>com.lovver.atoms</groupId>
             <artifactId>atoms-broadcast-api</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.10-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.lovver.atoms</groupId>

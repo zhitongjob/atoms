@@ -141,10 +141,12 @@ public class EhCacheProvider implements CacheProvider {
 		String configFile=cacheBean.getCacheConfig().getConfigFile();
 		if(StringUtils.isNotEmpty(configFile)){
 			try{
-				manager = new CacheManager(configFile);
+				manager=CacheManager.create(configFile);
+				//manager = new CacheManager(configFile);
 			}catch(Exception e){
 				URL uriConfigFile=ClassUtils.getDefaultClassLoader().getResource(configFile);
-				manager = new CacheManager(uriConfigFile);
+//				manager = new CacheManager(uriConfigFile);
+				manager=CacheManager.create(uriConfigFile);
 			}
 		}else{
 			manager = CacheManager.getInstance();

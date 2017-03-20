@@ -31,7 +31,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.bienei.zkclient</groupId>
+            <groupId>com.lovver.zkclient</groupId>
             <artifactId>zkclient</artifactId>
             <version>1.0.0</version>
         </dependency>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <atoms>
 	<broadcast type="zookeeper" >
-		<broadcastConfig   host="192.168.3.27" port="2181" />
+		<broadcastConfig   host="192.168.1.87" port="2181" />
 	</broadcast>
 	<serializer type="fst"/>
 	<cache level="1" type="ehcache" >
