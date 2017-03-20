@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/mvc
+     http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:/atoms.properties</value>
+            </list>
+        </property>
+        <qualifier value="main"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" ref="properties" />
+    </bean>
+
+    <bean class="com.lovver.atoms.config.AtomsSpringConfig" >
+        <property name="atomsBean" ref="atomsBean"/>
+    </bean>
+
+    <bean id="atomsBean" class="com.lovver.atoms.config.AtomsBean">
+        <property name="broadcast" ref="broadcast"/>
+        <property name="serializer" ref="serializer"/>
+        <property name="cache" >
+            <list>
+                <ref bean="cache_1"/>
+                <ref bean="cache_2"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="serializer" class="com.lovver.atoms.config.AtomsSerializerBean">
+        <property name="type" value="fst"/>
+    </bean>
+
+    <bean id="broadcast" class="com.lovver.atoms.config.AtomsBroadCastBean">
+        <property name="type" value="redis"/>
+        <property name="broadcastConfig" ref="broadcastConfig"/>
+        <qualifier value="main"/>
+    </bean>
+    <bean id="broadcastConfig" class="com.lovver.atoms.config.AtomsBroadCastConfigBean">
+        <property name="host" value="${cache.2.host}"/>
+        <property name="port" value="${cache.2.port}"/>
+        <property name="timeout" value="0"/>
+        <property name="usePool" value="true"/>
+    </bean>
+
+    <bean id="cache_1" class="com.lovver.atoms.config.AtomsCacheBean">
+        <property name="level" value="1"/>
+        <property name="type" value="ehcache"/>
+        <property name="cacheConfig" ref="cache_1_config"/>
+        <property name="cacheTTL" ref="cacheTTL"/>
+    </bean>
+    <bean id="cacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLBean">
+        <property name="lstTTL">
+            <list>
+                <ref bean="helloCacheTTL"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="helloCacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLConfigBean">
+        <property name="name" value="hello"/>
+        <property name="value" value="10"/>
+    </bean>
+
+    <bean id="cache_1_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">
+        <property name="configFile" value="ehcache.xml"/>
+    </bean>
+
+    <bean id="cache_2" class="com.lovver.atoms.config.AtomsCacheBean">
+        <property name="level" value="2"/>
+        <property name="type" value="redis"/>
+        <property name="cacheConfig" ref="cache_2_config"/>
+    </bean>
+
+    <bean id="cache_2_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">
+        <property name="host" value="${cache.2.host}"/>
+        <property name="port" value="${cache.2.port}"/>
+        <property name="timeout" value="2000"/>
+        <property name="database" value="15"/>
+        <property name="namespace" value="atoms"/>
+        <property name="maxTotal" value="-1"/>
+        <property name="maxIdle" value="2000"/>
+        <property name="maxWaitMillis" value="100"/>
+        <property name="minEvictableIdleTimeMillis" value="864000000"/>
+        <property name="minIdle" value="1000"/>
+        <property name="numTestsPerEvictionRun" value="10"/>
+        <property name="lifo" value="false"/>
+        <property name="softMinEvictableIdleTimeMillis" value="10"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="testWhileIdle" value="false"/>
+        <property name="timeBetweenEvictionRunsMillis" value="300000"/>
+        <property name="blockWhenExhausted" value="true"/>
+        <property name="password" value=""/>
+    </bean>
+</beans>
