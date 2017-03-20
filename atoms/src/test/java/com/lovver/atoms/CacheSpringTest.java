@@ -13,8 +13,8 @@ public class CacheSpringTest {
 
     public static void main(String[] args) throws InterruptedException {
         ApplicationContext ac=new ClassPathXmlApplicationContext(new String[]{"classpath:applicationContext.xml"});
-        AtomsBean config= AtomsConfig.getAtomsConfig();
-        System.out.println(config.getSerializer());
+        //AtomsBean config= AtomsConfig.getAtomsConfig();
+        //System.out.println(config.getSerializer());
 
         CacheChannel cc=CacheChannel.getInstance();
 
