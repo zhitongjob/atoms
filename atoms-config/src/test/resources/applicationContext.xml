@@ -77,7 +77,7 @@
     </bean>
 
     <bean id="cache_1_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">
-        <property name="configFile" value="classpath:/ehcache.propertie"/>
+        <property name="configFile" value="classpath:/ehcache.xml"/>
     </bean>
 
     <bean id="cache_2" class="com.lovver.atoms.config.AtomsCacheBean">
