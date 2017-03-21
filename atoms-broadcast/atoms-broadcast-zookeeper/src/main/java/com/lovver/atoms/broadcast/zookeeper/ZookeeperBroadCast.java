@@ -18,7 +18,7 @@ public class ZookeeperBroadCast implements BroadCast{
 		zkPubSub=new ZookeeperPubSub(broadcastBean,this.channel);
 	}
 
-	public void broadcast(String message){
+	public void broadcast(byte[] message){
 		zkPubSub.pub(message);
 	}
 }

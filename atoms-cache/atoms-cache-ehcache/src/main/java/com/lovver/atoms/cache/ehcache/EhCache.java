@@ -18,7 +18,6 @@ public class EhCache implements Cache{
 
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
-	private String client_id;
 
 	/**
 	 * Creates a new Hibernate pluggable cache based on a cache name.
@@ -26,11 +25,10 @@ public class EhCache implements Cache{
 	 * @param cache The underlying EhCache instance to use.
 	 * @param listener cache listener
 	 */
-	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener,String client_id) {
+	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener) {
 		this.cache = cache;
 //		this.cache.getCacheEventNotificationService().registerListener(this);
 		this.listener = listener;
-		this.client_id=client_id;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -71,8 +69,8 @@ public class EhCache implements Cache{
 	 */
 	public void update(Object key, Object value) throws CacheException {
 		put( key, value );
-		if(listener != null&&AtomsContext.isMe(client_id)){
-			listener.notifyElementUpdated(cache.getName(), key,value,client_id);
+		if(listener != null){
+			listener.notifyElementUpdated(cache.getName(), key,value);
 		}
 	}
 	
@@ -116,8 +114,8 @@ public class EhCache implements Cache{
 			throw new CacheException( e );
 		}
 		
-		if(listener != null&&AtomsContext.isMe(client_id)){
-			listener.notifyElementPut(cache.getName(), key,value,client_id);
+		if(listener != null){
+			listener.notifyElementPut(cache.getName(), key,value);
 		}
 
 	}
@@ -138,8 +136,8 @@ public class EhCache implements Cache{
 			throw new CacheException( e );
 		}
 
-		if(listener != null&&AtomsContext.isMe(client_id)){
-			listener.notifyElementPut(cache.getName(), key,value,client_id);
+		if(listener != null){
+			listener.notifyElementPut(cache.getName(), key,value);
 		}
 	}
 
@@ -161,8 +159,8 @@ public class EhCache implements Cache{
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
 		}
-		if(listener != null&&AtomsContext.isMe(client_id)){ 
-			listener.notifyElementEvicted(cache.getName(), key,client_id);
+		if(listener != null){
+			listener.notifyElementEvicted(cache.getName(), key);
 		}
 	}
 
@@ -173,8 +171,8 @@ public class EhCache implements Cache{
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException {
 		cache.removeAll(keys);
-		if(listener != null&&AtomsContext.isMe(client_id)){ 
-			listener.notifyElementEvicted(cache.getName(),keys,client_id);
+		if(listener != null){
+			listener.notifyElementEvicted(cache.getName(),keys);
 		}
 	}
 
@@ -195,8 +193,8 @@ public class EhCache implements Cache{
 			throw new CacheException( e );
 		}
 		
-		if(listener != null&&AtomsContext.isMe(client_id)){
-			listener.notifyRemoveAll(cache.getName(),client_id);
+		if(listener != null){
+			listener.notifyRemoveAll(cache.getName());
 		}
 	}
 

@@ -37,9 +37,8 @@ public class RedisCache implements Cache {
 	private String host;
 	private Integer ttlSeconds;
 	
-	private String client_id;
 
-	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host,String ttlSeconds,String client_id) {
+	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host,String ttlSeconds) {
 		if (region == null || region.isEmpty())
 			region = "_"; // 缺省region
 		this.srcRegion=region;
@@ -55,7 +54,7 @@ public class RedisCache implements Cache {
 		}else{
 			this.ttlSeconds=Integer.parseInt(ttlSeconds);
 		}
-		this.client_id=client_id;
+
 	}
 
 	/**
@@ -108,8 +107,8 @@ public class RedisCache implements Cache {
 				if(ttlSeconds!=null){
 					cache.expire(region2, ttlSeconds);
 				}
-				if(listener!=null&&AtomsContext.isMe(client_id)){
-					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+				if(listener!=null){
+					listener.notifyElementPut(this.srcRegion, key, value);
 				}
 			} catch (Exception e) {
 				throw new CacheException(e);
@@ -124,8 +123,8 @@ public class RedisCache implements Cache {
 
 	public void update(Object key, Object value) throws CacheException {
 		put(key, value);
-		if(listener!=null&&AtomsContext.isMe(client_id)){
-			listener.notifyElementPut(this.srcRegion, key, value, client_id);
+		if(listener!=null){
+			listener.notifyElementPut(this.srcRegion, key, value);
 		}
 	}
 	
@@ -143,8 +142,8 @@ public class RedisCache implements Cache {
 				if(ttlSeconds!=null){
 					cache.expire(region2, ttlSeconds);
 				}
-				if(listener!=null&&AtomsContext.isMe(client_id)){
-					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+				if(listener!=null){
+					listener.notifyElementPut(this.srcRegion, key, value);
 				}
 			} catch (Exception e) {
 				throw new CacheException(e);
@@ -157,8 +156,8 @@ public class RedisCache implements Cache {
 			return;
 		try (Jedis cache = pool.getResource()) {
 			cache.hdel(region2, getKeyName(key));
-			if(listener!=null&&AtomsContext.isMe(client_id)){
-				listener.notifyElementRemoved(this.srcRegion, key,client_id); 
+			if(listener!=null){
+				listener.notifyElementRemoved(this.srcRegion, key);
 			}
 		} catch (Exception e) {
 			throw new CacheException(e);
@@ -176,9 +175,9 @@ public class RedisCache implements Cache {
 				okeys[i] = getKeyName(keys.get(i));
 			}
 			cache.hdel(region2, okeys);
-			if(listener!=null&&AtomsContext.isMe(client_id)){
+			if(listener!=null){
 				for(Object key:keys){
-					listener.notifyElementRemoved(this.srcRegion, key,client_id);
+					listener.notifyElementRemoved(this.srcRegion, key);
 				}
 			}
 		} catch (Exception e) {
@@ -197,8 +196,8 @@ public class RedisCache implements Cache {
 	public void clear() throws CacheException {
 		try (Jedis cache = pool.getResource()) {
 			cache.del(region2);
-			if(listener!=null&&AtomsContext.isMe(client_id)){
-				listener.notifyRemoveAll(this.srcRegion,client_id);
+			if(listener!=null){
+				listener.notifyRemoveAll(this.srcRegion);
 			} 
 		} catch (Exception e) {
 			throw new CacheException(e);
@@ -207,8 +206,8 @@ public class RedisCache implements Cache {
 
 	public void destroy() throws CacheException {
 		this.clear();
-		if(listener!=null&&AtomsContext.isMe(client_id)){
-			listener.notifyRemoveAll(this.srcRegion,client_id);
+		if(listener!=null){
+			listener.notifyRemoveAll(this.srcRegion);
 		} 
 	}
 }

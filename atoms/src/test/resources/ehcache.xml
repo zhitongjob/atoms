@@ -55,5 +55,12 @@
         timeToLiveSeconds="1800"
         overflowToDisk="false"
         />
-		
+
+    <cache name="test_region"
+           maxElementsInMemory="5000"
+           eternal="false"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="1800"
+           overflowToDisk="false"
+    />
 </ehcache>

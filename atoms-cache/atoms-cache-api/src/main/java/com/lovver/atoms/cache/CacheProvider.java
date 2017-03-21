@@ -26,7 +26,7 @@ public interface CacheProvider {
 	 * @return return cache instance
 	 * @throws CacheException cache exception
 	 */
-	public Cache buildCache(String regionName, boolean autoCreate, CacheEventListener listener,String client_id) throws CacheException;
+	public Cache buildCache(String regionName, boolean autoCreate, CacheEventListener listener) throws CacheException;
 
 	/**
 	 * Callback to perform any necessary initialization of the underlying cache implementation

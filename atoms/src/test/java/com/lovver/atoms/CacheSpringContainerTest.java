@@ -21,9 +21,9 @@ public class CacheSpringContainerTest {
     public void run() throws InterruptedException {
         CacheChannel cc = CacheChannel.getInstance();
 
-        for (int i = 0; i < 10; i++) {
-            cc.set("hello", "dddd", "jobell_" + i, 1);
-            System.out.println("===============" + cc.get("hello", "dddd"));
+        while (true) {
+//            cc.set("hello", "dddd", "jobell_" + i, 1);
+            System.out.println("===============" + cc.get("test", "dddd1"));
             Thread.sleep(2000);
         }
     }

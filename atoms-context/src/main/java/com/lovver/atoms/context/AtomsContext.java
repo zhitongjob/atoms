@@ -22,10 +22,7 @@ public class AtomsContext {
 	private static Serializer serializer = null;
 	private static BroadCast broadCast = null;
 	
-	
-	//客户端身份标示
-	public final static String CLIENT_ID = UUID.randomUUID().toString();
-	
+
 	private static ConcurrentHashMap<String,CacheProvider> cacheProvider=new ConcurrentHashMap<String,CacheProvider>();
 	private static ConcurrentHashMap<String,AtomsCacheBean> cacheConfig=new ConcurrentHashMap<String,AtomsCacheBean>();
 //	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
@@ -94,20 +91,11 @@ public class AtomsContext {
 		if(level==1){//只有第一级缓存有监听器
 			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
 		}
-		Cache cache=cacheProvider.buildCache(region, true, listener,CLIENT_ID);
+		Cache cache=cacheProvider.buildCache(region, true, listener);
 		return cache;
 	}
 	
-	public static Cache getCache(String region,int level,String client_id){
-		CacheProvider cacheProvider=AtomsContext.getCacheProvider().get(level+"");
-		CacheEventListener listener=null;
-		if(level==1){//只有第一级缓存有监听器
-			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
-		}
-		Cache cache=cacheProvider.buildCache(region, true, listener,client_id);
-		return cache;
-	}
-	
+
 	public static Map<String,String> getTTLConfig(int level){
 		return cahcelevelTTLConfig.get(level+"");
 	}
@@ -123,15 +111,9 @@ public class AtomsContext {
 		if(level==1){
 			listener=CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
 		}
-		Cache cache=cacheProvider.buildCache(region, true, listener,CLIENT_ID);
+		Cache cache=cacheProvider.buildCache(region, true, listener);
 		return new Object[]{cache,listener};
 	}
 	
-	public static boolean isMe(String client_id){
-		if(client_id!=null&&client_id.equals(CLIENT_ID)){
-			return true;
-		}else{
-			return false;
-		}
-	}
+
 }

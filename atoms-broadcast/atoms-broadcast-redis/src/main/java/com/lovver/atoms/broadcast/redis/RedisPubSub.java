@@ -3,13 +3,13 @@ package com.lovver.atoms.broadcast.redis;
 import java.util.List;
 import java.util.concurrent.*;
 
+import com.lovver.atoms.broadcast.redis.support.SafeEncoder;
 import com.lovver.atoms.common.exception.CacheException;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.*;
 
-import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.lovver.atoms.broadcast.Command;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.common.utils.StringUtils;
@@ -19,7 +19,9 @@ import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
 import java.util.concurrent.Executors;
 
-public class RedisPubSub extends JedisPubSub {
+public class RedisPubSub extends BinaryJedisPubSub {
+    private final static Logger log = LoggerFactory.getLogger(RedisPubSub.class);
+
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
 
     private static Serializer serializer = AtomsContext.getSerializer();
@@ -98,11 +100,11 @@ public class RedisPubSub extends JedisPubSub {
         }
     }
 
-    public void pub(String channel, String message) {
+    public void pub(String channel, byte[] message) {
         System.out.println("<RedisPubSub--pub>|channel=" + channel);
         try {
             jedis.connect();
-            getJedis().publish(channel, message);
+            getJedis().publish(SafeEncoder.encode(channel), message);
         } catch (Exception ex ) {
             if(jedis!=null){
                 jedis.close();
@@ -114,11 +116,11 @@ public class RedisPubSub extends JedisPubSub {
     }
 
 
-    public void sub(JedisPubSub listener, String channel) {
+    public void sub(BinaryJedisPubSub listener, String channel) {
         System.out.println("<RedisPubSub--sub>|channel=" + channel);
         try {
             jedis.connect();
-            getJedis().subscribe(listener, channel);
+            getJedis().subscribe(listener, SafeEncoder.encode(channel));
         } catch (Exception ex) {
             if(jedis!=null){
                 jedis.close();
@@ -136,61 +138,39 @@ public class RedisPubSub extends JedisPubSub {
     }
 
     @SuppressWarnings("rawtypes")
-    public void onMessage(String channel, String message) {
-        if (message != null && message.length() <= 0) {
-            System.out.println("Message is empty.");
+    public void onMessage(byte[] channel, byte[] message) {
+        if (message != null && message.length <= 0) {
+            log.warn("Message is empty.");
             return;
         }
 
         try {
-            Command cmd = JSON.parseObject(message, Command.class);
-            if (cmd == null)
-                return;
-            String client_id = cmd.getClient_id();
+            Command cmd = Command.parse(message);
 
-//			Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
+            if (cmd == null || cmd.isLocalCommand())
+                return;
+
+            Cache cache = AtomsContext.getCache(cmd.getRegion(), 1);
             switch (cmd.getOperator()) {
                 case Command.OPT_DELETE_KEY:
-//				for(int i=1;i<=mCacheProvider.size();i++){
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
+
+                    Object key = cmd.getKey();
+                    if (key instanceof List) {
+                        cache.evict((List) key);
                     } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
-                        Object key = cmd.getKey();
-                        if (key instanceof List) {
-                            cache.evict((List) key);
-                        } else {
-                            cache.evict(cmd.getKey());
-                        }
+                        cache.evict(cmd.getKey());
                     }
-//				}
                     break;
                 case Command.OPT_CLEAR_KEY:
-//				for(int i=1;i<=mCacheProvider.size();i++){
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
-                    } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
                         cache.clear();
-                    }
-//				}
                     break;
-                case Command.OPT_PUT_KEY:
-//				for(int i=1;i<=mCacheProvider.size();i++){
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
-                    } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
-                        cache.put(cmd.getKey(), serializer.deserialize(cmd.getValue()));
-                    }
-//				}
-                    break;
+
                 default:
-//				log.warn("Unknown message type = " + cmd.getOperator());
+				log.warn("Unknown message type = " + cmd.getOperator());
             }
         } catch (Exception e) {
             e.printStackTrace();
-//			log.error("Unable to handle received msg", e);
+			log.error("Unable to handle received msg", e);
         }
     }
 

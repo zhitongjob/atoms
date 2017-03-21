@@ -28,7 +28,7 @@ public class JGroupsPubSub extends ReceiverAdapter {
         System.out.println("<JGroupsPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
-        this.xmlFile=broadcastConfig.getConfigFile();
+        this.xmlFile = broadcastConfig.getConfigFile();
         try {
             InputStream is = JGroupsPubSub.class.getClassLoader()
                     .getResourceAsStream(this.xmlFile);
@@ -42,7 +42,7 @@ public class JGroupsPubSub extends ReceiverAdapter {
 
     }
 
-    public void pub(String channel, String message) {
+    public void pub(String channel, byte[] message) {
         Message msg = new Message(null, null, message);
         try {
             this.channel.send(msg);
@@ -57,13 +57,14 @@ public class JGroupsPubSub extends ReceiverAdapter {
 
     /**
      * 组中成员变化时
+     *
      * @param view group view
      */
     public void viewAccepted(View view) {
         StringBuffer sb = new StringBuffer("Group Members Changed, LIST: ");
         List<Address> addrs = view.getMembers();
-        for(int i=0; i<addrs.size(); i++){
-            if(i > 0)
+        for (int i = 0; i < addrs.size(); i++) {
+            if (i > 0)
                 sb.append(',');
             sb.append(addrs.get(i).toString());
         }
@@ -73,59 +74,36 @@ public class JGroupsPubSub extends ReceiverAdapter {
     public void receive(Message msg) {
         //无效消息
         byte[] buffers = msg.getBuffer();
-        if(buffers.length < 1){
+        if (buffers.length < 1) {
             System.out.println("Message is empty.");
             return;
         }
+        //不处理发送给自己的消息
+        if (msg.getSrc().equals(channel.getAddress()))
+            return;
 
         try {
-            Command cmd = JSON.parseObject((String)msg.getObject(), Command.class);
+            Command cmd = Command.parse(buffers);
             if (cmd == null)
                 return;
-            String client_id = cmd.getClient_id();
 
+            Cache cache = AtomsContext.getCache(cmd.getRegion(), 1);
             switch (cmd.getOperator()) {
                 case Command.OPT_DELETE_KEY:
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
+                    Object key = cmd.getKey();
+                    if (key instanceof List) {
+                        cache.evict((List) key);
                     } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
-                        Object key = cmd.getKey();
-                        if (key instanceof List) {
-                            cache.evict((List) key);
-                        } else {
-                            cache.evict(cmd.getKey());
-                        }
+                        cache.evict(cmd.getKey());
                     }
                     break;
                 case Command.OPT_CLEAR_KEY:
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
-                    } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
-                        cache.clear();
-                    }
-                    break;
-                case Command.OPT_PUT_KEY:
-                    if (AtomsContext.isMe(client_id)) {
-                        return;
-                    } else {
-                        Cache cache = AtomsContext.getCache(cmd.getRegion(), 1, client_id);
-                        cache.put(cmd.getKey(), serializer.deserialize(cmd.getValue()));
-                    }
+                    cache.clear();
                     break;
                 default:
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private String null2default(String value,String defalutValue){
-        if(org.apache.commons.lang.StringUtils.isEmpty(value)){
-            return defalutValue;
-        }else{
-            return value;
         }
     }
 }

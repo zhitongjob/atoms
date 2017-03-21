@@ -43,7 +43,7 @@ public class EhCacheProvider implements CacheProvider {
 
 
 
-    public EhCache buildCache(String regionName, boolean autoCreate,final CacheEventListener listener,String client_id) throws CacheException {
+    public EhCache buildCache(String regionName, boolean autoCreate,final CacheEventListener listener) throws CacheException {
     	EhCache ehcache = null;
 //    	EhCache ehcache = _CacheManager.get(regionName);
 //    	if(ehcache == null && autoCreate){
@@ -109,13 +109,13 @@ public class EhCacheProvider implements CacheProvider {
 										}
 									}
 									if(listener != null){
-										listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),AtomsContext.CLIENT_ID);
+										listener.notifyElementExpired(cache.getName(), elem.getObjectKey());
 									}
 								}
 							});
 //							this.cache.getCacheEventNotificationService().registerListener(this);
 			            }
-			            ehcache = new EhCache(cache, listener,client_id);
+			            ehcache = new EhCache(cache, listener);
 //			            _CacheManager.put(regionName, ehcache);
 //	            	}
 //	            }

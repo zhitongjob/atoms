@@ -22,7 +22,7 @@ public class JGroupsBroadCast  implements BroadCast {
 		}
 	}
 
-	public void broadcast(String message){
+	public void broadcast(byte[] message){
 		jGroupsPubSub.pub(channel, message);
 	}
 

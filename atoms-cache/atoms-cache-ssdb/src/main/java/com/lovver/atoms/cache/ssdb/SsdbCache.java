@@ -38,9 +38,8 @@ public class SsdbCache implements Cache {
 	private String host;
 	private Integer ttlSeconds;
 	
-	private String client_id;
 
-	public SsdbCache(String region, SSDBDataSource ssdbDs, String namespace, CacheEventListener listener, String host, String ttlSeconds, String client_id) {
+	public SsdbCache(String region, SSDBDataSource ssdbDs, String namespace, CacheEventListener listener, String host, String ttlSeconds) {
 		if (region == null || region.isEmpty())
 			region = "_"; // 缺省region
 		this.srcRegion=region;
@@ -56,7 +55,6 @@ public class SsdbCache implements Cache {
 		}else{
 			this.ttlSeconds=Integer.parseInt(ttlSeconds);
 		}
-		this.client_id=client_id;
 	}
 
 	/**
@@ -127,8 +125,8 @@ public class SsdbCache implements Cache {
 //				if(ttlSeconds!=null){
 //					cache.expire(region2, ttlSeconds);
 //				}
-				if(listener!=null&&AtomsContext.isMe(client_id)){
-					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+				if(listener!=null){
+					listener.notifyElementPut(this.srcRegion, key, value);
 				}
 			} catch (Exception e) {
 				throw new CacheException(e);
@@ -147,8 +145,8 @@ public class SsdbCache implements Cache {
 
 	public void update(Object key, Object value) throws CacheException {
 		put(key, value);
-		if(listener!=null&&AtomsContext.isMe(client_id)){
-			listener.notifyElementPut(this.srcRegion, key, value, client_id);
+		if(listener!=null){
+			listener.notifyElementPut(this.srcRegion, key, value);
 		}
 	}
 	
@@ -172,8 +170,8 @@ public class SsdbCache implements Cache {
 //				if(ttlSeconds!=null){
 //					cache.expire(region2, ttlSeconds);
 //				}
-				if(listener!=null&&AtomsContext.isMe(client_id)){
-					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+				if(listener!=null){
+					listener.notifyElementPut(this.srcRegion, key, value);
 				}
 			} catch (Exception e) {
 				throw new CacheException(e);
@@ -209,8 +207,8 @@ public class SsdbCache implements Cache {
 //				if(ttlSeconds!=null){
 //					cache.expire(region2, ttlSeconds);
 //				}
-			if(listener!=null&&AtomsContext.isMe(client_id)){
-				listener.notifyElementRemoved(this.srcRegion, key,client_id);
+			if(listener!=null){
+				listener.notifyElementRemoved(this.srcRegion, key);
 			}
 		} catch (Exception e) {
 			throw new CacheException(e);
@@ -246,9 +244,9 @@ public class SsdbCache implements Cache {
 			setparams.add(region2);
 			setparams.addAll(CollectionUtils.arrayToList(okeys));
 			conn.executeUpdate("hdel",setparams);
-			if(listener!=null&&AtomsContext.isMe(client_id)){
+			if(listener!=null){
 				for(Object key:keys){
-					listener.notifyElementRemoved(this.srcRegion, key,client_id);
+					listener.notifyElementRemoved(this.srcRegion, key);
 				}
 			}
 		} catch (Exception e) {
@@ -318,8 +316,8 @@ public class SsdbCache implements Cache {
 			ArrayList<byte[]> setparams=new ArrayList<byte[]>();
 			setparams.add(region2);
 			conn.executeUpdate("del",setparams);
-			if(listener!=null&&AtomsContext.isMe(client_id)){
-				listener.notifyRemoveAll(this.srcRegion,client_id);
+			if(listener!=null){
+				listener.notifyRemoveAll(this.srcRegion);
 			}
 		} catch (Exception e) {
 			throw new CacheException(e);
@@ -332,8 +330,8 @@ public class SsdbCache implements Cache {
 
 	public void destroy() throws CacheException {
 		this.clear();
-		if(listener!=null&&AtomsContext.isMe(client_id)){
-			listener.notifyRemoveAll(this.srcRegion,client_id);
+		if(listener!=null){
+			listener.notifyRemoveAll(this.srcRegion);
 		} 
 	}
 }

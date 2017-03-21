@@ -24,7 +24,7 @@ public class CacheManager {
 		if(level==1){
 			listener = CacheEventListenerFactory.getCacheEventListener(cacheProvider.name(),level);
 		}
-		return cacheProvider.buildCache(regionName, autoCreate, listener,AtomsContext.CLIENT_ID);
+		return cacheProvider.buildCache(regionName, autoCreate, listener);
 	}
 	
 	

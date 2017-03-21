@@ -8,8 +8,5 @@ public interface BroadCast extends Cloneable{
 	
 	public void init(AtomsBroadCastBean atomBean);
 	
-	public void broadcast(String message);
-	
-//	public int getLevel();
-	
+	public void broadcast(byte[] message);
 }

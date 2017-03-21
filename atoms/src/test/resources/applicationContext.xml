@@ -52,8 +52,8 @@
         <qualifier value="main"/>
     </bean>
     <bean id="broadcastConfig" class="com.lovver.atoms.config.AtomsBroadCastConfigBean">
-        <property name="host" value="${cache.2.host}"/>
-        <property name="port" value="${cache.2.port}"/>
+        <property name="host" value="192.168.1.85"/>
+        <property name="port" value="6379"/>
         <property name="timeout" value="0"/>
         <property name="usePool" value="true"/>
     </bean>
@@ -72,8 +72,8 @@
         </property>
     </bean>
     <bean id="helloCacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLConfigBean">
-        <property name="name" value="hello"/>
-        <property name="value" value="10"/>
+        <property name="name" value="test"/>
+        <property name="value" value="100000000"/>
     </bean>
 
     <bean id="cache_1_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">

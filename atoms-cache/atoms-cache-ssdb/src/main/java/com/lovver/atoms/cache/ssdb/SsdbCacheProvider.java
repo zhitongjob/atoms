@@ -43,7 +43,7 @@ public class SsdbCacheProvider implements CacheProvider {
 //    }
 
 	@Override
-	public Cache buildCache(String regionName, boolean autoCreate, CacheEventListener listener,String client_id) throws CacheException {
+	public Cache buildCache(String regionName, boolean autoCreate, CacheEventListener listener) throws CacheException {
 		// 虽然这个实现在并发时有概率出现同一各regionName返回不同的实例
 		// 但返回的实例一次性使用,所以加锁了并没有增加收益
 		SsdbCache cache = caches.get(regionName);
@@ -51,7 +51,7 @@ public class SsdbCacheProvider implements CacheProvider {
 			synchronized (caches) {
 				Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
 				String ttlSeconds=mapTTL.get(regionName);
-				cache = new SsdbCache(regionName, ssdbDs,cacheConfig.getNamespace(),listener,host,ttlSeconds,client_id);
+				cache = new SsdbCache(regionName, ssdbDs,cacheConfig.getNamespace(),listener,host,ttlSeconds);
 				caches.put(regionName, cache);
 			}
 		}
