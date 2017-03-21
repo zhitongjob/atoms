@@ -20,12 +20,19 @@ public class CacheSingleKeyExpireTest {
         CacheChannel cc = CacheChannel.getInstance();
 //        cc.set("test_region", "dddd", "jobell_");"dddd"));
 //        System.out.println("===============" + cc.get("test_region", "dddd1"));
-        cc.set("test", "dddd1", "jobell_",10);
+        cc.set("test", "dddd1", "jobell_", 10);
 
 //        System.out.println("===============" + cc.get("test_region",
-        Thread.sleep(10000);
-        cc.evict("test","dddd1");
+//        Thread.sleep(10000);
+//        cc.evict("test","dddd1");
 //        System.out.println("===============" + cc.get("test_region", "dddd"));
-        System.out.println("===============" + cc.get("test", "dddd1"));
+        while (true) {
+            Thread.sleep(1000);
+            Object val=cc.get("test", "dddd1");
+            if(val==null){
+                break;
+            }
+//            System.out.println("===============" + val);
+        }
     }
 }

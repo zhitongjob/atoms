@@ -26,12 +26,11 @@ import com.lovver.atoms.serializer.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ZookeeperPubSub {
     private final static Logger log = LoggerFactory.getLogger(ZookeeperPubSub.class);
-
-    private static Serializer serializer = AtomsContext.getSerializer();
     protected static ZKClient zkClient;
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
@@ -41,7 +40,7 @@ public class ZookeeperPubSub {
 
     public ZookeeperPubSub(final AtomsBroadCastBean broadcastBean, final String root) {
 
-        System.out.println("<ZookeeperPubSub>");
+        log.debug("<ZookeeperPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.root = "/" + root;
@@ -56,7 +55,7 @@ public class ZookeeperPubSub {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("</ZookeeperPubSub>");
+        log.debug("</ZookeeperPubSub>");
     }
 
     private void connect() throws IOException, InterruptedException {

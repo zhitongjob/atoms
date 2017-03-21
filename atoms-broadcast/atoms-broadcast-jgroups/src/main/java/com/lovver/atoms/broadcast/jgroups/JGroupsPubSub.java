@@ -14,8 +14,11 @@ import com.lovver.atoms.config.AtomsBroadCastBean;
 import com.lovver.atoms.config.AtomsBroadCastConfigBean;
 import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JGroupsPubSub extends ReceiverAdapter {
+    private final static Logger log = LoggerFactory.getLogger(JGroupsPubSub.class);
     private static Serializer serializer = AtomsContext.getSerializer();
     protected JChannel channel;
 
@@ -25,7 +28,7 @@ public class JGroupsPubSub extends ReceiverAdapter {
 
     public JGroupsPubSub(final AtomsBroadCastBean broadcastBean) {
 
-        System.out.println("<JGroupsPubSub>");
+        log.debug("<JGroupsPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.xmlFile = broadcastConfig.getConfigFile();
@@ -38,7 +41,7 @@ public class JGroupsPubSub extends ReceiverAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("</JGroupsPubSub>");
+        log.debug("</JGroupsPubSub>");
 
     }
 

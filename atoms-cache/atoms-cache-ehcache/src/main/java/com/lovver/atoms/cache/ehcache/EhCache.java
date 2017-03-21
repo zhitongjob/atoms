@@ -10,12 +10,15 @@ import net.sf.ehcache.event.CacheEventListener;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.common.exception.CacheException;
 import com.lovver.atoms.context.AtomsContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EHCache
  */
-public class EhCache implements Cache{
+public class EhCache implements Cache,CacheEventListener{
 
+	private final static Logger log = LoggerFactory.getLogger(EhCache.class);
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
 
@@ -27,7 +30,7 @@ public class EhCache implements Cache{
 	 */
 	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener) {
 		this.cache = cache;
-//		this.cache.getCacheEventNotificationService().registerListener(this);
+		this.cache.getCacheEventNotificationService().registerListener(this);
 		this.listener = listener;
 	}
 
@@ -159,9 +162,6 @@ public class EhCache implements Cache{
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
 		}
-		if(listener != null){
-			listener.notifyElementEvicted(cache.getName(), key);
-		}
 	}
 
 	/* (non-Javadoc)
@@ -171,9 +171,6 @@ public class EhCache implements Cache{
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException {
 		cache.removeAll(keys);
-		if(listener != null){
-			listener.notifyElementEvicted(cache.getName(),keys);
-		}
 	}
 
 	/**
@@ -191,10 +188,6 @@ public class EhCache implements Cache{
 		}
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
-		}
-		
-		if(listener != null){
-			listener.notifyRemoveAll(cache.getName());
 		}
 	}
 
@@ -219,41 +212,46 @@ public class EhCache implements Cache{
 		throw new CloneNotSupportedException();
 	}
 
-//	@Override
-//	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-//
-//	}
-//
-//	@Override
-//	public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-//
-//	}
-//
-//	@Override
-//	public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-//
-//	}
-//
-//	@Override
-//	public void notifyElementEvicted(Ehcache cache, Element element) {
-//
-//	}
-//
-//	@Override
-//	public void notifyRemoveAll(Ehcache cache) {
-//
-//	}
-//
-//	@Override
-//	public void dispose() {
-//
-//	}
-//
-//	@Override
-//	public void notifyElementExpired(Ehcache cache, Element elem) {
-//		System.out.println("EhCache-notifyElementExpired[name]="+cache.getName()+"[key]="+elem.getObjectKey());
-//		if(listener != null){
-//			listener.notifyElementExpired(cache.getName(), elem.getObjectKey(),AtomsContext.CLIENT_ID);
-//		}
-//	}
+	@Override
+	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+		if(listener != null){
+			listener.notifyElementRemoved(cache.getName(), element.getObjectKey());
+		}
+	}
+
+	@Override
+	public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+
+	}
+
+	@Override
+	public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
+
+	}
+
+	@Override
+	public void notifyElementEvicted(Ehcache cache, Element element) {
+		if(listener != null){
+			listener.notifyElementEvicted(cache.getName(), element.getObjectKey());
+		}
+	}
+
+	@Override
+	public void notifyRemoveAll(Ehcache cache) {
+		if(listener != null){
+			listener.notifyRemoveAll(cache.getName());
+		}
+	}
+
+	@Override
+	public void dispose() {
+
+	}
+
+	@Override
+	public void notifyElementExpired(Ehcache cache, Element elem) {
+		if(listener != null){
+			listener.notifyElementExpired(cache.getName(), elem.getObjectKey());
+		}
+	}
 }

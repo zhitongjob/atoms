@@ -69,51 +69,6 @@ public class EhCacheProvider implements CacheProvider {
 			            		cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
 			            	}
 			                log.debug("started EHCache region: " + regionName);
-
-							cache.getCacheEventNotificationService().registerListener(new net.sf.ehcache.event.CacheEventListener(){
-
-								public Object clone() throws CloneNotSupportedException {
-									throw new CloneNotSupportedException();
-								}
-								@Override
-								public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-								}
-								@Override
-								public void notifyElementPut(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-								}
-								@Override
-								public void notifyElementUpdated(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-								}
-								@Override
-								public void notifyElementEvicted(Ehcache cache, Element element) {
-								}
-								@Override
-								public void notifyRemoveAll(Ehcache cache) {
-								}
-								@Override
-								public void dispose() {
-								}
-
-								private Map<String,CacheProvider> mCacheProvider=AtomsContext.getCacheProvider();
-
-								@Override
-								public void notifyElementExpired(Ehcache cache, Element elem) {
-									System.out.println("EhCache-notifyElementExpired[name]="+cache.getName()+"[key]="+elem.getObjectKey());
-									for(int i=(level+1);i<=mCacheProvider.size();i++){
-										Cache lCache=AtomsContext.getCache(cache.getName(), i);
-										Object key=elem.getObjectKey();
-										if(key instanceof List){
-											lCache.evict((List)key);
-										}else{
-											lCache.evict(key);
-										}
-									}
-									if(listener != null){
-										listener.notifyElementExpired(cache.getName(), elem.getObjectKey());
-									}
-								}
-							});
-//							this.cache.getCacheEventNotificationService().registerListener(this);
 			            }
 			            ehcache = new EhCache(cache, listener);
 //			            _CacheManager.put(regionName, ehcache);

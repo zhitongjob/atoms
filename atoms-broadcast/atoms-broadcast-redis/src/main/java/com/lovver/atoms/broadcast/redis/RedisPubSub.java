@@ -32,7 +32,6 @@ public class RedisPubSub extends BinaryJedisPubSub {
     private boolean isUsePool=false;
     public RedisPubSub(final AtomsBroadCastBean broadcastBean) {
 
-        System.out.println("<RedisPubSub>");
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.isUsePool = Boolean.valueOf(null2default(broadcastConfig.getUsePool(), "true"));
@@ -42,7 +41,6 @@ public class RedisPubSub extends BinaryJedisPubSub {
             }
         }
         jedis = getJedis();
-        System.out.println("</RedisPubSub>");
 
         service.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -101,9 +99,9 @@ public class RedisPubSub extends BinaryJedisPubSub {
     }
 
     public void pub(String channel, byte[] message) {
-        System.out.println("<RedisPubSub--pub>|channel=" + channel);
         try {
             jedis.connect();
+            log.debug("pub message"+message.toString());
             getJedis().publish(SafeEncoder.encode(channel), message);
         } catch (Exception ex ) {
             if(jedis!=null){
@@ -111,13 +109,10 @@ public class RedisPubSub extends BinaryJedisPubSub {
             }
             jedis = getJedis();
         }
-        System.out.println("RedisPubSub.jedis==" + this.jedis);
-        System.out.println("</RedisPubSub--pub>|channel=" + channel);
     }
 
 
     public void sub(BinaryJedisPubSub listener, String channel) {
-        System.out.println("<RedisPubSub--sub>|channel=" + channel);
         try {
             jedis.connect();
             getJedis().subscribe(listener, SafeEncoder.encode(channel));
@@ -127,7 +122,6 @@ public class RedisPubSub extends BinaryJedisPubSub {
             }
             jedis = getJedis();
         }
-        System.out.println("</RedisPubSub--sub>|channel=" + channel);
     }
 
     public void close(String channel) {

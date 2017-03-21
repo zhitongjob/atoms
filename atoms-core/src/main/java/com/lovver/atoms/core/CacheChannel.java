@@ -82,6 +82,7 @@ public class CacheChannel {
 			else {
                 for(int i=1;i<=mCacheProvider.size();i++) {
                     Cache cache = CacheManager.getCache(i, region, true);
+					cache.evict(key);
                     cache.put(key, value);
                 }
 			}
@@ -95,6 +96,7 @@ public class CacheChannel {
 			else {
 				for(int i=1;i<=mCacheProvider.size();i++) {
 					Cache cache = CacheManager.getCache(i, region, true);
+					cache.evict(key);
 					cache.put(key, value,expiretime);
 				}
 			}
