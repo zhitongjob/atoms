@@ -135,14 +135,14 @@ public class RedisPubSub extends BinaryJedisPubSub {
                     log.debug("on Message[delete]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
                     Object key = cmd.getKey();
                     if (key instanceof List) {
-                        cache.evict((List) key);
+                        cache.evict((List) key,false);
                     } else {
-                        cache.evict(cmd.getKey());
+                        cache.evict(cmd.getKey(),false);
                     }
                     break;
                 case Command.OPT_CLEAR_KEY:
                     log.debug("on Message[clear]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
-                    cache.clear();
+                    cache.clear(false);
                     break;
 
                 default:

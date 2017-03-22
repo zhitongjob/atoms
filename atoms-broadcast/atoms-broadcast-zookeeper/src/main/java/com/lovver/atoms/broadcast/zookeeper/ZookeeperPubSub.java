@@ -156,13 +156,13 @@ public class ZookeeperPubSub {
                 case Command.OPT_DELETE_KEY:
                     Object key = cmd.getKey();
                     if (key instanceof List) {
-                        cache.evict((List) key);
+                        cache.evict((List) key,false);
                     } else {
-                        cache.evict(cmd.getKey());
+                        cache.evict(cmd.getKey(),false);
                     }
                     break;
                 case Command.OPT_CLEAR_KEY:
-                    cache.clear();
+                    cache.clear(false);
                     break;
                 default:
             }

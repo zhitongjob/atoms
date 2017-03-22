@@ -195,6 +195,11 @@ public class SsdbCache implements Cache {
 	}
 
 	public void evict(Object key) throws CacheException {
+		evict(key,true);
+	}
+
+	@Override
+	public void evict(Object key, boolean broadFlg) throws CacheException {
 		if (key == null)
 			return;
 		SSDBPoolConnection conn=null;
@@ -204,10 +209,7 @@ public class SsdbCache implements Cache {
 			setparams.add(region2);
 			setparams.add(getKeyName(key));
 			conn.executeUpdate("hdel",setparams);
-//				if(ttlSeconds!=null){
-//					cache.expire(region2, ttlSeconds);
-//				}
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				listener.notifyElementRemoved(this.srcRegion, key);
 			}
 		} catch (Exception e) {
@@ -217,19 +219,15 @@ public class SsdbCache implements Cache {
 				conn.close();
 			}
 		}
-
-//		try (Jedis cache = pool.getResource()) {
-//			cache.hdel(region2, getKeyName(key));
-//			if(listener!=null&&AtomsContext.isMe(client_id)){
-//				listener.notifyElementRemoved(this.srcRegion, key,client_id);
-//			}
-//		} catch (Exception e) {
-//			throw new CacheException(e);
-//		}
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException {
+		evict(keys,true);
+	}
+
+	@Override
+	public void evict(List keys, boolean broadFlg) throws CacheException {
 		if(keys == null || keys.size() == 0)
 			return ;
 		SSDBPoolConnection conn=null;
@@ -244,7 +242,7 @@ public class SsdbCache implements Cache {
 			setparams.add(region2);
 			setparams.addAll(CollectionUtils.arrayToList(okeys));
 			conn.executeUpdate("hdel",setparams);
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				for(Object key:keys){
 					listener.notifyElementRemoved(this.srcRegion, key);
 				}
@@ -256,31 +254,9 @@ public class SsdbCache implements Cache {
 				conn.close();
 			}
 		}
-
-//		try (Jedis cache = pool.getResource()) {
-//			int size = keys.size();
-//			byte[][] okeys = new byte[size][];
-//			for(int i=0; i<size; i++){
-//				okeys[i] = getKeyName(keys.get(i));
-//			}
-//			cache.hdel(region2, okeys);
-//			if(listener!=null&&AtomsContext.isMe(client_id)){
-//				for(Object key:keys){
-//					listener.notifyElementRemoved(this.srcRegion, key,client_id);
-//				}
-//			}
-//		} catch (Exception e) {
-//			throw new CacheException(e);
-//		}
 	}
 
 	public List<String> keys() throws CacheException {
-//		try (Jedis cache = pool.getResource()) {
-//			return new ArrayList<String>(cache.hkeys(region));
-//		} catch (Exception e) {
-//			throw new CacheException(e);
-//		}
-
 		SSDBPoolConnection conn=null;
 		try {
 			conn= ssdbDs.getConnection();
@@ -301,22 +277,18 @@ public class SsdbCache implements Cache {
 	}
 
 	public void clear() throws CacheException {
-//		try (Jedis cache = pool.getResource()) {
-//			cache.del(region2);
-//			if(listener!=null&&AtomsContext.isMe(client_id)){
-//				listener.notifyRemoveAll(this.srcRegion,client_id);
-//			}
-//		} catch (Exception e) {
-//			throw new CacheException(e);
-//		}
+		clear(true);
+	}
 
+	@Override
+	public void clear(boolean broadFlg) throws CacheException {
 		SSDBPoolConnection conn=null;
 		try {
 			conn= ssdbDs.getConnection();
 			ArrayList<byte[]> setparams=new ArrayList<byte[]>();
 			setparams.add(region2);
 			conn.executeUpdate("del",setparams);
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				listener.notifyRemoveAll(this.srcRegion);
 			}
 		} catch (Exception e) {

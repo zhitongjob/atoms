@@ -152,11 +152,16 @@ public class RedisCache implements Cache {
 	}
 
 	public void evict(Object key) throws CacheException {
+		evict(key,true);
+	}
+
+	@Override
+	public void evict(Object key, boolean broadFlg) throws CacheException {
 		if (key == null)
 			return;
 		try (Jedis cache = pool.getResource()) {
 			cache.hdel(region2, getKeyName(key));
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				listener.notifyElementRemoved(this.srcRegion, key);
 			}
 		} catch (Exception e) {
@@ -166,6 +171,11 @@ public class RedisCache implements Cache {
 
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException {
+		evict(keys,true);
+	}
+
+	@Override
+	public void evict(List keys, boolean broadFlg) throws CacheException {
 		if(keys == null || keys.size() == 0)
 			return ;
 		try (Jedis cache = pool.getResource()) {
@@ -175,7 +185,7 @@ public class RedisCache implements Cache {
 				okeys[i] = getKeyName(keys.get(i));
 			}
 			cache.hdel(region2, okeys);
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				for(Object key:keys){
 					listener.notifyElementRemoved(this.srcRegion, key);
 				}
@@ -194,11 +204,16 @@ public class RedisCache implements Cache {
 	}
 
 	public void clear() throws CacheException {
+		clear(true);
+	}
+
+	@Override
+	public void clear(boolean broadFlg) throws CacheException {
 		try (Jedis cache = pool.getResource()) {
 			cache.del(region2);
-			if(listener!=null){
+			if(listener!=null&&broadFlg){
 				listener.notifyRemoveAll(this.srcRegion);
-			} 
+			}
 		} catch (Exception e) {
 			throw new CacheException(e);
 		}

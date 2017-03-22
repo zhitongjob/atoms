@@ -53,18 +53,22 @@ public interface Cache {
 	 * Remove an item from the cache
 	 */
 	public void evict(Object key) throws CacheException;
-	
+	public void evict(Object key,boolean broadFlg) throws CacheException;
 	/**
 	 * Batch remove cache objects
 	 * @param keys the cache keys to be evicted
 	 */
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException;
+
+	public void evict(List keys,boolean broadFlg) throws CacheException;
 	
 	/**
 	 * Clear the cache
 	 */
 	public void clear() throws CacheException;
+
+	public void clear(boolean broadFlg) throws CacheException;
 	
 	/**
 	 * Clean up

@@ -153,6 +153,10 @@ public class EhCache implements Cache,CacheEventListener{
 	 */
 	@Override
 	public void evict(Object key) throws CacheException {
+		evict(key,true);
+	}
+
+	public void evict(Object key,boolean broadFlg) throws CacheException{
 		try {
 			cache.remove( key );
 		}
@@ -162,6 +166,11 @@ public class EhCache implements Cache,CacheEventListener{
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
 		}
+		if(broadFlg==true) {
+			if (listener != null) {
+				listener.notifyElementRemoved(cache.getName(), key);
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -170,7 +179,16 @@ public class EhCache implements Cache,CacheEventListener{
 	@Override
 	@SuppressWarnings("rawtypes")
 	public void evict(List keys) throws CacheException {
+		evict(keys,true);
+	}
+
+	public void evict(List keys,boolean broadFlg) throws CacheException{
 		cache.removeAll(keys);
+		if(broadFlg==true) {
+			if (listener != null) {
+				listener.notifyElementRemoved(cache.getName(), keys);
+			}
+		}
 	}
 
 	/**
@@ -180,6 +198,10 @@ public class EhCache implements Cache,CacheEventListener{
 	 * @throws CacheException cache exception
 	 */
 	public void clear() throws CacheException {
+		clear(true);
+	}
+
+	public void clear(boolean broadFlg) throws CacheException {
 		try {
 			cache.removeAll();
 		}
@@ -188,6 +210,9 @@ public class EhCache implements Cache,CacheEventListener{
 		}
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
+		}
+		if (listener != null) {
+			listener.notifyRemoveAll(cache.getName());
 		}
 	}
 
@@ -214,9 +239,7 @@ public class EhCache implements Cache,CacheEventListener{
 
 	@Override
 	public void notifyElementRemoved(Ehcache cache, Element element) throws net.sf.ehcache.CacheException {
-		if(listener != null){
-			listener.notifyElementRemoved(cache.getName(), element.getObjectKey());
-		}
+
 	}
 
 	@Override
@@ -231,16 +254,14 @@ public class EhCache implements Cache,CacheEventListener{
 
 	@Override
 	public void notifyElementEvicted(Ehcache cache, Element element) {
-		if(listener != null){
-			listener.notifyElementEvicted(cache.getName(), element.getObjectKey());
-		}
+//		if(listener != null){
+//			listener.notifyElementEvicted(cache.getName(), element.getObjectKey());
+//		}
 	}
 
 	@Override
 	public void notifyRemoveAll(Ehcache cache) {
-		if(listener != null){
-			listener.notifyRemoveAll(cache.getName());
-		}
+
 	}
 
 	@Override
