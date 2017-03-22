@@ -48,6 +48,7 @@
 
     <bean id="broadcast" class="com.lovver.atoms.config.AtomsBroadCastBean">
         <property name="type" value="redis"/>
+        <property name="channel" value="test"/>
         <property name="broadcastConfig" ref="broadcastConfig"/>
         <qualifier value="main"/>
     </bean>

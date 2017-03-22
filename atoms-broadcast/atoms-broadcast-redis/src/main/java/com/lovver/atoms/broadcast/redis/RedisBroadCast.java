@@ -3,6 +3,7 @@ package com.lovver.atoms.broadcast.redis;
 import com.lovver.atoms.broadcast.BroadCast;
 import com.lovver.atoms.common.annotation.SPI;
 import com.lovver.atoms.config.AtomsBroadCastBean;
+import org.apache.commons.lang.StringUtils;
 
 @SPI("redis")
 public class RedisBroadCast implements BroadCast{
@@ -18,7 +19,11 @@ public class RedisBroadCast implements BroadCast{
 	public void init(AtomsBroadCastBean broadcastBean){
 		redisPubSub=new RedisPubSub(broadcastBean);
 //		redisPub=new RedisPubSub(broadcastBean);
-		channel =  channel_prefix;
+		if(StringUtils.isNotEmpty(broadcastBean.getChannel())) {
+			channel = channel_prefix+"_"+broadcastBean.getChannel();
+		}else{
+			channel = channel_prefix;
+		}
 		thread_subscribe = new Thread(new Runnable() {
 			@Override
 			public void run() {

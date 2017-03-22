@@ -8,6 +8,9 @@ public class AtomsBroadCastBean {
 	
 	@XStreamAsAttribute
 	private String type;
+
+	@XStreamAsAttribute
+	private String channel;
 	
 	private AtomsBroadCastConfigBean broadcastConfig;
 //	
@@ -32,23 +35,12 @@ public class AtomsBroadCastBean {
 	public void setBroadcastConfig(AtomsBroadCastConfigBean broadcastConfig) {
 		this.broadcastConfig = broadcastConfig;
 	}
-	
-	
 
-//	public String getHost() {
-//		return host;
-//	}
-//
-//	public void setHost(String host) {
-//		this.host = host;
-//	}
-//
-//	public String getPort() {
-//		return port;
-//	}
-//
-//	public void setPort(String port) {
-//		this.port = port;
-//	}
+	public String getChannel() {
+		return channel;
+	}
 
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
 }

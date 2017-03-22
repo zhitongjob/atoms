@@ -27,7 +27,6 @@ public class RedisPubSub extends BinaryJedisPubSub {
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
 
     private static JedisPool pool;
-    private Jedis jedis;//
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
     private boolean isUsePool = false;
@@ -42,7 +41,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
                 this.pool = buildPool(broadcastConfig);
             }
         }
-        jedis = getJedis();
+//        jedis = getJedis();
     }
 
 
@@ -99,22 +98,11 @@ public class RedisPubSub extends BinaryJedisPubSub {
 
 
     public void sub(BinaryJedisPubSub listener, String channel) {
-//        try {
-////            jedis.connect();
-//            this.jedis.subscribe(listener, SafeEncoder.encode(channel));
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            log.error("subscribe has error.", ex);
-////            if(jedis!=null){
-////                jedis.close();
-////            }
-////            jedis = getJedis();
-//        }
-
+        log.debug("subscribe channel["+channel+"]");
         Jedis jedisPub = null;
         try {
             jedisPub = getJedis();
-            this.jedis.subscribe(listener, SafeEncoder.encode(channel));
+            jedisPub.subscribe(listener, SafeEncoder.encode(channel));
         } catch (Exception ex) {
             log.error("subscribe has error.", ex);
         } finally {
@@ -122,8 +110,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
         }
     }
 
-    public void close(String channel) {
-        jedis.close();
+    public void close() {
         if (this.isUsePool) {
             this.pool.destroy();
         }
@@ -145,7 +132,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
             Cache cache = AtomsContext.getCache(cmd.getRegion(), 1);
             switch (cmd.getOperator()) {
                 case Command.OPT_DELETE_KEY:
-
+                    log.debug("on Message[delete]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
                     Object key = cmd.getKey();
                     if (key instanceof List) {
                         cache.evict((List) key);
@@ -154,6 +141,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
                     }
                     break;
                 case Command.OPT_CLEAR_KEY:
+                    log.debug("on Message[clear]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
                     cache.clear();
                     break;
 
