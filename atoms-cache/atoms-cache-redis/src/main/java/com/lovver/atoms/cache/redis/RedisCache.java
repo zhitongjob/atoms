@@ -95,7 +95,7 @@ public class RedisCache implements Cache {
 	}
 
 	public void put(Object key, Object value) throws CacheException {
-		System.out.println(this.host+" ==================put reids");
+		System.out.println(" ==================put redis["+this.region+"]["+key+"]");
 		if (key == null){
 			return;
 		}

@@ -3,26 +3,25 @@ package com.lovver.atoms;
 import com.lovver.atoms.core.CacheChannel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-/**
- * Created by Administrator on 2017/3/20.
- */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {"classpath:applicationContext.xml"})
 @TransactionConfiguration(defaultRollback = false)
-public class CacheSpringContainerTest {
+public class GetClient1 {
 
-    @Test
-    public void run() throws InterruptedException {
-        CacheChannel cc = CacheChannel.getInstance();
+	@Test
+	public  void main() throws InterruptedException {
+		CacheChannel cc=CacheChannel.getInstance();
+		
+		while(true){
+			Object dd=cc.get("hello", "dddd");
+			System.out.println("=============== CacheChannelTest2"+dd);
+			Thread.sleep(1000);
+		}
+		
+	}
 
-        cc.set("test", "dddd1", "jobell" );
-        String val=(String)cc.get("test","dddd1");
-        assert ("jobell".equals(val));
-    }
 }

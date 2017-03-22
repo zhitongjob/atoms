@@ -17,6 +17,8 @@ import com.lovver.atoms.config.AtomsBroadCastBean;
 import com.lovver.atoms.config.AtomsBroadCastConfigBean;
 import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
+import sun.rmi.runtime.Log;
+
 import java.util.concurrent.Executors;
 
 public class RedisPubSub extends BinaryJedisPubSub {
@@ -24,44 +26,27 @@ public class RedisPubSub extends BinaryJedisPubSub {
 
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
 
-    private static Serializer serializer = AtomsContext.getSerializer();
     private static JedisPool pool;
     private Jedis jedis;//
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
-    private boolean isUsePool=false;
+    private boolean isUsePool = false;
+
     public RedisPubSub(final AtomsBroadCastBean broadcastBean) {
 
         this.broadcastBean = broadcastBean;
         this.broadcastConfig = broadcastBean.getBroadcastConfig();
         this.isUsePool = Boolean.valueOf(null2default(broadcastConfig.getUsePool(), "true"));
-        if (isUsePool){
-            if(this.pool==null) {
+        if (isUsePool) {
+            if (this.pool == null) {
                 this.pool = buildPool(broadcastConfig);
             }
         }
         jedis = getJedis();
-
-        service.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (!jedis.ping().equals("PONG")) {
-                        jedis.connect();
-                    }
-                }catch(Exception e){
-                    if(jedis!=null){
-                        jedis.close();
-                    }
-                    jedis = getJedis();
-                }
-
-            }
-        },0,1, TimeUnit.SECONDS);
     }
 
 
-    private Jedis getJedisWithoutPool(){
+    private Jedis getJedisWithoutPool() {
         String host = this.broadcastConfig.getHost();
         String port = broadcastConfig.getPort();
         Jedis jedis;//
@@ -83,6 +68,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
         }
         return jedis;
     }
+
     private Jedis getJedis() {
         if (this.broadcastBean == null) {
             this.broadcastBean = AtomsContext.getAtomsBroadCastBean();
@@ -91,42 +77,54 @@ public class RedisPubSub extends BinaryJedisPubSub {
             this.broadcastConfig = this.broadcastBean.getBroadcastConfig();
         }
 
-        if(this.isUsePool){
+        if (this.isUsePool) {
             return this.pool.getResource();
-        }else{
+        } else {
             return this.getJedisWithoutPool();
         }
     }
 
     public void pub(String channel, byte[] message) {
+        Jedis jedisPub = null;
         try {
-            jedis.connect();
-            log.debug("pub message"+message.toString());
-            getJedis().publish(SafeEncoder.encode(channel), message);
-        } catch (Exception ex ) {
-            if(jedis!=null){
-                jedis.close();
-            }
-            jedis = getJedis();
+            jedisPub = getJedis();
+            log.debug("pub message" + message.toString());
+            jedisPub.publish(SafeEncoder.encode(channel), message);
+        } catch (Exception ex) {
+            log.error("pub message error.", ex);
+        } finally {
+            jedisPub.close();
         }
     }
 
 
     public void sub(BinaryJedisPubSub listener, String channel) {
+//        try {
+////            jedis.connect();
+//            this.jedis.subscribe(listener, SafeEncoder.encode(channel));
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            log.error("subscribe has error.", ex);
+////            if(jedis!=null){
+////                jedis.close();
+////            }
+////            jedis = getJedis();
+//        }
+
+        Jedis jedisPub = null;
         try {
-            jedis.connect();
-            getJedis().subscribe(listener, SafeEncoder.encode(channel));
+            jedisPub = getJedis();
+            this.jedis.subscribe(listener, SafeEncoder.encode(channel));
         } catch (Exception ex) {
-            if(jedis!=null){
-                jedis.close();
-            }
-            jedis = getJedis();
+            log.error("subscribe has error.", ex);
+        } finally {
+            jedisPub.close();
         }
     }
 
     public void close(String channel) {
         jedis.close();
-        if(this.isUsePool){
+        if (this.isUsePool) {
             this.pool.destroy();
         }
     }
@@ -156,81 +154,81 @@ public class RedisPubSub extends BinaryJedisPubSub {
                     }
                     break;
                 case Command.OPT_CLEAR_KEY:
-                        cache.clear();
+                    cache.clear();
                     break;
 
                 default:
-				log.warn("Unknown message type = " + cmd.getOperator());
+                    log.warn("Unknown message type = " + cmd.getOperator());
             }
         } catch (Exception e) {
             e.printStackTrace();
-			log.error("Unable to handle received msg", e);
+            log.error("Unable to handle received msg", e);
         }
     }
 
     public JedisPool buildPool(AtomsBroadCastConfigBean broadcastConfig) throws CacheException {
         JedisPoolConfig config = new JedisPoolConfig();
 
-        String host = null2default(broadcastConfig.getHost(),"127.0.0.1");
+        String host = null2default(broadcastConfig.getHost(), "127.0.0.1");
         String password = broadcastConfig.getPassword();
-        if(org.apache.commons.lang.StringUtils.isEmpty(password)){
-            password=null;
+        if (org.apache.commons.lang.StringUtils.isEmpty(password)) {
+            password = null;
         }
-        String sPort=null2default(broadcastConfig.getPort(),"6379");
+        String sPort = null2default(broadcastConfig.getPort(), "6379");
         int port = Integer.parseInt(sPort);
 
-        String sTimeout=null2default(broadcastConfig.getTimeout(),"2000");
+        String sTimeout = null2default(broadcastConfig.getTimeout(), "2000");
         int timeout = Integer.parseInt(sTimeout);//getProperty(props, "timeout", 2000);
 
-        String sDatabase=null2default(broadcastConfig.getDatabase(),"0");
-        int database =Integer.parseInt(sDatabase);
+        String sDatabase = null2default(broadcastConfig.getDatabase(), "0");
+        int database = Integer.parseInt(sDatabase);
 
-        String sBlockWhenExhausted=null2default(broadcastConfig.getBlockWhenExhausted(),"true");
+        String sBlockWhenExhausted = null2default(broadcastConfig.getBlockWhenExhausted(), "true");
         config.setBlockWhenExhausted(Boolean.parseBoolean(sBlockWhenExhausted));
 
-        String sMaxIdle=null2default(broadcastConfig.getMaxIdle(),"10");
+        String sMaxIdle = null2default(broadcastConfig.getMaxIdle(), "10");
         config.setMaxIdle(Integer.parseInt(sMaxIdle));
 
-        String sMinIdle=null2default(broadcastConfig.getMinIdle(),"5");
+        String sMinIdle = null2default(broadcastConfig.getMinIdle(), "5");
         config.setMinIdle(Integer.parseInt(sMinIdle));
 
-        String sMaxTotal=null2default(broadcastConfig.getMaxTotal(), "10000");
+        String sMaxTotal = null2default(broadcastConfig.getMaxTotal(), "10000");
         config.setMaxTotal(Integer.parseInt(sMaxTotal));
 
-        String sMaxWait=null2default(broadcastConfig.getMaxWaitMillis(), "100");
+        String sMaxWait = null2default(broadcastConfig.getMaxWaitMillis(), "100");
         config.setMaxWaitMillis(Integer.parseInt(sMaxWait));
 
-        String sTestWhileIdle=null2default(broadcastConfig.getTestWhileIdle(), "false");
+        String sTestWhileIdle = null2default(broadcastConfig.getTestWhileIdle(), "false");
         config.setTestWhileIdle(Boolean.parseBoolean(sTestWhileIdle));
 
-        String sTestOnBorrow=null2default(broadcastConfig.getTestOnBorrow(), "true");
+        String sTestOnBorrow = null2default(broadcastConfig.getTestOnBorrow(), "true");
         config.setTestOnBorrow(Boolean.parseBoolean(sTestOnBorrow));
 
-        String sTestOnReturn =null2default(broadcastConfig.getTestOnReturn(), "false");
+        String sTestOnReturn = null2default(broadcastConfig.getTestOnReturn(), "false");
         config.setTestOnReturn(Boolean.parseBoolean(sTestOnReturn));
 
-        String sNumTestsPerEvictionRun=null2default(broadcastConfig.getNumTestsPerEvictionRun(), "10");
+        String sNumTestsPerEvictionRun = null2default(broadcastConfig.getNumTestsPerEvictionRun(), "10");
         config.setNumTestsPerEvictionRun(Integer.parseInt(sNumTestsPerEvictionRun));
 
-        String sMinEvictableIdelTimeMillis=null2default(broadcastConfig.getMinEvictableIdleTimeMillis(), "1000");
+        String sMinEvictableIdelTimeMillis = null2default(broadcastConfig.getMinEvictableIdleTimeMillis(), "1000");
         config.setMinEvictableIdleTimeMillis(Integer.parseInt(sMinEvictableIdelTimeMillis));
 
-        String sSoftMinEvictableIdleTimeMillis=null2default(broadcastConfig.getSoftMinEvictableIdleTimeMillis(), "10");
+        String sSoftMinEvictableIdleTimeMillis = null2default(broadcastConfig.getSoftMinEvictableIdleTimeMillis(), "10");
         config.setSoftMinEvictableIdleTimeMillis(Integer.parseInt(sSoftMinEvictableIdleTimeMillis));
 
-        String timeBetweenEvictionRunsMillis=null2default(broadcastConfig.getTimeBetweenEvictionRunsMillis(), "10");
+        String timeBetweenEvictionRunsMillis = null2default(broadcastConfig.getTimeBetweenEvictionRunsMillis(), "10");
         config.setTimeBetweenEvictionRunsMillis(Integer.parseInt(timeBetweenEvictionRunsMillis));
 
-        String lifo=null2default(broadcastConfig.getLifo(), "false");
+        String lifo = null2default(broadcastConfig.getLifo(), "false");
         config.setLifo(Boolean.parseBoolean(lifo));
         pool = new JedisPool(config, host, port, timeout, password, database);
         return pool;
     }
 
-    private String null2default(String value,String defalutValue){
-        if(org.apache.commons.lang.StringUtils.isEmpty(value)){
+    private String null2default(String value, String defalutValue) {
+        if (org.apache.commons.lang.StringUtils.isEmpty(value)) {
             return defalutValue;
-        }else{
+        } else {
             return value;
         }
     }

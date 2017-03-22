@@ -33,7 +33,7 @@ public class EhCacheProvider implements CacheProvider {
 	private final static Logger log = LoggerFactory.getLogger(EhCacheProvider.class);
 
 	private CacheManager manager;
-//	private ConcurrentHashMap<String, EhCache> _CacheManager = new ConcurrentHashMap<String, EhCache> () ;
+	private ConcurrentHashMap<String, EhCache> _CacheManager = new ConcurrentHashMap<String, EhCache> () ;
 	private int level;
 
 	@Override
@@ -44,13 +44,13 @@ public class EhCacheProvider implements CacheProvider {
 
 
     public EhCache buildCache(String regionName, boolean autoCreate,final CacheEventListener listener) throws CacheException {
-    	EhCache ehcache = null;
-//    	EhCache ehcache = _CacheManager.get(regionName);
-//    	if(ehcache == null && autoCreate){
-//		    try {
-//	            synchronized(_CacheManager){
-//	            	ehcache = _CacheManager.get(regionName);
-//	            	if(ehcache == null){
+//    	EhCache ehcache = null;
+    	EhCache ehcache = _CacheManager.get(regionName);
+    	if(ehcache == null && autoCreate){
+		    try {
+	            synchronized(_CacheManager){
+	            	ehcache = _CacheManager.get(regionName);
+	            	if(ehcache == null){
 			            net.sf.ehcache.Cache cache = manager.getCache(regionName);
 			            if (cache == null) {
 			            	log.warn("Could not find configuration [" + regionName + "]; using defaults.");
@@ -71,14 +71,14 @@ public class EhCacheProvider implements CacheProvider {
 			                log.debug("started EHCache region: " + regionName);
 			            }
 			            ehcache = new EhCache(cache, listener);
-//			            _CacheManager.put(regionName, ehcache);
-//	            	}
-//	            }
-//		    }
-//	        catch (net.sf.ehcache.CacheException e) {
-//	            throw new CacheException(e);
-//	        }
-//    	}
+			            _CacheManager.put(regionName, ehcache);
+	            	}
+	            }
+		    }
+	        catch (net.sf.ehcache.CacheException e) {
+	            throw new CacheException(e);
+	        }
+    	}
         return ehcache;
     }
 

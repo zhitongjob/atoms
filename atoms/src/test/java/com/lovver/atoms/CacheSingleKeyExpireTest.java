@@ -18,21 +18,10 @@ public class CacheSingleKeyExpireTest {
     @Test
     public void run() throws InterruptedException {
         CacheChannel cc = CacheChannel.getInstance();
-//        cc.set("test_region", "dddd", "jobell_");"dddd"));
-//        System.out.println("===============" + cc.get("test_region", "dddd1"));
-        cc.set("test", "dddd1", "jobell_", 10);
+        cc.set("test", "dddd1", "jobell", 3);
 
-//        System.out.println("===============" + cc.get("test_region",
-//        Thread.sleep(10000);
-//        cc.evict("test","dddd1");
-//        System.out.println("===============" + cc.get("test_region", "dddd"));
-        while (true) {
-            Thread.sleep(1000);
-            Object val=cc.get("test", "dddd1");
-            if(val==null){
-                break;
-            }
-//            System.out.println("===============" + val);
-        }
+        Thread.sleep(2000);
+        Object value = cc.get("test", "dddd1");
+        assert (value == null);
     }
 }

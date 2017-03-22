@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.cache.CacheProvider;
 import com.lovver.atoms.common.exception.CacheException;
@@ -76,11 +77,12 @@ public class CacheChannel {
 	 *            : Cache value
 	 */
 	public void set(String region, Object key, Object value) {
+		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa["+region+"]["+key+"]=="+ JSON.toJSONString(value));
 		if (region != null && key != null) {
 			if (value == null)
 				evict(region, key);
 			else {
-                for(int i=1;i<=mCacheProvider.size();i++) {
+                for(int i=mCacheProvider.size();i>0;i--) {
                     Cache cache = CacheManager.getCache(i, region, true);
 					cache.evict(key);
                     cache.put(key, value);
@@ -94,7 +96,7 @@ public class CacheChannel {
 			if (value == null)
 				evict(region, key);
 			else {
-				for(int i=1;i<=mCacheProvider.size();i++) {
+				for(int i=mCacheProvider.size();i>0;i--) {
 					Cache cache = CacheManager.getCache(i, region, true);
 					cache.evict(key);
 					cache.put(key, value,expiretime);
@@ -128,7 +130,7 @@ public class CacheChannel {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void batchEvict(String region, List keys) {
-        for(int i=1;i<=mCacheProvider.size();i++) {
+		for(int i=mCacheProvider.size();i>0;i--) {
             Cache cache = CacheManager.getCache(i, region, true);
             cache.evict(keys);
         }
@@ -141,7 +143,7 @@ public class CacheChannel {
 	 *            : Cache region name
 	 */
 	public void clear(String region) throws CacheException {
-        for(int i=1;i<=mCacheProvider.size();i++) {
+		for(int i=mCacheProvider.size();i>0;i--) {
             Cache cache = CacheManager.getCache(i, region, true);
             cache.clear();
         }

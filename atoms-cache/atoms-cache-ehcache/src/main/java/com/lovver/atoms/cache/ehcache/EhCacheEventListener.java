@@ -47,38 +47,6 @@ public class EhCacheEventListener implements CacheEventListener {
     }
 
     @Override
-    public void notifyElementPut(String region, Object key, Object value)
-            throws CacheException {
-//		try{
-//			System.out.println("notifyElementPut");
-//			if(null!=broadCast){
-//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value),client_id);
-//				if(AtomsContext.isMe(client_id)){
-//					broadCast.broadcast(JSON.toJSONString(cmd));
-//				}
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-    }
-
-    @Override
-    public void notifyElementUpdated(String region, Object key, Object value)
-            throws CacheException {
-//		try{
-//			System.out.println("notifyElementUpdated");
-//			if(null!=broadCast){
-//				Command cmd=new Command(Command.OPT_PUT_KEY,region,key,serializer.serialize(value),client_id);
-//				if(AtomsContext.isMe(client_id)){
-//					broadCast.broadcast(JSON.toJSONString(cmd));
-//				}
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-    }
-
-    @Override
     public void notifyElementEvicted(String region, Object key) {
         log.debug("notifyElementEvicted["+region+"]["+key+"]");
         if (null != broadCast) {
@@ -94,6 +62,17 @@ public class EhCacheEventListener implements CacheEventListener {
             Command cmd = new Command(Command.OPT_DELETE_KEY, region, "");
             broadCast.broadcast(cmd.toBuffers());
         }
+    }
+
+    @Override
+    public void notifyElementPut(String region, Object key, Object value)
+            throws CacheException {
+    }
+
+    @Override
+    public void notifyElementUpdated(String region, Object key, Object value)
+            throws CacheException {
+
     }
 
     private int level;

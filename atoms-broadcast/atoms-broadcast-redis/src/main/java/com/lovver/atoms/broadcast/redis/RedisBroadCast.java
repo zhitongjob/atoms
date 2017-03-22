@@ -10,25 +10,25 @@ public class RedisBroadCast implements BroadCast{
 	private static String channel_prefix="atoms_channel";
 	private String channel = null;
 	
-	private RedisPubSub redisSub;
-	private RedisPubSub redisPub;
+//	private RedisPubSub redisSub;
+	private RedisPubSub redisPubSub;
 	
 	private Thread thread_subscribe;
 
 	public void init(AtomsBroadCastBean broadcastBean){
-		redisSub=new RedisPubSub(broadcastBean); 
-		redisPub=new RedisPubSub(broadcastBean); 
+		redisPubSub=new RedisPubSub(broadcastBean);
+//		redisPub=new RedisPubSub(broadcastBean);
 		channel =  channel_prefix;
 		thread_subscribe = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				redisSub.sub(redisSub, channel);
+				redisPubSub.sub(redisPubSub, channel);
 			}
 		});
 		thread_subscribe.start();
 	}
 
 	public void broadcast(byte[] message){
-		redisPub.pub(channel, message);
+		redisPubSub.pub(channel, message);
 	}
 }

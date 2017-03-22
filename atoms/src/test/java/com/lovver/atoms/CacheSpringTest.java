@@ -18,12 +18,14 @@ public class CacheSpringTest {
 
         CacheChannel cc=CacheChannel.getInstance();
 
-        for(int i=0;i<10;i++){
-            cc.set("hello", "dddd", "jobell_"+i,1);
-            System.out.println("==============="+cc.get("hello", "dddd"));
-            Thread.sleep(2000);
+        while(true){
+            //cc.set("test", "dddd1", "jobell_"+i);
+            System.out.println("==============="+cc.get("test", "dddd1"));
+            Thread.sleep(1000);
         }
-        cc.evict("hello","dddd");
+
+//        System.exit(0);
+//        cc.evict("hello","dddd");
     }
 
 }
