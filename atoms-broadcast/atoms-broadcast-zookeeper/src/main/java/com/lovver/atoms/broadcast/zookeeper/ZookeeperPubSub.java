@@ -33,6 +33,7 @@ public class ZookeeperPubSub {
     private final static Logger log = LoggerFactory.getLogger(ZookeeperPubSub.class);
     protected static ZKClient zkClient;
     private AtomsBroadCastConfigBean broadcastConfig;
+    private CopyOnWriteArraySet<String> broadsetConfig=AtomsContext.getBroadsetConfig();
     private AtomsBroadCastBean broadcastBean;
     private static final int SESSION_TIME = 2000;
     public static final String authScheme = "digest";
@@ -163,6 +164,16 @@ public class ZookeeperPubSub {
                     break;
                 case Command.OPT_CLEAR_KEY:
                     cache.clear(false);
+                    break;
+                case Command.OPT_PUT_KEY:
+                    log.debug("on Message[put]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
+                    if(broadsetConfig==null||(broadsetConfig!=null&&broadsetConfig.contains(cmd.getBroadsetKey()))){
+                        if(cmd.getExpiretime()>0){
+                            cache.put(cmd.getKey(), cmd.getVal(),cmd.getExpiretime(), false);
+                        }else {
+                            cache.put(cmd.getKey(), cmd.getVal(), false);
+                        }
+                    }
                     break;
                 default:
             }

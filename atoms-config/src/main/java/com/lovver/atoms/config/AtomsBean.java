@@ -8,12 +8,13 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("atoms")
 public class AtomsBean {
-	
-
 
 	private AtomsBroadCastBean broadcast;
 
 	private AtomsSerializerBean serializer;
+
+	@XStreamAsAttribute
+	private String application="atoms";
 	
 	@XStreamImplicit(itemFieldName = "cache")  
 	private List<AtomsCacheBean> cache;
@@ -40,5 +41,13 @@ public class AtomsBean {
 
 	public void setCache(List<AtomsCacheBean> cache) {
 		this.cache = cache;
+	}
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
 	}
 }

@@ -49,7 +49,18 @@
     <bean id="broadcast" class="com.lovver.atoms.config.AtomsBroadCastBean">
         <property name="type" value="redis"/>
         <property name="broadcastConfig" ref="broadcastConfig"/>
-        <qualifier value="main"/>
+        <property name="lstBroadset" >
+            <list>
+                <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                    <property name="region" value="hello"/>
+                    <property name="key" value="test"/>
+                </bean>
+                <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                    <property name="region" value="joregion"/>
+                    <property name="key" value="jokey"/>
+                </bean>
+            </list>
+        </property>
     </bean>
     <bean id="broadcastConfig" class="com.lovver.atoms.config.AtomsBroadCastConfigBean">
         <property name="host" value="${cache.2.host}"/>

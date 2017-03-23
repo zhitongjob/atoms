@@ -31,6 +31,7 @@
     </bean>
 
     <bean id="atomsBean" class="com.lovver.atoms.config.AtomsBean">
+        <property name="application" value="lottery_cache"/>
         <property name="broadcast" ref="broadcast"/>
         <property name="serializer" ref="serializer"/>
         <property name="cache" >
@@ -50,8 +51,21 @@
         <property name="type" value="redis"/>
         <property name="channel" value="test"/>
         <property name="broadcastConfig" ref="broadcastConfig"/>
-        <qualifier value="main"/>
+        <property name="lstBroadset" >
+                <list>
+                    <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                        <property name="region" value="hello"/>
+                        <property name="key" value="dddd"/>
+                    </bean>
+                    <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                        <property name="region" value="joregion"/>
+                        <property name="key" value="jokey"/>
+                    </bean>
+                </list>
+        </property>
     </bean>
+
+
     <bean id="broadcastConfig" class="com.lovver.atoms.config.AtomsBroadCastConfigBean">
         <property name="host" value="192.168.1.85"/>
         <property name="port" value="6380"/>

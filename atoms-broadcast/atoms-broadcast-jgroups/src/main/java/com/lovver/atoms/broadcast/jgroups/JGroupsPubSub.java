@@ -3,6 +3,7 @@ package com.lovver.atoms.broadcast.jgroups;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.lovver.atoms.config.AtomsConfig;
 import org.jgroups.*;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 public class JGroupsPubSub extends ReceiverAdapter {
     private final static Logger log = LoggerFactory.getLogger(JGroupsPubSub.class);
     private static Serializer serializer = AtomsContext.getSerializer();
+    private CopyOnWriteArraySet<String> broadsetConfig=AtomsContext.getBroadsetConfig();
     protected JChannel channel;
 
     private AtomsBroadCastConfigBean broadcastConfig;
@@ -102,6 +104,16 @@ public class JGroupsPubSub extends ReceiverAdapter {
                     break;
                 case Command.OPT_CLEAR_KEY:
                     cache.clear(false);
+                    break;
+                case Command.OPT_PUT_KEY:
+                    log.debug("on Message[put]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
+                    if(broadsetConfig==null||(broadsetConfig!=null&&broadsetConfig.contains(cmd.getBroadsetKey()))){
+                        if(cmd.getExpiretime()>0){
+                            cache.put(cmd.getKey(), cmd.getVal(),cmd.getExpiretime(), false);
+                        }else {
+                            cache.put(cmd.getKey(), cmd.getVal(), false);
+                        }
+                    }
                     break;
                 default:
             }

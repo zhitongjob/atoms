@@ -2,6 +2,9 @@ package com.lovver.atoms.config;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import java.util.List;
 
 @XStreamAlias("broadcast")
 public class AtomsBroadCastBean {
@@ -13,6 +16,9 @@ public class AtomsBroadCastBean {
 	private String channel;
 	
 	private AtomsBroadCastConfigBean broadcastConfig;
+
+    @XStreamImplicit(itemFieldName = "broadset")
+    private List<AtomsBroadsetBean> lstBroadset;
 //	
 //	@XStreamAsAttribute
 //	private String host;
@@ -43,4 +49,12 @@ public class AtomsBroadCastBean {
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
+
+    public List<AtomsBroadsetBean> getLstBroadset() {
+        return lstBroadset;
+    }
+
+    public void setLstBroadset(List<AtomsBroadsetBean> lstBroadset) {
+        this.lstBroadset = lstBroadset;
+    }
 }

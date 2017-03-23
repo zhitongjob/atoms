@@ -25,7 +25,7 @@ public class RedisPubSub extends BinaryJedisPubSub {
     private final static Logger log = LoggerFactory.getLogger(RedisPubSub.class);
 
     private ScheduledExecutorService service = Executors.newScheduledThreadPool(10);
-
+    private CopyOnWriteArraySet<String> broadsetConfig=AtomsContext.getBroadsetConfig();
     private static JedisPool pool;
     private AtomsBroadCastConfigBean broadcastConfig;
     private AtomsBroadCastBean broadcastBean;
@@ -146,7 +146,13 @@ public class RedisPubSub extends BinaryJedisPubSub {
                     break;
                 case Command.OPT_PUT_KEY:
                     log.debug("on Message[put]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
-                    cache.put(cmd.getKey(),cmd.getVal(),false);
+                    if(broadsetConfig==null||(broadsetConfig!=null&&broadsetConfig.contains(cmd.getBroadsetKey()))){
+                        if(cmd.getExpiretime()>0){
+                            cache.put(cmd.getKey(), cmd.getVal(),cmd.getExpiretime(), false);
+                        }else {
+                            cache.put(cmd.getKey(), cmd.getVal(), false);
+                        }
+                    }
                     break;
                 default:
                     log.warn("Unknown message type = " + cmd.getOperator());

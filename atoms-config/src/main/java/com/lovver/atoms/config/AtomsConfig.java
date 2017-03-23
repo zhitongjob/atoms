@@ -86,7 +86,7 @@ public class AtomsConfig {
             List<AtomsCacheBean> lstAtomsCacheBean=atomsBean.getCache();
             for(AtomsCacheBean atomsCacheBean: lstAtomsCacheBean){
                 AtomsCacheTTLBean atomsCacheTTLBean=atomsCacheBean.getCacheTTL();
-                if(!atomsCacheBean.getLevel().equals("1")&&(atomsCacheTTLBean.getLstTTL()!=null&&atomsCacheTTLBean.getLstTTL().size()>0)){
+                if(!atomsCacheBean.getLevel().equals("1")&&atomsCacheTTLBean!=null&&(atomsCacheTTLBean.getLstTTL()!=null||atomsCacheTTLBean.getLstTTL().size()>0)){
                     log.error("do not config ttl in level > 1");
                     throw new RuntimeException("ttl config only in level 1 cache,there is a ttl config in other level cache");
                 }

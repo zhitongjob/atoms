@@ -236,4 +236,8 @@ public class Command {
     public void setExpiretime(int expiretime) {
         this.expiretime = expiretime;
     }
+
+    public String getBroadsetKey(){
+	    return this.region+"_"+this.key;
+    }
 }

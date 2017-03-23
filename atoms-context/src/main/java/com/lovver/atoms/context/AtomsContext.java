@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.lovver.atoms.broadcast.BroadCast;
 import com.lovver.atoms.broadcast.BroadCastFactory;
@@ -27,13 +28,20 @@ public class AtomsContext {
 	private static ConcurrentHashMap<String,AtomsCacheBean> cacheConfig=new ConcurrentHashMap<String,AtomsCacheBean>();
 //	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
 	private static ConcurrentHashMap<String,ConcurrentHashMap<String,AtomsCacheTTLConfigBean>> cahcelevelTTLConfig=new ConcurrentHashMap<String,ConcurrentHashMap<String,AtomsCacheTTLConfigBean>>();
-
+    private static CopyOnWriteArraySet<String> broadsetConfig = new CopyOnWriteArraySet<String>();
 	static {
 		try {
 			serializer=SerializerFactory.getSerializer(atomBean.getSerializer());
 			List<AtomsCacheBean> lstCache= atomBean.getCache();
-			
-			broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
+
+			List<AtomsBroadsetBean> lstBroadSetConfig=atomBean.getBroadcast().getLstBroadset();
+			if(lstBroadSetConfig!=null){
+			    for(AtomsBroadsetBean broadset:lstBroadSetConfig){
+                    broadsetConfig.add(broadset.getRegion()+"_"+broadset.getKey());
+                }
+            }
+
+            broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
 			
 			ConcurrentHashMap<String,AtomsCacheTTLConfigBean> levelTTLConfig=null;
 			for(AtomsCacheBean cacheBean:lstCache){
@@ -114,6 +122,16 @@ public class AtomsContext {
 		Cache cache=cacheProvider.buildCache(region, true, listener);
 		return new Object[]{cache,listener};
 	}
-	
 
+	public static String getApplicationName(){
+		return atomBean.getApplication();
+	}
+
+
+	public static CopyOnWriteArraySet<String> getBroadsetConfig(){
+	    if(broadsetConfig==null||broadsetConfig.size()==0){
+	        return null;
+        }
+        return broadsetConfig;
+    }
 }
