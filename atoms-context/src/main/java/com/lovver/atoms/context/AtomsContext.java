@@ -26,7 +26,7 @@ public class AtomsContext {
 	private static ConcurrentHashMap<String,CacheProvider> cacheProvider=new ConcurrentHashMap<String,CacheProvider>();
 	private static ConcurrentHashMap<String,AtomsCacheBean> cacheConfig=new ConcurrentHashMap<String,AtomsCacheBean>();
 //	private static ConcurrentHashMap<String,BroadCast> broadCasts=new ConcurrentHashMap<String,BroadCast>();
-	private static ConcurrentHashMap<String,ConcurrentHashMap<String,String>> cahcelevelTTLConfig=new ConcurrentHashMap<String,ConcurrentHashMap<String,String>>();
+	private static ConcurrentHashMap<String,ConcurrentHashMap<String,AtomsCacheTTLConfigBean>> cahcelevelTTLConfig=new ConcurrentHashMap<String,ConcurrentHashMap<String,AtomsCacheTTLConfigBean>>();
 
 	static {
 		try {
@@ -35,9 +35,9 @@ public class AtomsContext {
 			
 			broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
 			
-			ConcurrentHashMap<String,String> levelTTLConfig=null;
+			ConcurrentHashMap<String,AtomsCacheTTLConfigBean> levelTTLConfig=null;
 			for(AtomsCacheBean cacheBean:lstCache){
-				levelTTLConfig=new ConcurrentHashMap<String,String>();
+				levelTTLConfig=new ConcurrentHashMap<String,AtomsCacheTTLConfigBean>();
 				
 				if(StringUtils.isEmpty(cacheBean.getLevel())){
 					throw new RuntimeException("cache level must give!");
@@ -52,7 +52,7 @@ public class AtomsContext {
 					List<AtomsCacheTTLConfigBean> lstTTLConfigBean=cacheTTLBean.getLstTTL();
 					if(null!=lstTTLConfigBean&&lstTTLConfigBean.size()>0){						
 						for(AtomsCacheTTLConfigBean ttl:lstTTLConfigBean){
-							levelTTLConfig.put(ttl.getName(), ttl.getValue());
+							levelTTLConfig.put(ttl.getName(), ttl);
 						}
 					}
 				}
@@ -96,7 +96,7 @@ public class AtomsContext {
 	}
 	
 
-	public static Map<String,String> getTTLConfig(int level){
+	public static Map<String,AtomsCacheTTLConfigBean> getTTLConfig(int level){
 		return cahcelevelTTLConfig.get(level+"");
 	}
 	/**

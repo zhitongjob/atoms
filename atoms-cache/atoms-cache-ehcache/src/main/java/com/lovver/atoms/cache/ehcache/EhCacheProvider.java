@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.lovver.atoms.cache.Cache;
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import net.sf.ehcache.CacheManager;
 
 import net.sf.ehcache.Ehcache;
@@ -55,22 +56,22 @@ public class EhCacheProvider implements CacheProvider {
 			            if (cache == null) {
 			            	log.warn("Could not find configuration [" + regionName + "]; using defaults.");
 			            	 
-			            	Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
-			            	String ttlSeconds=mapTTL.get(regionName);
-			            	if(StringUtils.isNotEmpty(ttlSeconds)){
-			            		cache=new net.sf.ehcache.Cache(regionName,1000,false,false,Long.parseLong(ttlSeconds),Long.parseLong(ttlSeconds));
+			            	Map<String,AtomsCacheTTLConfigBean> mapTTL=AtomsContext.getTTLConfig(this.level);
+							AtomsCacheTTLConfigBean ttl=mapTTL.get(regionName);
+			            	if(ttl!=null&&StringUtils.isNotEmpty(ttl.getValue())){
+			            		cache=new net.sf.ehcache.Cache(regionName,1000,false,false,Long.parseLong(ttl.getValue()),Long.parseLong(ttl.getValue()));
 			            		manager.addCache(cache);
 			            	}else{
 				                manager.addCache(regionName);
 				                cache = manager.getCache(regionName);
 			            	}
 			               
-			            	if(StringUtils.isNotEmpty(ttlSeconds)){
-			            		cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttlSeconds)); 
+			            	if(ttl!=null&&StringUtils.isNotEmpty(ttl.getValue())){
+			            		cache.getCacheConfiguration().setTimeToLiveSeconds(Long.parseLong(ttl.getValue()));
 			            	}
 			                log.debug("started EHCache region: " + regionName);
 			            }
-			            ehcache = new EhCache(cache, listener);
+			            ehcache = new EhCache(cache, listener,this.level);
 			            _CacheManager.put(regionName, ehcache);
 	            	}
 	            }

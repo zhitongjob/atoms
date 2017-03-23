@@ -7,6 +7,8 @@ public class AtomsCacheTTLConfigBean {
 	private String name;
 	@XStreamAsAttribute
 	private String value;
+	@XStreamAsAttribute
+	private String broadset;//set时是否广播
 
 	public String getName() {
 		return name;
@@ -24,4 +26,11 @@ public class AtomsCacheTTLConfigBean {
 		this.value = value;
 	}
 
+	public String getBroadset() {
+		return broadset;
+	}
+
+	public void setBroadset(String broadset) {
+		this.broadset = broadset;
+	}
 }

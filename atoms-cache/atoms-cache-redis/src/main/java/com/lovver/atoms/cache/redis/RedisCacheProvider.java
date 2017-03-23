@@ -4,6 +4,7 @@ package com.lovver.atoms.cache.redis;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Jedis;
@@ -50,9 +51,10 @@ public class RedisCacheProvider implements CacheProvider {
 		RedisCache cache = caches.get(regionName);
 		if (cache == null) {
 			synchronized (caches) {
-				Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
-				String ttlSeconds=mapTTL.get(regionName);
-				cache = new RedisCache(regionName, pool,cacheConfig.getNamespace(),listener,host,ttlSeconds);
+				Map<String,AtomsCacheTTLConfigBean> mapTTL=AtomsContext.getTTLConfig(this.level);
+				AtomsCacheTTLConfigBean ttlConfigBean=mapTTL.get(regionName);
+
+				cache = new RedisCache(regionName, pool,cacheConfig.getNamespace(),listener,host,this.level);
 				caches.put(regionName, cache);
 			}
 		}

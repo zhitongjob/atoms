@@ -9,8 +9,11 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AtomsConfig {
+    private final static Logger log = LoggerFactory.getLogger(AtomsConfig.class);
 
 	protected static AtomsBean atomsBean;
 	
@@ -42,9 +45,14 @@ public class AtomsConfig {
 				for(AtomsCacheBean cacheBean:lstCache){
 					mergeCacheConfig(prop,cacheBean);
 				}
-				is.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+			}finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -75,6 +83,14 @@ public class AtomsConfig {
 		try {
 			stream.alias("atoms", AtomsBean.class);
 			atomsBean = (AtomsBean) stream.fromXML(is);
+            List<AtomsCacheBean> lstAtomsCacheBean=atomsBean.getCache();
+            for(AtomsCacheBean atomsCacheBean: lstAtomsCacheBean){
+                AtomsCacheTTLBean atomsCacheTTLBean=atomsCacheBean.getCacheTTL();
+                if(!atomsCacheBean.getLevel().equals("1")&&(atomsCacheTTLBean.getLstTTL()!=null&&atomsCacheTTLBean.getLstTTL().size()>0)){
+                    log.error("do not config ttl in level > 1");
+                    throw new RuntimeException("ttl config only in level 1 cache,there is a ttl config in other level cache");
+                }
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

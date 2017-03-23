@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +36,14 @@ public class RedisCache implements Cache {
 	private String namespace;
 	private CacheEventListener listener;
 	private String host;
-	private Integer ttlSeconds;
+	private Integer ttlSeconds=null;
+
+	private AtomsCacheTTLConfigBean ttlConfigBean=null;
+	private int level;
+	private boolean boardset=false;
 	
 
-	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host,String ttlSeconds) {
+	public RedisCache(String region, JedisPool pool,String namespace,CacheEventListener listener,String host,int level) {
 		if (region == null || region.isEmpty())
 			region = "_"; // 缺省region
 		this.srcRegion=region;
@@ -46,15 +51,21 @@ public class RedisCache implements Cache {
 		this.region = getRegionName(region);
 		this.listener=listener;
 		this.pool = pool;
-//		this.region = region;
 		this.region2 = this.region.getBytes();
 		this.host=host;
-		if(StringUtils.isEmpty(ttlSeconds)){
-			this.ttlSeconds=null;
-		}else{
-			this.ttlSeconds=Integer.parseInt(ttlSeconds);
-		}
+		this.level=level;
 
+		if(AtomsContext.getTTLConfig(this.level)!=null) {
+			this.ttlConfigBean = AtomsContext.getTTLConfig(this.level).get(region);
+            if(ttlConfigBean!=null) {
+                if(org.apache.commons.lang.StringUtils.isNotEmpty(ttlConfigBean.getValue())) {
+                    this.ttlSeconds = Integer.parseInt(ttlConfigBean.getValue());
+                }
+                if(org.apache.commons.lang.StringUtils.isNotEmpty(ttlConfigBean.getBroadset())) {
+                    this.boardset =Boolean.parseBoolean(ttlConfigBean.getBroadset());
+                }
+            }
+		}
 	}
 
 	/**
@@ -95,61 +106,84 @@ public class RedisCache implements Cache {
 	}
 
 	public void put(Object key, Object value) throws CacheException {
-		log.debug("put redis["+this.region+"]["+key+"]");
-		if (key == null){
-			return;
-		}
-		if (value == null){
-			evict(key);
-		}else {
-			try (Jedis cache = pool.getResource()) {
-				cache.hset(region2, getKeyName(key), serializer.serialize(value));
-				if(ttlSeconds!=null){
-					cache.expire(region2, ttlSeconds);
-				}
-				if(listener!=null){
-					listener.notifyElementPut(this.srcRegion, key, value);
-				}
-			} catch (Exception e) {
-				throw new CacheException(e);
-			}
-		}
+        this.put(key,value,true);
+	}
+
+	@Override
+	public void put(Object key, Object value, boolean broadFlg) throws CacheException {
+        log.debug("===put redis["+this.region+"]["+key+"]");
+        if (key == null){
+            return;
+        }
+        if (value == null){
+            evict(key);
+        }else {
+            try (Jedis cache = pool.getResource()) {
+                cache.hset(region2, getKeyName(key), serializer.serialize(value));
+                if(ttlSeconds!=null){
+                    cache.expire(region2, ttlSeconds);
+                }
+                if(listener!=null&&this.boardset&&broadFlg){
+                    listener.notifyElementPut(this.srcRegion, key, value);
+                }
+            } catch (Exception e) {
+                throw new CacheException(e);
+            }
+        }
 	}
 
 	@Override
 	public void put(Object key, Object value, Integer expiretime) throws CacheException {
-		this.put(key,value);
+		this.put(key,value,expiretime,true);
+	}
+
+	@Override
+	public void put(Object key, Object value, Integer expiretime, boolean broadFlg) throws CacheException {
+        log.debug("===put redis["+this.region+"]["+key+"]");
+        if (key == null){
+            return;
+        }
+        if (value == null){
+            evict(key);
+        }else {
+            try (Jedis cache = pool.getResource()) {
+                cache.hset(region2, getKeyName(key), serializer.serialize(value));
+//                cache.expire(region2, expiretime);
+                if(listener!=null&&this.boardset&&broadFlg){
+                    listener.notifyElementPut(this.srcRegion, key, value);
+                }
+            } catch (Exception e) {
+                throw new CacheException(e);
+            }
+        }
 	}
 
 	public void update(Object key, Object value) throws CacheException {
-		put(key, value);
-		if(listener!=null){
-			listener.notifyElementPut(this.srcRegion, key, value);
-		}
+		put(key, value,true);
 	}
 	
 	
-	public void expireUpdate(Object key, Object value) throws CacheException{
-		System.out.println(this.host+" ==================expireUpdate reids");
-		if (key == null){
-			return;
-		}
-		if (value == null){
-			evict(key);
-		}else {
-			try (Jedis cache = pool.getResource()) {
-				cache.hset(region2, getKeyName(key), serializer.serialize(value));
-				if(ttlSeconds!=null){
-					cache.expire(region2, ttlSeconds);
-				}
-				if(listener!=null){
-					listener.notifyElementPut(this.srcRegion, key, value);
-				}
-			} catch (Exception e) {
-				throw new CacheException(e);
-			}
-		}
-	}
+//	public void expireUpdate(Object key, Object value) throws CacheException{
+//		System.out.println(this.host+" ==================expireUpdate reids");
+//		if (key == null){
+//			return;
+//		}
+//		if (value == null){
+//			evict(key);
+//		}else {
+//			try (Jedis cache = pool.getResource()) {
+//				cache.hset(region2, getKeyName(key), serializer.serialize(value));
+//				if(ttlSeconds!=null){
+//					cache.expire(region2, ttlSeconds);
+//				}
+//				if(listener!=null){
+//					listener.notifyElementPut(this.srcRegion, key, value);
+//				}
+//			} catch (Exception e) {
+//				throw new CacheException(e);
+//			}
+//		}
+//	}
 
 	public void evict(Object key) throws CacheException {
 		evict(key,true);

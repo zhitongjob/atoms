@@ -67,12 +67,30 @@ public class EhCacheEventListener implements CacheEventListener {
     @Override
     public void notifyElementPut(String region, Object key, Object value)
             throws CacheException {
+        log.debug("notifyElementPut["+region+"]["+key+"]");
+        if (null != broadCast) {
+            Command cmd = new Command(Command.OPT_PUT_KEY, region, key,value);
+            broadCast.broadcast(cmd.toBuffers());
+        }
+    }
+
+    @Override
+    public void notifyElementPut(String region, Object key, Object value, int expiretime) throws CacheException {
+        log.debug("notifyElementPut["+region+"]["+key+"]");
+        if (null != broadCast) {
+            Command cmd = new Command(Command.OPT_PUT_KEY, region, key,value,expiretime);
+            broadCast.broadcast(cmd.toBuffers());
+        }
     }
 
     @Override
     public void notifyElementUpdated(String region, Object key, Object value)
             throws CacheException {
-
+        log.debug("notifyElementUpdated["+region+"]");
+        if (null != broadCast) {
+            Command cmd = new Command(Command.OPT_PUT_KEY, region, key,value);
+            broadCast.broadcast(cmd.toBuffers());
+        }
     }
 
     private int level;

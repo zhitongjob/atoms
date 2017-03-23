@@ -29,11 +29,14 @@ public class Command {
 
 	public final static byte OPT_DELETE_KEY = 0x01; 	//删除缓存
 	public final static byte OPT_CLEAR_KEY = 0x02; 		//清除缓存
+	public final static byte OPT_PUT_KEY = 0x03; 		//设置缓存
 	
 	private int src;
 	private byte operator;
 	private String region;
 	private Object key;
+	private Object val;
+	private int expiretime;
 	
 	private static int genRandomSrc() {
 		long ct = System.currentTimeMillis();
@@ -41,19 +44,20 @@ public class Command {
 		return (int)(rnd_seed.nextInt(10000) * 1000 + ct % 1000);
 	}
 
-	public static void main(String[] args) {
-		for(int i=0;i<5;i++){
-			Command cmd = new Command(OPT_DELETE_KEY, "users", "ld"+i);
-			byte[] bufs = cmd.toBuffers();
-			System.out.print(cmd.getSrc() + ":");
-			for(byte b : bufs){
-				System.out.printf("[%s]",Integer.toHexString(b));			
-			}
-			System.out.println();
-			Command cmd2 = Command.parse(bufs);
-			System.out.printf("%d -> %d:%s:%s(%s)\n", cmd2.getSrc(), cmd2.getOperator(), cmd2.getRegion(), cmd2.getKey(), cmd2.isLocalCommand());
-		}
-	}
+//	public static void main(String[] args) {
+//
+//		for(int i=0;i<5;i++){
+//			Command cmd = new Command(OPT_DELETE_KEY, "users", "ld"+i,"val"+i);
+//			byte[] bufs = cmd.toBuffers();
+//			System.out.print(cmd.getSrc() + ":");
+//			for(byte b : bufs){
+//				System.out.printf("[%s]",Integer.toHexString(b));
+//			}
+//			System.out.println();
+//			Command cmd2 = Command.parse(bufs);
+//			System.out.printf("%d -> %d:%s:%s:%s(%s)\n", cmd2.getSrc(), cmd2.getOperator(), cmd2.getRegion(), cmd2.getKey(),cmd2.getVal(), cmd2.isLocalCommand());
+//		}
+//	}
 
 	public Command(byte o, String r, Object k){
 		this.operator = o;
@@ -61,6 +65,23 @@ public class Command {
 		this.key = k;
 		this.src = SRC_ID;
 	}
+
+	public Command(byte o, String r, Object k,Object v){
+		this.operator = o;
+		this.region = r;
+		this.key = k;
+		this.src = SRC_ID;
+		this.val=v;
+	}
+
+    public Command(byte o, String r, Object k,Object v,int expiretime){
+        this.operator = o;
+        this.region = r;
+        this.key = k;
+        this.src = SRC_ID;
+        this.val=v;
+        this.expiretime=expiretime;
+    }
 	
 	public byte[] toBuffers(){
 		byte[] keyBuffers = null;
@@ -70,10 +91,24 @@ public class Command {
 			e.printStackTrace();
 			return null;
 		}
+        byte[] valBuffers = null;
+        try {
+            if(val!=null) {
+                valBuffers = serialize.serialize(val);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
 		int r_len = region.getBytes().length;
 		int k_len = keyBuffers.length;
 
-		byte[] buffers = new byte[11 + r_len + k_len];
+		int v_len=0;
+		if(valBuffers!=null){
+		    v_len=valBuffers.length;
+        }
+
+		byte[] buffers = new byte[11 + r_len + k_len+4+v_len+4];
 		int idx = 0;
 		System.arraycopy(int2bytes(this.src), 0, buffers, idx, 4);
 		idx += 4;
@@ -86,6 +121,15 @@ public class Command {
 		System.arraycopy(int2bytes(k_len), 0, buffers, idx, 4);
 		idx += 4;
 		System.arraycopy(keyBuffers, 0, buffers, idx, k_len);
+		if(valBuffers!=null) {
+            idx += k_len;
+            System.arraycopy(int2bytes(v_len), 0, buffers, idx, 4);
+            idx += 4;
+            System.arraycopy(valBuffers, 0, buffers, idx, v_len);
+            idx += v_len;
+            System.arraycopy(int2bytes(expiretime), 0, buffers, idx, 4);
+        }
+
 		return buffers;
 	}
 	
@@ -107,7 +151,18 @@ public class Command {
 					Object key = serialize.deserialize(keyBuffers);
 					cmd = new Command(opt, region, key);
 					cmd.src = bytes2int(buffers);
+					idx+=k_len;
 				}
+				int v_len=bytes2int(Arrays.copyOfRange(buffers, idx, idx + 4));
+                idx += 4;
+                if(v_len>0){
+                    byte[] valBuffers = new byte[v_len];
+                    System.arraycopy(buffers, idx, valBuffers, 0, v_len);
+                    Object val = serialize.deserialize(valBuffers);
+                    cmd.val=val;
+                    idx+=v_len;
+                    cmd.expiretime=bytes2int(Arrays.copyOfRange(buffers, idx, idx + 4));
+                }
 			}
 		}catch(Exception e){
 			log.error("Unabled to parse received command.", e);
@@ -165,4 +220,20 @@ public class Command {
 	public int getSrc() {
 		return src;
 	}
+
+    public Object getVal() {
+        return val;
+    }
+
+    public void setVal(Object val) {
+        this.val = val;
+    }
+
+    public int getExpiretime() {
+        return expiretime;
+    }
+
+    public void setExpiretime(int expiretime) {
+        this.expiretime = expiretime;
+    }
 }

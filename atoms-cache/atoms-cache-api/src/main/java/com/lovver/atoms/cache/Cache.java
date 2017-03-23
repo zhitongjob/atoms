@@ -25,8 +25,10 @@ public interface Cache {
 	 * @param value cache value
 	 */
 	public void put(Object key, Object value) throws CacheException;
+	public void put(Object key, Object value,boolean broadFlg) throws CacheException;
 
 	public void put(Object key, Object value,Integer expiretime) throws CacheException;
+	public void put(Object key, Object value,Integer expiretime,boolean broadFlg) throws CacheException;
 	
 	/**
 	 * Add an item to the cache
@@ -35,14 +37,14 @@ public interface Cache {
 	 */
 	public void update(Object key, Object value) throws CacheException;
 	
-	/**
-	 * 上一级失效更新，不做通知处理
-	 * 
-	 * @param key
-	 * @param value
-	 * @throws CacheException
-	 */
-	public void expireUpdate(Object key, Object value) throws CacheException;
+//	/**
+//	 * 上一级失效更新，不做通知处理
+//	 *
+//	 * @param key
+//	 * @param value
+//	 * @throws CacheException
+//	 */
+//	public void expireUpdate(Object key, Object value) throws CacheException;
 	
 
 	@SuppressWarnings("rawtypes")

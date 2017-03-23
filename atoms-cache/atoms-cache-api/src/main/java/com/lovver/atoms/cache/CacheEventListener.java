@@ -22,7 +22,8 @@ public interface CacheEventListener {
 	public void notifyElementRemoved(String region, Object key) throws CacheException;
 	
 	public void notifyElementPut(String region, Object key,Object value) throws CacheException;
-	 
+	public void notifyElementPut(String region, Object key,Object value,int expiretime) throws CacheException;
+
 	public void notifyElementUpdated(String region, Object key,Object value) throws CacheException;
 	 
 	public void notifyElementEvicted(String region, Object key);

@@ -18,7 +18,7 @@ public class CacheSingleKeyExpireTest {
     @Test
     public void run() throws InterruptedException {
         CacheChannel cc = CacheChannel.getInstance();
-        cc.set("test", "dddd1", "jobell", 3);
+        cc.set("test", "dddd1", "jobell", 1);
 
         Thread.sleep(2000);
         Object value = cc.get("test", "dddd1");

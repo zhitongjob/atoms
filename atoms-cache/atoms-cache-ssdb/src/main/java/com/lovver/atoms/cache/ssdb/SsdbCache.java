@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.lovver.atoms.common.utils.CollectionUtils;
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import com.lovver.ssdbj.core.BaseResultSet;
 import com.lovver.ssdbj.pool.SSDBDataSource;
 import com.lovver.ssdbj.pool.SSDBPoolConnection;
@@ -37,9 +38,12 @@ public class SsdbCache implements Cache {
 	private CacheEventListener listener;
 	private String host;
 	private Integer ttlSeconds;
+	private AtomsCacheTTLConfigBean ttlConfigBean=null;
+	private int level;
+	private boolean boardset=false;
 	
 
-	public SsdbCache(String region, SSDBDataSource ssdbDs, String namespace, CacheEventListener listener, String host, String ttlSeconds) {
+	public SsdbCache(String region, SSDBDataSource ssdbDs, String namespace, CacheEventListener listener, String host,int level) {
 		if (region == null || region.isEmpty())
 			region = "_"; // 缺省region
 		this.srcRegion=region;
@@ -48,12 +52,20 @@ public class SsdbCache implements Cache {
 		this.listener=listener;
 		this.ssdbDs = ssdbDs;
 //		this.region = region;
+		this.level=level;
 		this.region2 = this.region.getBytes();
 		this.host=host;
-		if(StringUtils.isEmpty(ttlSeconds)){
-			this.ttlSeconds=null;
-		}else{
-			this.ttlSeconds=Integer.parseInt(ttlSeconds);
+
+		if(AtomsContext.getTTLConfig(this.level)!=null) {
+			this.ttlConfigBean = AtomsContext.getTTLConfig(this.level).get(region);
+			if(ttlConfigBean!=null) {
+				if(org.apache.commons.lang.StringUtils.isNotEmpty(ttlConfigBean.getValue())) {
+					this.ttlSeconds = Integer.parseInt(ttlConfigBean.getValue());
+				}
+				if(org.apache.commons.lang.StringUtils.isNotEmpty(ttlConfigBean.getBroadset())) {
+					this.boardset =Boolean.parseBoolean(ttlConfigBean.getBroadset());
+				}
+			}
 		}
 	}
 
@@ -107,92 +119,127 @@ public class SsdbCache implements Cache {
 	}
 
 	public void put(Object key, Object value) throws CacheException {
-		System.out.println(this.host+" ==================put ssdb");
-		if (key == null){
-			return;
-		}
-		if (value == null){
-			evict(key);
-		}else {
-			SSDBPoolConnection conn=null;
-			try {
-				conn= ssdbDs.getConnection();
-				ArrayList<byte[]> setparams=new ArrayList<byte[]>();
-				setparams.add(region2);
-				setparams.add(getKeyName(key));
-				setparams.add(serializer.serialize(value));
-				conn.executeUpdate("hset",setparams);
+        put(key,value,true);
+	}
+
+	@Override
+	public void put(Object key, Object value, boolean broadFlg) throws CacheException {
+        System.out.println(this.host+" ==================put ssdb");
+        if (key == null){
+            return;
+        }
+        if (value == null){
+            evict(key);
+        }else {
+            SSDBPoolConnection conn=null;
+            try {
+                conn= ssdbDs.getConnection();
+                ArrayList<byte[]> setparams=new ArrayList<byte[]>();
+                setparams.add(region2);
+                setparams.add(getKeyName(key));
+                setparams.add(serializer.serialize(value));
+                conn.executeUpdate("hset",setparams);
 //				if(ttlSeconds!=null){
 //					cache.expire(region2, ttlSeconds);
 //				}
-				if(listener!=null){
-					listener.notifyElementPut(this.srcRegion, key, value);
-				}
-			} catch (Exception e) {
-				throw new CacheException(e);
-			}finally {
-				if(null!=conn){
-					conn.close();
-				}
-			}
-		}
+                if(listener!=null&&this.boardset&&broadFlg){
+                    listener.notifyElementPut(this.srcRegion, key, value);
+                }
+            } catch (Exception e) {
+                throw new CacheException(e);
+            }finally {
+                if(null!=conn){
+                    conn.close();
+                }
+            }
+        }
 	}
 
 	@Override
 	public void put(Object key, Object value, Integer expiretime) throws CacheException {
-		this.put(key,value);
+		this.put(key,value,expiretime,true);
+	}
+
+	@Override
+	public void put(Object key, Object value, Integer expiretime, boolean broadFlg) throws CacheException {
+        System.out.println(this.host+" ==================put ssdb");
+        if (key == null){
+            return;
+        }
+        if (value == null){
+            evict(key);
+        }else {
+            SSDBPoolConnection conn=null;
+            try {
+                conn= ssdbDs.getConnection();
+                ArrayList<byte[]> setparams=new ArrayList<byte[]>();
+                setparams.add(region2);
+                setparams.add(getKeyName(key));
+                setparams.add(serializer.serialize(value));
+                conn.executeUpdate("hset",setparams);
+//				if(ttlSeconds!=null){
+//					cache.expire(region2, ttlSeconds);
+//				}
+                if(listener!=null&&this.boardset&&broadFlg){
+                    listener.notifyElementPut(this.srcRegion, key, value);
+                }
+            } catch (Exception e) {
+                throw new CacheException(e);
+            }finally {
+                if(null!=conn){
+                    conn.close();
+                }
+            }
+        }
 	}
 
 	public void update(Object key, Object value) throws CacheException {
-		put(key, value);
-		if(listener!=null){
-			listener.notifyElementPut(this.srcRegion, key, value);
-		}
+		put(key, value,true);
 	}
-	
-	
-	public void expireUpdate(Object key, Object value) throws CacheException{
-		System.out.println(this.host+" ==================expireUpdate ssdb");
-		if (key == null){
-			return;
-		}
-		if (value == null){
-			evict(key);
-		}else {
-			SSDBPoolConnection conn=null;
-			try {
-				conn= ssdbDs.getConnection();
-				ArrayList<byte[]> setparams=new ArrayList<byte[]>();
-				setparams.add(region2);
-				setparams.add(getKeyName(key));
-				setparams.add(serializer.serialize(value));
-				conn.executeUpdate("hset",setparams);
-//				if(ttlSeconds!=null){
-//					cache.expire(region2, ttlSeconds);
-//				}
-				if(listener!=null){
-					listener.notifyElementPut(this.srcRegion, key, value);
-				}
-			} catch (Exception e) {
-				throw new CacheException(e);
-			}finally {
-				if(null!=conn){
-					conn.close();
-				}
-			}
-//			try (Jedis cache = pool.getResource()) {
-//				cache.hset(region2, getKeyName(key), serializer.serialize(value));
-//				if(ttlSeconds!=null){
-//					cache.expire(region2, ttlSeconds);
-//				}
-//				if(listener!=null&&AtomsContext.isMe(client_id)){
-//					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+//
+//
+//	public void expireUpdate(Object key, Object value) throws CacheException{
+//		System.out.println(this.host+" ==================expireUpdate ssdb");
+//		if (key == null){
+//			return;
+//		}
+//		if (value == null){
+//			evict(key);
+//		}else {
+//			SSDBPoolConnection conn=null;
+//			try {
+//				conn= ssdbDs.getConnection();
+//				ArrayList<byte[]> setparams=new ArrayList<byte[]>();
+//				setparams.add(region2);
+//				setparams.add(getKeyName(key));
+//				setparams.add(serializer.serialize(value));
+//				conn.executeUpdate("hset",setparams);
+////				if(ttlSeconds!=null){
+////					cache.expire(region2, ttlSeconds);
+////				}
+//				if(listener!=null){
+//					listener.notifyElementPut(this.srcRegion, key, value);
 //				}
 //			} catch (Exception e) {
 //				throw new CacheException(e);
+//			}finally {
+//				if(null!=conn){
+//					conn.close();
+//				}
 //			}
-		}
-	}
+////			try (Jedis cache = pool.getResource()) {
+////				cache.hset(region2, getKeyName(key), serializer.serialize(value));
+////				if(ttlSeconds!=null){
+////					cache.expire(region2, ttlSeconds);
+////				}
+////				if(listener!=null&&AtomsContext.isMe(client_id)){
+////					listener.notifyElementPut(this.srcRegion, key, value,client_id);
+////				}
+////			} catch (Exception e) {
+////				throw new CacheException(e);
+////			}
+//		}
+//	}
 
 	public void evict(Object key) throws CacheException {
 		evict(key,true);

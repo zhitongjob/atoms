@@ -144,7 +144,10 @@ public class RedisPubSub extends BinaryJedisPubSub {
                     log.debug("on Message[clear]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
                     cache.clear(false);
                     break;
-
+                case Command.OPT_PUT_KEY:
+                    log.debug("on Message[put]["+cmd.getRegion()+"]["+cmd.getKey()+"]");
+                    cache.put(cmd.getKey(),cmd.getVal(),false);
+                    break;
                 default:
                     log.warn("Unknown message type = " + cmd.getOperator());
             }

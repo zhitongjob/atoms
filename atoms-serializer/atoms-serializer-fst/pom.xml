@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.lovver.atoms</groupId>
     <artifactId>atoms-serializer</artifactId>
-    <version>1.0.16-SNAPSHOT</version>
+    <version>1.0.17-SNAPSHOT</version>
   </parent>
   <artifactId>atoms-serializer-fst</artifactId>
     <build>
@@ -38,7 +38,7 @@
   	<dependency>
   		<groupId>com.lovver.atoms</groupId>
   		<artifactId>atoms-serializer-api</artifactId>
-  		<version>1.0.16-SNAPSHOT</version>
+  		<version>1.0.17-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>de.ruedigermoeller</groupId>

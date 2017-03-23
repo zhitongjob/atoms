@@ -73,8 +73,9 @@
         </property>
     </bean>
     <bean id="helloCacheTTL" class="com.lovver.atoms.config.AtomsCacheTTLConfigBean">
-        <property name="name" value="test"/>
+        <property name="name" value="hello"/>
         <property name="value" value="100000000"/>
+        <property name="broadset" value="true"/>
     </bean>
 
     <bean id="cache_1_config" class="com.lovver.atoms.config.AtomsCacheConfigBean">

@@ -1,7 +1,9 @@
 package com.lovver.atoms.cache.ehcache;
 
 import java.util.List;
+import java.util.Map;
 
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -10,6 +12,7 @@ import net.sf.ehcache.event.CacheEventListener;
 import com.lovver.atoms.cache.Cache;
 import com.lovver.atoms.common.exception.CacheException;
 import com.lovver.atoms.context.AtomsContext;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +24,9 @@ public class EhCache implements Cache,CacheEventListener{
 	private final static Logger log = LoggerFactory.getLogger(EhCache.class);
 	private net.sf.ehcache.Cache cache;
 	private com.lovver.atoms.cache.CacheEventListener listener;
+	private AtomsCacheTTLConfigBean ttlConfigBean=null;
+	private int level;
+	private boolean boardset=false;
 
 	/**
 	 * Creates a new Hibernate pluggable cache based on a cache name.
@@ -28,10 +34,17 @@ public class EhCache implements Cache,CacheEventListener{
 	 * @param cache The underlying EhCache instance to use.
 	 * @param listener cache listener
 	 */
-	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener) {
+	public EhCache(net.sf.ehcache.Cache cache, com.lovver.atoms.cache.CacheEventListener listener,int level) {
 		this.cache = cache;
 		this.cache.getCacheEventNotificationService().registerListener(this);
 		this.listener = listener;
+		this.level=level;
+		if(AtomsContext.getTTLConfig(this.level)!=null) {
+			this.ttlConfigBean = AtomsContext.getTTLConfig(this.level).get(cache.getName());
+			if(ttlConfigBean!=null&&StringUtils.isNotEmpty(ttlConfigBean.getBroadset())) {
+                this.boardset =Boolean.parseBoolean(ttlConfigBean.getBroadset());
+            }
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -72,27 +85,27 @@ public class EhCache implements Cache,CacheEventListener{
 	 */
 	public void update(Object key, Object value) throws CacheException {
 		put( key, value );
-		if(listener != null){
-			listener.notifyElementUpdated(cache.getName(), key,value);
-		}
+//		if(listener != null){
+//			listener.notifyElementUpdated(cache.getName(), key,value);
+//		}
 	}
 	
 	
-	public void expireUpdate(Object key, Object value) throws CacheException{
-		try {
-			Element element = new Element( key, value );
-			cache.put( element );
-		}
-		catch (IllegalArgumentException e) {
-			throw new CacheException( e );
-		}
-		catch (IllegalStateException e) {
-			throw new CacheException( e );
-		}
-		catch (net.sf.ehcache.CacheException e) {
-			throw new CacheException( e );
-		}
-	}
+//	public void expireUpdate(Object key, Object value) throws CacheException{
+//		try {
+//			Element element = new Element( key, value );
+//			cache.put( element );
+//		}
+//		catch (IllegalArgumentException e) {
+//			throw new CacheException( e );
+//		}
+//		catch (IllegalStateException e) {
+//			throw new CacheException( e );
+//		}
+//		catch (net.sf.ehcache.CacheException e) {
+//			throw new CacheException( e );
+//		}
+//	}
 
 	/**
 	 * Puts an object into the cache.
@@ -103,48 +116,57 @@ public class EhCache implements Cache,CacheEventListener{
 	 *                        is shutdown or another {@link Exception} occurs.
 	 */
 	public void put(Object key, Object value) throws CacheException {
-		try {
-			Element element = new Element( key, value );
-			cache.put( element );
-		}
-		catch (IllegalArgumentException e) {
-			throw new CacheException( e );
-		}
-		catch (IllegalStateException e) {
-			throw new CacheException( e );
-		}
-		catch (net.sf.ehcache.CacheException e) {
-			throw new CacheException( e );
-		}
-		
-		if(listener != null){
-			listener.notifyElementPut(cache.getName(), key,value);
-		}
-
+        put(key,value,true);
 	}
 
-	@Override
+    @Override
+    public void put(Object key, Object value, boolean broadFlg) throws CacheException {
+        try {
+            Element element = new Element( key, value );
+            cache.put( element );
+        }
+        catch (IllegalArgumentException e) {
+            throw new CacheException( e );
+        }
+        catch (IllegalStateException e) {
+            throw new CacheException( e );
+        }
+        catch (net.sf.ehcache.CacheException e) {
+            throw new CacheException( e );
+        }
+
+        if(listener != null&&boardset&&broadFlg){
+            listener.notifyElementPut(cache.getName(), key,value);
+        }
+    }
+
+    @Override
 	public void put(Object key, Object value, Integer expiretime) throws CacheException {
-		try {
-			Element element = new Element( key, value,false,expiretime,expiretime );
-			cache.put( element );
-		}
-		catch (IllegalArgumentException e) {
-			throw new CacheException( e );
-		}
-		catch (IllegalStateException e) {
-			throw new CacheException( e );
-		}
-		catch (net.sf.ehcache.CacheException e) {
-			throw new CacheException( e );
-		}
-
-		if(listener != null){
-			listener.notifyElementPut(cache.getName(), key,value);
-		}
+		put(key,value,expiretime,true);
 	}
 
-	/**
+    @Override
+    public void put(Object key, Object value, Integer expiretime, boolean broadFlg) throws CacheException {
+        try {
+            Element element = new Element( key, value,false,expiretime,expiretime );
+            cache.put( element );
+        }
+        catch (IllegalArgumentException e) {
+            throw new CacheException( e );
+        }
+        catch (IllegalStateException e) {
+            throw new CacheException( e );
+        }
+        catch (net.sf.ehcache.CacheException e) {
+            throw new CacheException( e );
+        }
+
+        if(listener != null&&boardset&&broadFlg){
+            listener.notifyElementPut(cache.getName(), key,value,expiretime);
+        }
+    }
+
+    /**
 	 * Removes the element which matches the key
 	 * If no element matches, nothing is removed and no Exception is thrown.
 	 *
@@ -166,11 +188,10 @@ public class EhCache implements Cache,CacheEventListener{
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
 		}
-		if(broadFlg==true) {
-			if (listener != null) {
-				listener.notifyElementRemoved(cache.getName(), key);
-			}
-		}
+        if(listener != null&&broadFlg){
+            listener.notifyElementRemoved(cache.getName(), key);
+        }
+
 	}
 
 	/* (non-Javadoc)
@@ -184,10 +205,8 @@ public class EhCache implements Cache,CacheEventListener{
 
 	public void evict(List keys,boolean broadFlg) throws CacheException{
 		cache.removeAll(keys);
-		if(broadFlg==true) {
-			if (listener != null) {
-				listener.notifyElementRemoved(cache.getName(), keys);
-			}
+        if(listener != null&&broadFlg){
+            listener.notifyElementRemoved(cache.getName(), keys);
 		}
 	}
 
@@ -211,7 +230,7 @@ public class EhCache implements Cache,CacheEventListener{
 		catch (net.sf.ehcache.CacheException e) {
 			throw new CacheException( e );
 		}
-		if (listener != null) {
+        if(listener != null&&broadFlg){
 			listener.notifyRemoveAll(cache.getName());
 		}
 	}

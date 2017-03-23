@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.lovver.atoms.config.AtomsCacheTTLConfigBean;
 import com.lovver.ssdbj.pool.SSDBDataSource;
 import org.apache.commons.lang.StringUtils;
 
@@ -49,9 +50,8 @@ public class SsdbCacheProvider implements CacheProvider {
 		SsdbCache cache = caches.get(regionName);
 		if (cache == null) {
 			synchronized (caches) {
-				Map<String,String> mapTTL=AtomsContext.getTTLConfig(this.level);
-				String ttlSeconds=mapTTL.get(regionName);
-				cache = new SsdbCache(regionName, ssdbDs,cacheConfig.getNamespace(),listener,host,ttlSeconds);
+
+				cache = new SsdbCache(regionName, ssdbDs,cacheConfig.getNamespace(),listener,host,level);
 				caches.put(regionName, cache);
 			}
 		}
