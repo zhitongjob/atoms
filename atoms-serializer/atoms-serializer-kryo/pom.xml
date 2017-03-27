@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.lovver.atoms</groupId>
 		<artifactId>atoms-serializer</artifactId>
-		<version>1.0.17-SNAPSHOT</version>
+		<version>1.0.18-SNAPSHOT</version>
 	</parent>
 	<artifactId>atoms-serializer-kryo</artifactId>
 	<build>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.lovver.atoms</groupId>
 			<artifactId>atoms-serializer-api</artifactId>
-			<version>1.0.17-SNAPSHOT</version>
+			<version>1.0.18-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.esotericsoftware</groupId>

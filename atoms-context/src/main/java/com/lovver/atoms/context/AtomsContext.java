@@ -33,15 +33,18 @@ public class AtomsContext {
 		try {
 			serializer=SerializerFactory.getSerializer(atomBean.getSerializer());
 			List<AtomsCacheBean> lstCache= atomBean.getCache();
+			AtomsBroadCastBean broadCastBean=atomBean.getBroadcast();
+			if(broadCastBean!=null) {
+				List<AtomsBroadsetBean> lstBroadSetConfig = broadCastBean.getLstBroadset();
+				if (lstBroadSetConfig != null) {
+					for (AtomsBroadsetBean broadset : lstBroadSetConfig) {
+						broadsetConfig.add(broadset.getRegion() + "_" + broadset.getKey());
+					}
+				}
+				broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
+			}
 
-			List<AtomsBroadsetBean> lstBroadSetConfig=atomBean.getBroadcast().getLstBroadset();
-			if(lstBroadSetConfig!=null){
-			    for(AtomsBroadsetBean broadset:lstBroadSetConfig){
-                    broadsetConfig.add(broadset.getRegion()+"_"+broadset.getKey());
-                }
-            }
 
-            broadCast=BroadCastFactory.getBroadCast(atomBean.getBroadcast());
 			
 			ConcurrentHashMap<String,AtomsCacheTTLConfigBean> levelTTLConfig=null;
 			for(AtomsCacheBean cacheBean:lstCache){
