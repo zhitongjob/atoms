@@ -1,8 +1,6 @@
 package com.lovver.atoms;
 
-import com.lovver.atoms.config.AtomsBean;
-import com.lovver.atoms.config.AtomsConfig;
-import com.lovver.atoms.core.CacheChannel;
+import com.lovver.atoms.spring.cache.CacheChannel;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

@@ -1,9 +1,6 @@
 package com.lovver.atoms;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.lovver.atoms.core.CacheChannel;
+import com.lovver.atoms.spring.cache.CacheChannel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

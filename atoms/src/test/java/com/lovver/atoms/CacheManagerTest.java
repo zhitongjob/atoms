@@ -1,7 +1,7 @@
 package com.lovver.atoms;
 
 import com.lovver.atoms.cache.Cache;
-import com.lovver.atoms.core.CacheManager;
+import com.lovver.atoms.spring.cache.CacheManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;

@@ -29,6 +29,7 @@
 		<module>atoms-cache</module>
 		<module>atoms-core</module>
 		<module>atoms-context</module>
+		<module>atoms-spring</module>
 	</modules>
     <distributionManagement>
         <!--<repository>-->

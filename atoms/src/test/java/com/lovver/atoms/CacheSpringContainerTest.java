@@ -1,10 +1,8 @@
 package com.lovver.atoms;
 
-import com.lovver.atoms.core.CacheChannel;
+import com.lovver.atoms.spring.cache.CacheChannel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;

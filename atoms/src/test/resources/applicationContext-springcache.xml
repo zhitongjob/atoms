@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd
-     http://www.springframework.org/schema/mvc
-     http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
-     http://www.springframework.org/schema/aop
-     http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
-     http://www.springframework.org/schema/context
-     http://www.springframework.org/schema/context/spring-context.xsd">
+      http://www.springframework.org/schema/cache
+      http://www.springframework.org/schema/cache/spring-cache.xsd">
 
+    <cache:annotation-driven cache-manager="cacheManager"/>
 
+    <bean id="userService" class="com.lovver.atoms.spring.UserService" />
+
+    <!-- generic cache manager -->
+    <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+        <property name="caches">
+            <set>
+                <bean class="com.lovver.atoms.spring.cache.SpringAtomsCache"
+                      p:name="userCache" >
+                    <property name="atomsSpringConfig" ref="atomsSpringConfig"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
 
     <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="locations">
@@ -23,10 +33,10 @@
     </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="properties" ref="properties" />
+        <property name="properties" ref="properties"/>
     </bean>
 
-    <bean class="com.lovver.atoms.config.AtomsSpringConfig" >
+    <bean id="atomsSpringConfig" class="com.lovver.atoms.config.AtomsSpringConfig">
         <property name="atomsBean" ref="atomsBean"/>
     </bean>
 
@@ -34,7 +44,7 @@
         <property name="application" value="lottery_cache"/>
         <property name="broadcast" ref="broadcast"/>
         <property name="serializer" ref="serializer"/>
-        <property name="cache" >
+        <property name="cache">
             <list>
                 <ref bean="cache_1"/>
                 <ref bean="cache_2"/>
@@ -51,17 +61,17 @@
         <property name="type" value="redis"/>
         <property name="channel" value="test"/>
         <property name="broadcastConfig" ref="broadcastConfig"/>
-        <property name="lstBroadset" >
-                <list>
-                    <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
-                        <property name="region" value="hello"/>
-                        <property name="key" value="dddd"/>
-                    </bean>
-                    <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
-                        <property name="region" value="joregion"/>
-                        <property name="key" value="jokey"/>
-                    </bean>
-                </list>
+        <property name="lstBroadset">
+            <list>
+                <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                    <property name="region" value="hello22"/>
+                    <property name="key" value="dddd"/>
+                </bean>
+                <bean class="com.lovver.atoms.config.AtomsBroadsetBean">
+                    <property name="region" value="joregion"/>
+                    <property name="key" value="jokey"/>
+                </bean>
+            </list>
         </property>
     </bean>
 
