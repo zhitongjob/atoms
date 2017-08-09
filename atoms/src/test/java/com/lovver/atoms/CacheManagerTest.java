@@ -1,7 +1,8 @@
 package com.lovver.atoms;
 
 import com.lovver.atoms.cache.Cache;
-import com.lovver.atoms.spring.cache.CacheManager;
+
+import com.lovver.atoms.core.CacheManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,7 +16,7 @@ public class CacheManagerTest {
 
 	@Test
 	public void main() {
-		Cache tCache=CacheManager.getCache(1, "hello", true);
+		Cache tCache= CacheManager.getCache(1, "hello", true);
 		for(int i=0;i<10000;i++){
 			tCache.put("test"+i, "wahahaha"+i); 
 		}

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.lovver.atoms.common.extension.ExtensionLoader;
+
 import com.lovver.atoms.context.AtomsContext;
 import com.lovver.atoms.serializer.Serializer;
 import org.junit.Test;
