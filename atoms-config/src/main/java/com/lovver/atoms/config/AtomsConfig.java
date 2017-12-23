@@ -16,7 +16,7 @@ public class AtomsConfig {
     private final static Logger log = LoggerFactory.getLogger(AtomsConfig.class);
 
 	protected static AtomsBean atomsBean;
-	
+
 	public static AtomsBean getAtomsConfig(){
 		return atomsBean;
 	}

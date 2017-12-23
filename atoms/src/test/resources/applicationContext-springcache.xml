@@ -77,8 +77,8 @@
 
 
     <bean id="broadcastConfig" class="com.lovver.atoms.config.AtomsBroadCastConfigBean">
-        <property name="host" value="192.168.1.85"/>
-        <property name="port" value="6380"/>
+        <property name="host" value="${cache.2.host}"/>
+        <property name="port" value="${cache.2.port}"/>
         <property name="timeout" value="0"/>
         <property name="usePool" value="true"/>
     </bean>

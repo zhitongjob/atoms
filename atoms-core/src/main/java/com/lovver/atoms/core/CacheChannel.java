@@ -77,11 +77,11 @@ public class CacheChannel {
 	 *            : Cache value
 	 */
 	public void set(String region, Object key, Object value) {
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa["+region+"]["+key+"]=="+ JSON.toJSONString(value));
+//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa["+region+"]["+key+"]=="+ JSON.toJSONString(value));
 		if (region != null && key != null) {
-			if (value == null)
-				evict(region, key);
-			else {
+			if (value == null) {
+                evict(region, key);
+            } else {
                 for(int i=mCacheProvider.size();i>0;i--) {
                     Cache cache = CacheManager.getCache(i, region, true);
 					cache.evict(key);
@@ -93,9 +93,9 @@ public class CacheChannel {
 
 	public void set(String region, Object key, Object value,Integer expiretime) {
 		if (region != null && key != null) {
-			if (value == null)
-				evict(region, key);
-			else {
+			if (value == null) {
+                evict(region, key);
+            } else {
 				for(int i=mCacheProvider.size();i>0;i--) {
 					Cache cache = CacheManager.getCache(i, region, true);
 					cache.evict(key);

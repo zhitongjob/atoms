@@ -19,7 +19,10 @@
 			</plugin>
 		</plugins>
 	</build>
-
+    <properties>
+        <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
+        <spring.version>4.3.13.RELEASE</spring.version>
+    </properties>
 	<modules>
 		<module>atoms-common</module>
 		<module>atoms-broadcast</module>
@@ -30,6 +33,7 @@
 		<module>atoms-core</module>
 		<module>atoms-context</module>
 		<module>atoms-spring</module>
+		<module>atoms-springboot</module>
 	</modules>
     <distributionManagement>
         <!--<repository>-->

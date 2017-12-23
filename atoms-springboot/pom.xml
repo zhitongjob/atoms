@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.lovver.atoms</groupId>
+        <artifactId>atoms-parent</artifactId>
+        <version>1.0.18-SNAPSHOT</version>
+    </parent>
+    <artifactId>atoms-springboot</artifactId>
+    <version>1.0.18-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>atoms-spring-boot-starter</module>
+        <module>atoms-spring-boot-autoconfigue</module>
+        <module>atoms-spring-boot-test</module>
+    </modules>
+</project>
