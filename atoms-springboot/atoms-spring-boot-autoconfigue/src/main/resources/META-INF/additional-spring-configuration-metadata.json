@@ -21,10 +21,33 @@
       "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
     },
     {
+      "name": "atoms.broadcast.lstBroadset",
+      "type": "java.util.List<com.lovver.atoms.config.AtomsBroadsetBean>",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
+    },
+
+    {
       "name": "atoms.cache",
       "type": "java.util.List<com.lovver.atoms.config.AtomsCacheBean>",
       "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    },
+    {
+      "name": "atoms.cache.cacheConfig",
+      "type": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheBean"
+    },
+    {
+      "name": "atoms.cache.cacheTTL",
+      "type": "com.lovver.atoms.config.AtomsCacheTTLBean",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheBean"
+    },
+    {
+      "name": "atoms.cache.cacheTTL.lstTTL",
+      "type": "java.util.List<com.lovver.atoms.config.AtomsCacheTTLConfigBean>",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheTTLBean"
     }
+
+
   ],
   "properties": [
     {
@@ -32,6 +55,181 @@
       "type": "java.lang.String",
       "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties",
       "description": "description: atoms.application"
+    },
+    {
+      "name": "atoms.cache.cacheTTL.lstTTL.name",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheTTLConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheTTL.lstTTL.value",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheTTLConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheTTL.lstTTL.broadset",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheTTLConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.configFile",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.host",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },{
+      "name": "atoms.cache.cacheConfig.port",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.timeout",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.password",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.database",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.namespace",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.maxTotal",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.maxIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.maxWaitMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.minEvictableIdleTimeMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.minIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.numTestsPerEvictionRun",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.lifo",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.softMinEvictableIdleTimeMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.testOnBorrow",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.testOnReturn",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.testWhileIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.timeBetweenEvictionRunsMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.cacheConfig.blockWhenExhausted",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
+      "description": "description: atoms.cache"
+    },
+
+
+
+    {
+      "name": "atoms.cache",
+      "type": "java.util.List<com.lovver.atoms.config.AtomsCacheBean>",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    },
+    {
+      "name": "atoms.cache.level",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheBean",
+      "description": "description: atoms.cache"
+    },
+    {
+      "name": "atoms.cache.type",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsCacheBean",
+      "description": "description: atoms.cache"
+    },
+
+    {
+      "name": "atoms.broadcast.lstBroadset",
+      "type": "java.util.List<com.lovver.atoms.config.AtomsBroadsetBean>",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
+    },
+    {
+      "name": "atoms.broadcast.lstBroadset.region",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadsetBean",
+      "description": "description: atoms.broadcast.lstBroadset.region"
+    },
+    {
+      "name": "atoms.broadcast.lstBroadset.key",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadsetBean",
+      "description": "description: atoms.broadcast.lstBroadset.key"
     },
     {
       "name": "atoms.broadcast.type",
@@ -51,6 +249,136 @@
       "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
       "description": "description: atoms.broadcast configFile"
     },
+    {
+      "name": "atoms.broadcast.broadcastConfig.host",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.usePool",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.port",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.timeout",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.password",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.database",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.namespace",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.maxTotal",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.maxIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.maxWaitMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.minEvictableIdleTimeMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.minIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.numTestsPerEvictionRun",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.lifo",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.softMinEvictableIdleTimeMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.testOnBorrow",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.testOnReturn",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.testWhileIdle",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.timeBetweenEvictionRunsMillis",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.blockWhenExhausted",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+
+
+
+
+
+
+
+
+
+
     {
       "name": "atoms.serializer.type",
       "type": "java.lang.String",
