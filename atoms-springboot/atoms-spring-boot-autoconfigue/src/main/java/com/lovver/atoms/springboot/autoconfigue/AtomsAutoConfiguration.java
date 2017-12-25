@@ -15,13 +15,15 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(AtomsBean.class)
 @ConditionalOnProperty(prefix = "atoms", value = "enabled", matchIfMissing = true)
 public class AtomsAutoConfiguration {
+
     @Autowired
     private AtomsProperties atomsProperties;
 
     @Bean
     @ConditionalOnMissingBean(AtomsBean.class)
     public AtomsBean initAtoms() {
-        AtomsBean atomsBean = atomsProperties.getAtomsbean();
+        AtomsBean atomsBean = atomsProperties;
+        System.out.println(atomsProperties.getApplication());
         AtomsSpringConfig atomsSpringConfig = new AtomsSpringConfig();
         atomsSpringConfig.setAtomsBean(atomsBean);
         return atomsBean;

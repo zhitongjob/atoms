@@ -1,0 +1,62 @@
+{
+  "groups": [
+    {
+      "name": "atoms",
+      "type": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    },
+    {
+      "name": "atoms.serializer",
+      "type": "com.lovver.atoms.config.AtomsSerializerBean",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    },
+    {
+      "name": "atoms.broadcast",
+      "type": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig",
+      "type": "com.lovver.atoms.config.AtomsBroadCastConfigBean",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
+    },
+    {
+      "name": "atoms.cache",
+      "type": "java.util.List<com.lovver.atoms.config.AtomsCacheBean>",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "atoms.application",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties",
+      "description": "description: atoms.application"
+    },
+    {
+      "name": "atoms.broadcast.type",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast.type"
+    },
+    {
+      "name": "atoms.broadcast.channel",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast.channel"
+    },
+    {
+      "name": "atoms.broadcast.broadcastConfig.configFile",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
+      "description": "description: atoms.broadcast configFile"
+    },
+    {
+      "name": "atoms.serializer.type",
+      "type": "java.lang.String",
+      "sourceType": "com.lovver.atoms.config.AtomsSerializerBean",
+      "description": "description: atoms.serializer"
+    }
+  ],
+  "hints": []
+}

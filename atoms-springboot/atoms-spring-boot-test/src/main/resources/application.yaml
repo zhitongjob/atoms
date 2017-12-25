@@ -1,0 +1,4 @@
+atoms:
+  broadcast:
+    broadcastConfig:
+      configFile: aaa
