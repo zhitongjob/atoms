@@ -21,17 +21,6 @@
       "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
     },
     {
-      "name": "atoms.broadcast.lstBroadset",
-      "type": "java.util.List<com.lovver.atoms.config.AtomsBroadsetBean>",
-      "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean"
-    },
-
-    {
-      "name": "atoms.cache",
-      "type": "java.util.List<com.lovver.atoms.config.AtomsCacheBean>",
-      "sourceType": "com.lovver.atoms.springboot.autoconfigue.AtomsProperties"
-    },
-    {
       "name": "atoms.cache.cacheConfig",
       "type": "com.lovver.atoms.config.AtomsCacheConfigBean",
       "sourceType": "com.lovver.atoms.config.AtomsCacheBean"
@@ -193,9 +182,6 @@
       "sourceType": "com.lovver.atoms.config.AtomsCacheConfigBean",
       "description": "description: atoms.cache"
     },
-
-
-
     {
       "name": "atoms.cache",
       "type": "java.util.List<com.lovver.atoms.config.AtomsCacheBean>",
@@ -369,14 +355,6 @@
       "sourceType": "com.lovver.atoms.config.AtomsBroadCastBean",
       "description": "description: atoms.broadcast configFile"
     },
-
-
-
-
-
-
-
-
 
 
     {
