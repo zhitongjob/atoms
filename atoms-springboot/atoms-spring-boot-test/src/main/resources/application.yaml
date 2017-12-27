@@ -4,7 +4,7 @@ atoms:
     type: redis
     channel: testch
     broadcastConfig:
-      host: 127.0.0.1
+      host: 192.168.1.85
       port: 6379
       usePool: true
       timeout: 0
@@ -30,7 +30,7 @@ atoms:
    - level: 2
      type: redis
      cacheConfig:
-       host: 127.0.0.1
+       host: 192.168.1.85
        port: 6379
        timeout: 2000
        database: 15
